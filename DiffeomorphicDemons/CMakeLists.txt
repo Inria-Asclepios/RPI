@@ -20,9 +20,6 @@ IF( NOT ITK_FOUND )
 ENDIF()
 INCLUDE( ${ITK_USE_FILE} )
 
-# Add MIPS include directory
-INCLUDE_DIRECTORIES( ${MIPS_IMAGEPKG_INCLUDE_DIRS} )
-
 # Set used libraries
 SET(LIBRARIES
     ITKNumerics
@@ -31,7 +28,6 @@ SET(LIBRARIES
     #ITKAlgorithms
     #ITKCommon
     #InrimageNG
-    mipsItkImageIO
 )
 
 # Create old diffeomorphic demons executable
@@ -71,7 +67,7 @@ SET_TARGET_PROPERTIES( libDiffeomorphicDemons PROPERTIES OUTPUT_NAME "RPIDiffeom
 
 # Create diffeomorphic demons executable
 ADD_EXECUTABLE(        exeDiffeomorphicDemons rpiDiffeomorphicDemonsExecutable.cxx )
-TARGET_LINK_LIBRARIES( exeDiffeomorphicDemons libDiffeomorphicDemons mipsItkImageIO )
+TARGET_LINK_LIBRARIES( exeDiffeomorphicDemons libDiffeomorphicDemons )
 SET_TARGET_PROPERTIES( exeDiffeomorphicDemons PROPERTIES OUTPUT_NAME "rpiDiffeomorphicDemons" )
 
 # Install rules

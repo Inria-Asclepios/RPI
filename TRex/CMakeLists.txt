@@ -22,9 +22,6 @@ ENDIF()
 INCLUDE_DIRECTORIES( ${TCLAP_INCLUDE_DIR} )
 
 
-# Add MIPS include directory
-INCLUDE_DIRECTORIES( ${MIPS_IMAGEPKG_INCLUDE_DIRS} )
-
 
 # Set used libraries
 SET(LIBRARIES
@@ -42,7 +39,7 @@ SET_TARGET_PROPERTIES( libTRex PROPERTIES OUTPUT_NAME "RPITRex" )
 
 # Create Opitmus executable
 ADD_EXECUTABLE(        exeTRex rpiTRexExecutable.cxx )
-TARGET_LINK_LIBRARIES( exeTRex libTRex mipsItkImageIO )
+TARGET_LINK_LIBRARIES( exeTRex libTRex )
 SET_TARGET_PROPERTIES( exeTRex PROPERTIES OUTPUT_NAME "rpiTRex" )
 
 

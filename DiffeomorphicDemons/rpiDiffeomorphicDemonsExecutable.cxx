@@ -3,7 +3,6 @@
 #include <stdexcept>
 
 #include <tclap/CmdLine.h>
-#include <mipsInrimageImageIOFactory.h>
 #include <rpiCommonTools.hxx>
 #include "rpiDiffeomorphicDemons.hxx"
 
@@ -325,10 +324,6 @@ int StartMainProgram(struct Param param)
  */
 int main(int argc, char** argv)
 {
-    // Allows the executable to read and write Inrimage
-    itk::InrimageImageIOFactory::RegisterOneFactory();
-
-
     // Parse parameters
     struct Param param;
     parseParameters( argc, argv, param);
