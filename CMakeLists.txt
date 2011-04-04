@@ -57,6 +57,10 @@ set(RPI_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/RegistrationProgrammingInterface")
 option(RPI_BUILD_EXAMPLES  "Build Examples" "OFF")
 
 if (RPI_BUILD_EXAMPLES)
+    # Set runtime, library, and archive output directories
+    set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${PROJECT_BINARY_DIR}/bin  CACHE PATH "Single Directory for all executables"       )
+    set ( CMAKE_LIBRARY_OUTPUT_DIRECTORY  ${PROJECT_BINARY_DIR}/lib  CACHE PATH "Single Directory for all dynamic libraries" )
+    set ( CMAKE_ARCHIVE_OUTPUT_DIRECTORY  ${PROJECT_BINARY_DIR}/lib  CACHE PATH "Single Directory for all static libraries"  )
     add_subdirectory(examples)
 endif(RPI_BUILD_EXAMPLES)
 
