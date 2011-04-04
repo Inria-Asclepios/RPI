@@ -110,3 +110,14 @@ endif(EXISTS ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in)
 #  @ONLY IMMEDIATE)
 #endif(EXISTS ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.install.cmake.in)
 
+
+###############################################################################
+# Documentation
+###############################################################################
+
+# Create doxygen documentation
+option (BUILD_DOCUMENTATION OFF)
+if (BUILD_DOCUMENTATION)
+    INCLUDE ( UseDoxygen )
+    set (DOXYFILE_LATEX "NO")
+endif()
