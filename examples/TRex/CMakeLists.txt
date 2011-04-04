@@ -15,6 +15,8 @@ INCLUDE( ${ITK_USE_FILE} )
 
 
 # Check if TCLAP is found and include directory
+find_package (TCLAP REQUIRED)
+
 IF( NOT TCLAP_FOUND )
     MESSAGE( "Project ${PROJECT_NAME} requires TCLAP and TCLAP was not found. ${PROJECT_NAME} will not be built." )
     RETURN()

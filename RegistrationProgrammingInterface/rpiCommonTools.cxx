@@ -20,13 +20,9 @@
 #include <itkTransformFileReader.h>
 #include <itkTransformFileWriter.h>
 #include <itkTransformToDeformationFieldSource.h>
-#include <itkTransformToVelocityFieldSource.h>
 
 #include <itkResampleImageFilter.h>
 #include <itkWarpImageFilter.h>
-
-#include <mipsInrimageImageIOFactory.h>
-
 
 #include "rpiCommonTools.hxx"
 
@@ -206,7 +202,7 @@ readDisplacementField( std::string fileName )
 
 
 
-template< class TTransformScalarType, int TDimension >
+/*template< class TTransformScalarType, int TDimension >
 typename itk::StationaryVelocityFieldTransform< TTransformScalarType, TDimension >::Pointer
 readStationaryVelocityField( std::string fileName )
 {
@@ -238,7 +234,7 @@ readStationaryVelocityField( std::string fileName )
     transform->SetVelocityField( static_cast<typename FieldContainerType::ConstPointer>( field.GetPointer() ) );
     return transform;
 }
-
+*/
 
 
 template< class TTransformScalarType, class TImage >
@@ -281,7 +277,7 @@ linearToDisplacementFieldTransformation( TImage * image, itk::Transform< TTransf
 }
 
 
-
+/*
 template< class TTransformScalarType, class TImage >
 typename itk::StationaryVelocityFieldTransform< TTransformScalarType, TImage::ImageDimension >::Pointer
 linearToStationaryVelocityFieldTransformation( TImage * image, itk::Transform< TTransformScalarType, TImage::ImageDimension, TImage::ImageDimension > * linearTransform )
@@ -315,7 +311,7 @@ linearToStationaryVelocityFieldTransformation( TImage * image, itk::Transform< T
     transform->SetVelocityField( static_cast<typename FieldContainerType::ConstPointer>( field.GetPointer() ) );
     return transform;
 }
-
+*/
 
 
 template< class TTransformScalarType, int Dimension >
@@ -351,7 +347,7 @@ void writeDisplacementFieldTransformation(
 }
 
 
-
+/*
 template< class TTransformScalarType, int Dimension >
 void writeStationaryVelocityFieldTransformation(
         itk::Transform< TTransformScalarType, Dimension, Dimension > * field,
@@ -369,7 +365,7 @@ void writeStationaryVelocityFieldTransformation(
     fieldWriter->SetFileName( fileName );
     fieldWriter->Update();
 }
-
+*/
 
 
 template< class TFixedImage, class TMovingImage, class TTransformScalarType >

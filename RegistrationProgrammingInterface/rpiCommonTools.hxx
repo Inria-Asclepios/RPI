@@ -70,9 +70,9 @@ readDisplacementField( std::string fileName );
  * @param   filename  input image name
  * @return  stationary velocity field
  */
-template< class TTransformScalarType, int TDimension >
-typename itk::StationaryVelocityFieldTransform< TTransformScalarType, TDimension >::Pointer
-readStationaryVelocityField( std::string fileName );
+//template< class TTransformScalarType, int TDimension >
+//typename itk::StationaryVelocityFieldTransform< TTransformScalarType, TDimension >::Pointer
+//readStationaryVelocityField( std::string fileName );
 
 
 /**
@@ -96,11 +96,11 @@ linearToDisplacementFieldTransformation(
  * @param   linearTransform  linear transformation
  * @return  stationary velocity field transformation
  */
-template< class TTransformScalarType, class TImage >
-typename itk::StationaryVelocityFieldTransform< TTransformScalarType, TImage::ImageDimension >::Pointer
-linearToStationaryVelocityFieldTransformation(
-        TImage * image,
-        itk::Transform< TTransformScalarType, TImage::ImageDimension, TImage::ImageDimension > * linearTransform );
+//template< class TTransformScalarType, class TImage >
+//typename itk::StationaryVelocityFieldTransform< TTransformScalarType, TImage::ImageDimension >::Pointer
+//linearToStationaryVelocityFieldTransformation(
+//        TImage * image,
+//        itk::Transform< TTransformScalarType, TImage::ImageDimension, TImage::ImageDimension > * linearTransform );
 
 
 /**
@@ -130,10 +130,10 @@ void writeDisplacementFieldTransformation(
  * @param  field     stationary velocity field
  * @param  fileName  name of the output file
  */
-template< class TTransformScalarType, int Dimension >
-void writeStationaryVelocityFieldTransformation(
-        itk::Transform< TTransformScalarType, Dimension, Dimension > * field,
-        std::string fileName );
+//template< class TTransformScalarType, int Dimension >
+//void writeStationaryVelocityFieldTransformation(
+//        itk::Transform< TTransformScalarType, Dimension, Dimension > * field,
+//        std::string fileName );
 
 
 /**

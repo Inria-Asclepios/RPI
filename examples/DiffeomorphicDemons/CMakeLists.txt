@@ -13,7 +13,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 #======================================
 
 # Check if ITK is found and include useful files
-FIND_PACKAGE( ITK )
+FIND_PACKAGE( ITK REQUIRED)
 IF( NOT ITK_FOUND )
     MESSAGE( "Project ${PROJECT_NAME} requires ITK and ITK was not found. ${PROJECT_NAME} will not be built." )
     RETURN()
@@ -30,15 +30,6 @@ SET(LIBRARIES
     #InrimageNG
 )
 
-# Create old diffeomorphic demons executable
-ADD_EXECUTABLE(        oldExeDiffeomorphicDemons DemonsRegistration.cxx )
-TARGET_LINK_LIBRARIES( oldExeDiffeomorphicDemons ${LIBRARIES} )
-SET_TARGET_PROPERTIES( oldExeDiffeomorphicDemons PROPERTIES OUTPUT_NAME "DemonsRegistration" )
-
-# Install rules
-INSTALL( TARGETS oldExeDiffeomorphicDemons RUNTIME DESTINATION bin )
-
-
 
 #======================================
 #
@@ -47,6 +38,8 @@ INSTALL( TARGETS oldExeDiffeomorphicDemons RUNTIME DESTINATION bin )
 #======================================
 
 # Check if TCLAP is found and include directory
+find_package (TCLAP REQUIRED)
+
 IF( NOT TCLAP_FOUND )
     MESSAGE( "Project ${PROJECT_NAME} (RPI) requires TCLAP and TCLAP was not found. ${PROJECT_NAME} (RPI) will not be built." )
     RETURN()
