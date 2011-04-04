@@ -40,12 +40,6 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
 
 
-#======================================
-#
-# CMake for standard project
-#
-#======================================
-
 # Check if ITK is found and include useful files
 FIND_PACKAGE( ITK REQUIRED)
 IF( NOT ITK_FOUND )
@@ -53,23 +47,6 @@ IF( NOT ITK_FOUND )
     RETURN()
 ENDIF()
 INCLUDE( ${ITK_USE_FILE} )
-
-# Set used libraries
-SET(LIBRARIES
-    ITKNumerics
-    ITKStatistics
-    #ITKIO
-    #ITKAlgorithms
-    #ITKCommon
-    #InrimageNG
-)
-
-
-#======================================
-#
-# CMake for RPI project
-#
-#======================================
 
 # Check if TCLAP is found and include directory
 find_package (TCLAP REQUIRED)
@@ -82,7 +59,7 @@ INCLUDE_DIRECTORIES( ${TCLAP_INCLUDE_DIR} )
 
 # Set used libraries
 SET(LIBRARIES
-    #ITKIO
+    ITKIO
     ITKNumerics
     ITKStatistics
 )
