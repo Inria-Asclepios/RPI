@@ -48,14 +48,18 @@ mark_as_advanced(${PROJECT_NAME}_VERSION_BUILD)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
+option(BUILD_SHARED_LIBS   "Build shared libraries" true)
 
+#if (RPI_BUILD_SHARED)
+#    set (RPI_SHARED "SHARED")
+#endif()
 
 # Set runtime, library, and archive output directories
 set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${PROJECT_BINARY_DIR}/bin  CACHE PATH "Single Directory for all executables"       )
 set ( CMAKE_LIBRARY_OUTPUT_DIRECTORY  ${PROJECT_BINARY_DIR}/lib  CACHE PATH "Single Directory for all dynamic libraries" )
 set ( CMAKE_ARCHIVE_OUTPUT_DIRECTORY  ${PROJECT_BINARY_DIR}/lib  CACHE PATH "Single Directory for all static libraries"  )
 
-set(${PROJECT_NAME}_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/RegistrationProgrammingInterface")
+set(${PROJECT_NAME}_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/RegistrationProgrammingInterface" "${CMAKE_SOURCE_DIR}/examples")
 
 
 
