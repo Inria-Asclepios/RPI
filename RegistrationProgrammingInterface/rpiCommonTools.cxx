@@ -34,7 +34,7 @@ namespace rpi
 
 
 
-itk::ImageIOBase::Pointer readImageInformation( std::string fileName )
+inline itk::ImageIOBase::Pointer readImageInformation( std::string fileName )
 {
 
     // Define image IO
@@ -395,7 +395,7 @@ void writeImage( itk::Transform< TTransformScalarType, TFixedImage::ImageDimensi
 
 
 
-int atoi_check( const char * str )
+inline int atoi_check( const char * str )
 {
     char *endptr;
     long val= strtol(str, &endptr, 0);
@@ -469,7 +469,7 @@ std::string VectorToString( std::vector<T> vector )
 
 
 
-std::string BooleanToString( bool value )
+inline std::string BooleanToString( bool value )
 {
     return  (std::string)(value?"true":"false");
 }

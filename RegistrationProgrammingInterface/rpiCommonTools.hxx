@@ -23,7 +23,7 @@ namespace rpi
  * @param   fileName  name of the image to read
  * @return  image information
  */
-itk::ImageIOBase::Pointer readImageInformation( std::string fileName );
+inline itk::ImageIOBase::Pointer readImageInformation( std::string fileName );
 
 
 /**
@@ -173,7 +173,7 @@ std::string VectorToString( std::vector<T> vector );
  * @param   value  boolean value
  * @return  boolean as a string
  */
-std::string BooleanToString( bool value );
+inline std::string BooleanToString( bool value );
 
 
 } // End of namespace
