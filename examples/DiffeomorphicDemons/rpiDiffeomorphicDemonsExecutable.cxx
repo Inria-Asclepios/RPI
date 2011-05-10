@@ -289,7 +289,7 @@ int StartMainProgram(struct Param param)
 
 
         // Write the output transformation
-        std::cout << "  Writting transformation               : " << std::flush;
+        std::cout << "  Writing transformation               : " << std::flush;
         rpi::writeDisplacementFieldTransformation<TransformScalarType, TFixedImage::ImageDimension>(
                 registration->GetTransformation(),
                 param.outputTransformPath );
