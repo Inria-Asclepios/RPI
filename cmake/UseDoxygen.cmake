@@ -54,7 +54,7 @@ if(DOXYGEN_FOUND)
 endif()
 
 if(DOXYGEN_FOUND AND DOXYFILE_IN)
-    message("doxygne command: ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)")
+    #message("doxygen command: ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)")
 	add_custom_target(doxygen ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
 	usedoxygen_set_default(DOXYFILE_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc")
