@@ -8,7 +8,6 @@
 #include <itkRegularStepGradientDescentOptimizer.h>
 
 #include "rpiTRex.hxx"
-#include "rpiExports.h"
 
 
 // Namespace RPI : Registration Programming Interface

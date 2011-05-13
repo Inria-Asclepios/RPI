@@ -71,7 +71,7 @@ SET_TARGET_PROPERTIES( libDiffeomorphicDemons PROPERTIES OUTPUT_NAME "RPIDiffeom
 
 # Create diffeomorphic demons executable
 ADD_EXECUTABLE(        exeDiffeomorphicDemons rpiDiffeomorphicDemonsExecutable.cxx )
-TARGET_LINK_LIBRARIES( exeDiffeomorphicDemons libDiffeomorphicDemons )
+TARGET_LINK_LIBRARIES( exeDiffeomorphicDemons  ${LIBRARIES})
 SET_TARGET_PROPERTIES( exeDiffeomorphicDemons PROPERTIES OUTPUT_NAME "rpiDiffeomorphicDemons" )
 
 # Install rules

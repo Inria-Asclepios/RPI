@@ -253,7 +253,7 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::StartReg
         {
             matcher->Update();
         }
-        catch( itk::ExceptionObject& err )
+        catch( itk::ExceptionObject& )
         {
             throw std::runtime_error( "Could not match the histogram of input images." );
         }

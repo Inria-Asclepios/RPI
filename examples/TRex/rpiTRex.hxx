@@ -28,7 +28,7 @@ namespace rpi
  * @date   2011/03/15
  */
 template < class TFixedImage, class TMovingImage, class TTransformScalarType=double >
-class TRex : public RegistrationMethod< TFixedImage, TMovingImage, TTransformScalarType >{
+class ITK_EXPORT TRex : public RegistrationMethod< TFixedImage, TMovingImage, TTransformScalarType >{
 
 public:
 

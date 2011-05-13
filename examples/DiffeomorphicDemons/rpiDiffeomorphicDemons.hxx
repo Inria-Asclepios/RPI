@@ -5,7 +5,6 @@
 
 #include <itkDisplacementFieldTransform.h>
 #include "rpiRegistrationMethod.hxx"
-#include "rpiExports.h"
 
 // Namespace RPI : Registration Programming Interface
 namespace rpi
@@ -23,7 +22,7 @@ namespace rpi
  * @date   2010/10/29
  */
 template < class TFixedImage, class TMovingImage, class TTransformScalarType=double >
-class RPI_EXPORT DiffeomorphicDemons : public RegistrationMethod< TFixedImage, TMovingImage, TTransformScalarType >{
+class ITK_EXPORT DiffeomorphicDemons : public RegistrationMethod< TFixedImage, TMovingImage, TTransformScalarType >{
 
 
 public:

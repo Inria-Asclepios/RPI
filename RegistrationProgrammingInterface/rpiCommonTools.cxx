@@ -50,7 +50,7 @@ inline itk::ImageIOBase::Pointer readImageInformation( std::string fileName )
         imageIO->SetFileName( fileName );
         imageIO->ReadImageInformation();
     }
-    catch( itk::ExceptionObject& e )
+    catch( itk::ExceptionObject&  )
     {
         throw std::runtime_error( "Could not read image information." );
     }
@@ -69,7 +69,7 @@ typename TImage::Pointer  readImage( std::string fileName )
     {
         reader->Update();
     }
-    catch( itk::ExceptionObject& err )
+    catch( itk::ExceptionObject& )
     {
         throw std::runtime_error( "Could not read the input image." );
     }
@@ -99,7 +99,7 @@ read3DTransformation( std::string fileName )
     {
         reader->Update();
     }
-    catch( itk::ExceptionObject& err )
+    catch( itk::ExceptionObject& )
     {
         throw std::runtime_error( "Could not read the input transformation." );
     }
@@ -188,7 +188,7 @@ readDisplacementField( std::string fileName )
     {
         reader->Update();
     }
-    catch( itk::ExceptionObject& err )
+    catch( itk::ExceptionObject& )
     {
         throw std::runtime_error( "Could not read the input transformation." );
     }
@@ -261,7 +261,7 @@ linearToDisplacementFieldTransformation( TImage * image, itk::Transform< TTransf
     {
         fieldGenerator->Update();
     }
-    catch( itk::ExceptionObject& err )
+    catch( itk::ExceptionObject& )
     {
         throw std::runtime_error( "Could not generate a displacement field from a linear transformation." );
     }
