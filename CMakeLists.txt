@@ -50,17 +50,28 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
 option(BUILD_SHARED_LIBS   "Build shared libraries" true)
 
-#if (RPI_BUILD_SHARED)
-#    set (RPI_SHARED "SHARED")
-#endif()
+if(WIN32)
+  set(${PROJECT_NAME}_ARCHIVE_OUTPUT_DIRECTORY lib)
+  set(${PROJECT_NAME}_RUNTIME_OUTPUT_DIRECTORY bin)
+  set(${PROJECT_NAME}_LIBRARY_OUTPUT_DIRECTORY bin)
+else()
+  set(${PROJECT_NAME}_ARCHIVE_OUTPUT_DIRECTORY lib)
+  set(${PROJECT_NAME}_RUNTIME_OUTPUT_DIRECTORY bin)
+  set(${PROJECT_NAME}_LIBRARY_OUTPUT_DIRECTORY lib)
+endif()
+
 
 # Set runtime, library, and archive output directories
-set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${PROJECT_BINARY_DIR}/bin  CACHE PATH "Single Directory for all executables"       )
-set ( CMAKE_LIBRARY_OUTPUT_DIRECTORY  ${PROJECT_BINARY_DIR}/lib  CACHE PATH "Single Directory for all dynamic libraries" )
-set ( CMAKE_ARCHIVE_OUTPUT_DIRECTORY  ${PROJECT_BINARY_DIR}/lib  CACHE PATH "Single Directory for all static libraries"  )
+set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${PROJECT_BINARY_DIR}/${${PROJECT_NAME}_RUNTIME_OUTPUT_DIRECTORY}  CACHE PATH "Single Directory for all executables"       )
+set ( CMAKE_LIBRARY_OUTPUT_DIRECTORY  ${PROJECT_BINARY_DIR}/${${PROJECT_NAME}_LIBRARY_OUTPUT_DIRECTORY}  CACHE PATH "Single Directory for all dynamic libraries" )
+set ( CMAKE_ARCHIVE_OUTPUT_DIRECTORY  ${PROJECT_BINARY_DIR}/${${PROJECT_NAME}_ARCHIVE_OUTPUT_DIRECTORY}  CACHE PATH "Single Directory for all static libraries"  )
 
 set(${PROJECT_NAME}_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/RegistrationProgrammingInterface" "${CMAKE_SOURCE_DIR}/examples")
 
+# Set runtime, library, and archive install output directories
+set ( RUNTIME_INSTALL_OUTPUT_DIRECTORY  ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_RUNTIME_OUTPUT_DIRECTORY}  CACHE PATH "Single Install Directory for all executables"       )
+set ( LIBRARY_INSTALL_OUTPUT_DIRECTORY  ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_LIBRARY_OUTPUT_DIRECTORY}  CACHE PATH "Single Install Directory for all dynamic libraries" )
+set ( ARCHIVE_INSTALL_OUTPUT_DIRECTORY  ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_ARCHIVE_OUTPUT_DIRECTORY}  CACHE PATH "Single Install Directory for all static libraries"  )
 
 
 set(${PROJECT_NAME}_LIBRARY_DIRS "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
@@ -69,8 +80,8 @@ set(${PROJECT_NAME}_USE_FILE "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Use.cmake")
 
 
 set(${PROJECT_NAME}_INSTALL_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include) 
-set(${PROJECT_NAME}_INSTALL_LIBRARY_DIRS ${LIBRARY_INSTALL_OUTPUT_PATH})
-set(${PROJECT_NAME}_INSTALL_RUNTIME_DIRS ${RUNTIME_INSTALL_OUTPUT_PATH})
+set(${PROJECT_NAME}_INSTALL_LIBRARY_DIRS ${LIBRARY_INSTALL_OUTPUT_DIRECTORY})
+set(${PROJECT_NAME}_INSTALL_RUNTIME_DIRS ${RUNTIME_INSTALL_OUTPUT_DIRECTORY})
 set(${PROJECT_NAME}_INSTALL_CMAKE_DIRS ${CMAKE_INSTALL_PREFIX}/cmake)
 set(${PROJECT_NAME}_INSTALL_USE_FILE ${CMAKE_INSTALL_PREFIX}/cmake/${PROJECT_NAME}Use.cmake)
 
@@ -81,7 +92,7 @@ if (RPI_BUILD_EXAMPLES)
        add_subdirectory(examples)
 endif(RPI_BUILD_EXAMPLES)
 
-
+add_subdirectory(RegistrationProgrammingInterface)
 
 ##################################################################
 # Setup use file
@@ -107,12 +118,30 @@ configure_file( ## Build tree configure file
   @ONLY IMMEDIATE)
 endif(EXISTS ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in)
 
-#if(EXISTS ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.install.cmake.in)
-#configure_file( ## Install tree configure file
-#  ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.install.cmake.in
-#  ${${PROJECT_NAME}_BINARY_DIR}/install/${PROJECT_NAME}Config.cmake
-#  @ONLY IMMEDIATE)
-#endif(EXISTS ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.install.cmake.in)
+if(EXISTS ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.install.cmake.in)
+configure_file( ## Install tree configure file
+  ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.install.cmake.in
+  ${${PROJECT_NAME}_BINARY_DIR}/install/${PROJECT_NAME}Config.cmake
+  @ONLY IMMEDIATE)
+endif(EXISTS ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.install.cmake.in)
+
+
+## #################################################################
+## Install cmake files
+## #################################################################
+
+if( EXISTS ${${PROJECT_NAME}_BINARY_DIR}/install/${PROJECT_NAME}Config.cmake
+AND EXISTS ${${PROJECT_NAME}_BINARY_DIR}/${PROJECT_NAME}Use.cmake)
+#AND EXISTS ${${PROJECT_NAME}_BINARY_DIR}/${PROJECT_NAME}Uninstall.cmake)
+
+install(FILES
+  ${PROJECT_BINARY_DIR}/install/${PROJECT_NAME}Config.cmake
+  ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Use.cmake
+# ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Uninstall.cmake
+  DESTINATION
+  cmake)
+
+endif()
 
 
 ###############################################################################

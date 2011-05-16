@@ -31,59 +31,18 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE 
 # USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ###############################################################################
+project(RegistrationProgrammingInterface)
+set(${PROJECT_NAME}_HEADERS
+    itkDisplacementFieldTransform.h
+    rpiCommonTools.cxx
+    itkDisplacementFieldTransform.txx
+    rpiCommonTools.hxx
+    itkStationaryVelocityFieldTransform.h
+    rpiRegistrationMethod.cxx
+    itkStationaryVelocityFieldTransform.txx
+    rpiRegistrationMethod.hxx)
 
-# Project name
-PROJECT( DIFFEOMORPHIC_DEMONS )
-
-# Define the minimum CMake version needed
-CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
 
-
-# Check if ITK is found and include useful files
-FIND_PACKAGE( ITK REQUIRED)
-IF( NOT ITK_FOUND )
-    MESSAGE( "Project ${PROJECT_NAME} requires ITK and ITK was not found. ${PROJECT_NAME} will not be built." )
-    RETURN()
-ENDIF()
-INCLUDE( ${ITK_USE_FILE} )
-
-# Check if TCLAP is found and include directory
-find_package (TCLAP REQUIRED)
-
-IF( NOT TCLAP_FOUND )
-    MESSAGE( "Project ${PROJECT_NAME} (RPI) requires TCLAP and TCLAP was not found. ${PROJECT_NAME} (RPI) will not be built." )
-    RETURN()
-ENDIF()
-INCLUDE_DIRECTORIES( ${TCLAP_INCLUDE_DIR} )
-
-# Set used libraries
-SET(LIBRARIES
-    ITKIO
-    ITKNumerics
-    ITKStatistics
-)
-
-#Set Headers:
-set (${PROJECT_NAME}_HEADERS
-    rpiDiffeomorphicDemons.hxx
-    rpiDiffeomorphicDemons.cxx
-    )
-
-# Create diffeomorphic demons library
-ADD_LIBRARY(           libDiffeomorphicDemons rpiDiffeomorphicDemons.cxx )
-TARGET_LINK_LIBRARIES( libDiffeomorphicDemons ${LIBRARIES} )
-SET_TARGET_PROPERTIES( libDiffeomorphicDemons PROPERTIES OUTPUT_NAME "RPIDiffeomorphicDemons" )
-
-# Create diffeomorphic demons executable
-ADD_EXECUTABLE(        exeDiffeomorphicDemons rpiDiffeomorphicDemonsExecutable.cxx )
-TARGET_LINK_LIBRARIES( exeDiffeomorphicDemons  ${LIBRARIES})
-SET_TARGET_PROPERTIES( exeDiffeomorphicDemons PROPERTIES OUTPUT_NAME "rpiDiffeomorphicDemons" )
-
-# Install rules
-INSTALL( TARGETS libDiffeomorphicDemons exeDiffeomorphicDemons
-         RUNTIME DESTINATION bin
-         LIBRARY DESTINATION lib
-         ARCHIVE DESTINATION lib/static)
-install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION include/DiffeomorphicDemons)
+install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION include)
 

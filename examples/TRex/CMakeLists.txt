@@ -67,6 +67,11 @@ SET(LIBRARIES
     ITKStatistics
 )
 
+#Set Headers:
+set (${PROJECT_NAME}_HEADERS
+    rpiTRex.hxx
+    rpiTRex.cxx
+    )
 
 # Create TRex library
 ADD_LIBRARY(           libTRex rpiTRex.cxx )
@@ -85,3 +90,6 @@ INSTALL( TARGETS libTRex exeTRex
          RUNTIME DESTINATION bin
          LIBRARY DESTINATION lib
          ARCHIVE DESTINATION lib/static)
+
+install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION include/TRex)
+
