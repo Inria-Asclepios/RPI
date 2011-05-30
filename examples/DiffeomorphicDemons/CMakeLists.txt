@@ -84,6 +84,6 @@ SET_TARGET_PROPERTIES( exeDiffeomorphicDemons PROPERTIES OUTPUT_NAME "rpiDiffeom
 INSTALL( TARGETS libDiffeomorphicDemons exeDiffeomorphicDemons
          RUNTIME DESTINATION bin
          LIBRARY DESTINATION lib
-         ARCHIVE DESTINATION lib/static)
+         ARCHIVE DESTINATION lib)
 install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION include/DiffeomorphicDemons)
 
