@@ -32,17 +32,79 @@
 # USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ###############################################################################
 project(RegistrationProgrammingInterface)
+
+# Define the minimum CMake version needed
+CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 set(${PROJECT_NAME}_HEADERS
+    rpiCommonTools.hxx    
+    rpiCommonTools.cxx    
     itkDisplacementFieldTransform.h
-    rpiCommonTools.cxx
     itkDisplacementFieldTransform.txx
-    rpiCommonTools.hxx
     itkStationaryVelocityFieldTransform.h
+    rpiRegistrationMethod.hxx    
     rpiRegistrationMethod.cxx
     itkStationaryVelocityFieldTransform.txx
-    rpiRegistrationMethod.hxx)
-
-
+    itkStationaryVelocityFieldTransform.txx
+    itkTransformToVelocityFieldSource.h
+    itkTransformToVelocityFieldSource.txx
+    itkGeneralTransform.h
+    itkGeneralTransform.txx
+    )
 
 install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION include)
+
+
+# Check if ITK is found and include useful files
+FIND_PACKAGE( ITK )
+IF( NOT ITK_FOUND )
+    MESSAGE( "Project ${PROJECT_NAME} requires ITK and ITK was not found. ${PROJECT_NAME} will not be built." )
+    RETURN()
+ENDIF()
+INCLUDE( ${ITK_USE_FILE} )
+
+FIND_PACKAGE( TCLAP )
+# Check if TCLAP is found and include directory
+IF( NOT TCLAP_FOUND )
+    MESSAGE( "Project ${PROJECT_NAME} requires TCLAP and TCLAP was not found. ${PROJECT_NAME} will not be built." )
+    RETURN()
+ENDIF()
+INCLUDE_DIRECTORIES( ${TCLAP_INCLUDE_DIR} )
+
+# Set used libraries
+SET(LIBRARIES
+    ITKIO
+    ITKAlgorithms
+    ITKCommon
+    ITKStatistics
+    ITKNumerics
+)
+
+# Create ConvertLinearToDF executable
+ADD_EXECUTABLE(        exeConvertLinearToDF rpiConvertLinearToDF.cxx )
+TARGET_LINK_LIBRARIES( exeConvertLinearToDF ${LIBRARIES} )
+SET_TARGET_PROPERTIES( exeConvertLinearToDF PROPERTIES OUTPUT_NAME "rpiConvertLinearToDF" )
+
+# Create ConvertLinearToSVF executable
+ADD_EXECUTABLE(        exeConvertLinearToSVF rpiConvertLinearToSVF.cxx )
+TARGET_LINK_LIBRARIES( exeConvertLinearToSVF ${LIBRARIES} )
+SET_TARGET_PROPERTIES( exeConvertLinearToSVF PROPERTIES OUTPUT_NAME "rpiConvertLinearToSVF" )
+
+
+# Check if TinyXML is found and include directory
+IF( NOT TinyXML_FOUND )
+    MESSAGE( "Project ${PROJECT_NAME} requires TinyXML and TinyXML was not found. ${PROJECT_NAME} will not be built." )
+    RETURN()
+ELSE()
+    MESSAGE("TinyXML is located in ${TinyXML_INCLUDE_DIR}")
+    INCLUDE_DIRECTORIES( ${TinyXML_INCLUDE_DIR} )
+
+    # Create rpiFuseTransformations executable
+    ADD_EXECUTABLE(        exeFuseTransformations rpiFuseTransformations.cxx )
+    TARGET_LINK_LIBRARIES( exeFuseTransformations ${LIBRARIES} TinyXML )
+    SET_TARGET_PROPERTIES( exeFuseTransformations PROPERTIES OUTPUT_NAME "rpiFuseTransformations" )
+
+ENDIF()
 

@@ -68,6 +68,12 @@ public:
     typedef typename VelocityFieldType::ConstPointer  VelocityFieldConstPointerType;
     typedef typename VelocityFieldType::IndexType     VelocityFieldIndexType;
 
+    /** Type relative to the field geometry */
+    typedef typename VelocityFieldType::PointType      OriginType;
+    typedef typename VelocityFieldType::SpacingType    SpacingType;
+    typedef typename VelocityFieldType::DirectionType  DirectionType;
+    typedef typename VelocityFieldType::RegionType     RegionType;
+
     typedef itk::VectorLinearInterpolateNearestNeighborExtrapolateImageFunction<VelocityFieldType, ScalarType> InterpolateFunctionType;
     typedef typename InterpolateFunctionType::Pointer InterpolateFunctionPointerType;
 
@@ -165,7 +171,44 @@ public:
     virtual void SetVelocityField( VelocityFieldConstPointerType field);
 
 
-                                                                protected:
+    /**
+     * Gets the origin of the field.
+     */
+    OriginType GetOrigin(void)
+    {
+        return m_VelocityField->GetOrigin();
+    }
+
+
+    /**
+     * Gets the spacing of the field.
+     */
+    SpacingType GetSpacing(void)
+    {
+        return m_VelocityField->GetSpacing();
+    }
+
+
+    /**
+     * Gets the direction of the field.
+     */
+    DirectionType GetDirection(void)
+    {
+        return m_VelocityField->GetDirection();
+    }
+
+
+    /**
+     * Gets the region object that defines the size and starting index for the largest possible
+     * region this image could represent.
+     */
+    RegionType GetLargestPossibleRegion(void)
+    {
+        return m_VelocityField->GetLargestPossibleRegion();
+    }
+
+
+protected:
 
     /** Print contents of an TranslationTransform. */
     void PrintSelf(std::ostream &os, Indent indent) const;
@@ -176,7 +219,7 @@ public:
     VelocityFieldConstPointerType m_VelocityField;
     InterpolateFunctionPointerType m_InterpolateFunction;
 
-                                                                private:
+private:
 
     /** The weights used to scale partial derivatives during processing */
     double m_DerivativeWeights[NDimensions];

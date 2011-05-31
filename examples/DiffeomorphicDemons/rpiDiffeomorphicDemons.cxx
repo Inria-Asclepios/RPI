@@ -18,7 +18,8 @@ namespace rpi
 
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
-DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::DiffeomorphicDemons(void)
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::DiffeomorphicDemons(void)
 {
 
     // Initialize parameters (except iterations)
@@ -41,7 +42,8 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::Diffeomo
 
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
-DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::~DiffeomorphicDemons(void)
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::~DiffeomorphicDemons(void)
 {
     // Do nothing
 }
@@ -50,7 +52,8 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::~Diffeom
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 std::vector<unsigned int>
-DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::GetNumberOfIterations(void) const
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::GetNumberOfIterations(void) const
 {
     return this->m_iterations;
 }
@@ -59,7 +62,8 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::GetNumbe
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 void
-DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::SetNumberOfIterations(std::vector<unsigned int> iterations)
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::SetNumberOfIterations(std::vector<unsigned int> iterations)
 {
     this->m_iterations = iterations;
 }
@@ -68,7 +72,8 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::SetNumbe
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 typename DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::UpdateRule
-DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::GetUpdateRule(void) const
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::GetUpdateRule(void) const
 {
     return this->m_updateRule;
 }
@@ -76,8 +81,25 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::GetUpdat
 
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
+std::string
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::GetUpdateRuleAsString(void) const
+{
+    std::string type;
+    if ( this->m_updateRule == UPDATE_DIFFEOMORPHIC )
+        return ( type = "diffeomorphic" );
+    else if ( this->m_updateRule == UPDATE_ADDITIVE )
+        return ( type = "additive" );
+    else // m_updateRule == UPDATE_COMPOSITIVE
+        return ( type = "compositive" );
+}
+
+
+
+template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 void
-DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::SetUpdateRule(UpdateRule value)
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::SetUpdateRule(UpdateRule value)
 {
     this->m_updateRule = value;
 }
@@ -86,7 +108,8 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::SetUpdat
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 typename DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::GradientType
-DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::GetGradientType(void) const
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::GetGradientType(void) const
 {
     return this->m_gradientType;
 }
@@ -94,17 +117,37 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::GetGradi
 
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
-void
-DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::SetGradientType(GradientType value)
+std::string
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::GetGradientTypeAsString(void) const
 {
-    this->m_gradientType = value;
+    std::string type;
+    if ( this->m_gradientType == GRADIENT_SYMMETRIZED )
+        return ( type = "symmetrized" );
+    else if ( this->m_gradientType == GRADIENT_FIXED_IMAGE )
+        return ( type = "fixed image" );
+    else if ( this->m_gradientType == GRADIENT_WARPED_MOVING_IMAGE )
+        return ( type = "warped moving image" );
+    else // m_gradientType == GRADIENT_MAPPED_MOVING_IMAGE
+        return ( type = "mapped moving image" );
+}
+
+
+
+template < class TFixedImage, class TMovingImage, class TTransformScalarType >
+void
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::SetGradientType(GradientType type)
+{
+    this->m_gradientType = type;
 }
 
 
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 float
-DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::GetMaximumUpdateStepLength(void) const
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::GetMaximumUpdateStepLength(void) const
 {
     return this->m_maximumUpdateStepLength;
 }
@@ -113,7 +156,8 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::GetMaxim
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 void
-DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::SetMaximumUpdateStepLength(float value)
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::SetMaximumUpdateStepLength(float value)
 {
     if ( value>=0 )
         this->m_maximumUpdateStepLength = value;
@@ -125,7 +169,8 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::SetMaxim
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 float
-DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::GetUpdateFieldStandardDeviation(void) const
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::GetUpdateFieldStandardDeviation(void) const
 {
     return this->m_updateFieldStandardDeviation;
 }
@@ -134,7 +179,8 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::GetUpdat
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 void
-DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::SetUpdateFieldStandardDeviation(float value)
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::SetUpdateFieldStandardDeviation(float value)
 {
     if ( value>=0 )
         this->m_updateFieldStandardDeviation = value;
@@ -146,7 +192,8 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::SetUpdat
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 float
-DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::GetDisplacementFieldStandardDeviation(void) const
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::GetDisplacementFieldStandardDeviation(void) const
 {
     return this->m_displacementFieldStandardDeviation;
 }
@@ -155,7 +202,8 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::GetDispl
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 void
-DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::SetDisplacementFieldStandardDeviation(float value)
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::SetDisplacementFieldStandardDeviation(float value)
 {
     if ( value>=0 )
         this->m_displacementFieldStandardDeviation = value;
@@ -167,7 +215,8 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::SetDispl
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 bool
-DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::GetUseHistogramMatching(void) const
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::GetUseHistogramMatching(void) const
 {
     return this->m_useHistogramMatching;
 }
@@ -176,7 +225,8 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::GetUseHi
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 void
-DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::SetUseHistogramMatching(bool value)
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::SetUseHistogramMatching(bool value)
 {
     this->m_useHistogramMatching = value;
 }
@@ -185,7 +235,8 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::SetUseHi
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 typename DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::TransformPointerType
-DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::GetInitialTransformation(void) const
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::GetInitialTransformation(void) const
 {
     return this->m_initialTransform;
 }
@@ -194,7 +245,8 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::GetIniti
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 void
-DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::SetInitialTransformation(TransformType * transform)
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::SetInitialTransformation(TransformType * transform)
 {
     this->m_initialTransform = transform;
 }
@@ -203,7 +255,8 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::SetIniti
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 void
-DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::StartRegistration(void)
+DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
+::StartRegistration(void)
 {
 
 
@@ -373,12 +426,9 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >::StartReg
         throw std::runtime_error( "Unexpected error." );
     }
 
-
-    // Create the displacement field transform object
-    typename TransformType::Pointer transform = TransformType::New();
-    transform->SetDisplacementField( static_cast<typename FieldContainerType::ConstPointer>( multires->GetOutput() ) );
-    this->m_transform = transform;
-
+    // Set the displacement field to the transformation object
+    static_cast< TransformType * >(this->m_transform.GetPointer())->SetDisplacementField(
+            static_cast<typename FieldContainerType::ConstPointer>(multires->GetOutput()));
 }
 
 

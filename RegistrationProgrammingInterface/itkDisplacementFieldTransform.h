@@ -28,7 +28,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 namespace itk
 {
-/**
+    /**
    \class DisplacementFieldTransform (itk)
 
    This class is a concrete implementation of Transform that handle Non-Linear
@@ -59,16 +59,16 @@ namespace itk
    \author Nicolas Toussaint, INRIA
 */
 
-  template <class TScalarType=float, unsigned int NDimensions=3>
-    class ITK_EXPORT DisplacementFieldTransform : public Transform<TScalarType, NDimensions, NDimensions>
-    {
-      
-    public:    
-    
-    typedef DisplacementFieldTransform         Self;
-    typedef Transform<TScalarType, NDimensions, NDimensions> Superclass;
-    typedef SmartPointer<Self>       Pointer;
-    typedef SmartPointer<const Self> ConstPointer;
+template <class TScalarType=float, unsigned int NDimensions=3>
+class ITK_EXPORT DisplacementFieldTransform : public Transform<TScalarType, NDimensions, NDimensions>
+{
+
+public:
+
+    typedef DisplacementFieldTransform                        Self;
+    typedef Transform<TScalarType, NDimensions, NDimensions>  Superclass;
+    typedef SmartPointer<Self>                                Pointer;
+    typedef SmartPointer<const Self>                          ConstPointer;
 
     /** Dimension of the domain space. */
     itkStaticConstMacro(SpaceDimension, unsigned int, NDimensions);
@@ -80,38 +80,45 @@ namespace itk
 
     typedef Superclass TransformType;
     typedef typename TransformType::ConstPointer TransformPointerType;
-    
+
     /** Type of the scalar representing coordinate and vector elements. */
     typedef TScalarType ScalarType;
-    
+
     /** Type of the input parameters. */
     typedef typename Superclass::ParametersType ParametersType;
-    
+
     /** Type of the Jacobian matrix. */
     typedef typename Superclass::JacobianType JacobianType;
-    
+
     /** Standard vector type for this class. */
     typedef typename Superclass::InputVectorType InputVectorType;
     typedef typename Superclass::OutputVectorType OutputVectorType;
-    
+
     /** Standard covariant vector type for this class */
     typedef typename Superclass::InputCovariantVectorType InputCovariantVectorType;
     typedef typename Superclass::OutputCovariantVectorType OutputCovariantVectorType;
-  
+
     /** Standard vnl_vector type for this class. */
     typedef typename Superclass::InputVnlVectorType InputVnlVectorType;
     typedef typename Superclass::OutputVnlVectorType OutputVnlVectorType;
-    
+
     /** Standard coordinate point type for this class */
     typedef typename Superclass::InputPointType InputPointType;
     typedef typename Superclass::OutputPointType OutputPointType;
-    
+
     typedef itk::Vector<ScalarType, NDimensions> VectorType;
     typedef itk::Image<VectorType, NDimensions> DisplacementFieldType;
     typedef typename DisplacementFieldType::Pointer DisplacementFieldPointerType;
     typedef typename DisplacementFieldType::ConstPointer DisplacementFieldConstPointerType;
     typedef typename DisplacementFieldType::IndexType DisplacementFieldIndexType;
-    
+
+    /** Type relative to the field geometry */
+    typedef typename DisplacementFieldType::PointType      OriginType;
+    typedef typename DisplacementFieldType::SpacingType    SpacingType;
+    typedef typename DisplacementFieldType::DirectionType  DirectionType;
+    typedef typename DisplacementFieldType::RegionType     RegionType;
+
+
     typedef itk::VectorLinearInterpolateNearestNeighborExtrapolateImageFunction<DisplacementFieldType, ScalarType> InterpolateFunctionType;
     typedef typename InterpolateFunctionType::Pointer InterpolateFunctionPointerType;
 
@@ -120,7 +127,7 @@ namespace itk
 	the type which will be passed to the evaluate function
     */
     typedef ConstNeighborhoodIterator<DisplacementFieldType> ConstNeighborhoodIteratorType;
-    typedef typename ConstNeighborhoodIteratorType::RadiusType RadiusType;  
+    typedef typename ConstNeighborhoodIteratorType::RadiusType RadiusType;
 
     /**  Method to transform a point. */
     virtual OutputPointType TransformPoint(const InputPointType  & ) const;
@@ -129,7 +136,7 @@ namespace itk
     /**  Method to transform a vnl_vector. */
     virtual OutputVnlVectorType TransformVector(const InputVnlVectorType &) const;
     /**  Method to transform a CovariantVector. */
-    virtual OutputCovariantVectorType TransformCovariantVector(const InputCovariantVectorType &) const;    
+    virtual OutputCovariantVectorType TransformCovariantVector(const InputCovariantVectorType &) const;
     /**
        Set the transformation parameters and update internal transformation.
        * SetParameters gives the transform the option to set it's
@@ -142,7 +149,7 @@ namespace itk
        */
     virtual void SetParameters( const ParametersType & )
     {
-      itkExceptionMacro ("this type of transform does not handle any parameters yet !");
+        itkExceptionMacro ("this type of transform does not handle any parameters yet !");
     };
     /**
        Set the transformation parameters and update internal transformation. 
@@ -155,11 +162,11 @@ namespace itk
        ######## NOT SUPPORTED ############
        
     */
-    virtual void SetParametersByValue ( const ParametersType & p ) 
+    virtual void SetParametersByValue ( const ParametersType & p )
     {
-      itkExceptionMacro ("this type of transform does not handle any parameters yet !");
+        itkExceptionMacro ("this type of transform does not handle any parameters yet !");
     };
-    
+
     /**
        Get the Transformation Parameters.
        
@@ -167,9 +174,9 @@ namespace itk
     */
     virtual const ParametersType& GetParameters(void) const
     {
-      itkExceptionMacro ("this type of transform does not handle any parameters yet !");
+        itkExceptionMacro ("this type of transform does not handle any parameters yet !");
     }
-    
+
 
     /**
        Compute the Jacobian of the transformation
@@ -204,7 +211,7 @@ namespace itk
        */
     virtual const JacobianType & GetJacobian(const InputPointType  &) const
     {
-      itkExceptionMacro ("this type of transform does not handle Jacobian !");
+        itkExceptionMacro ("this type of transform does not handle Jacobian !");
     }
     /**
        Get the jacobian of the transformation with respect to the coordinates at a specific point
@@ -221,50 +228,89 @@ namespace itk
     */
     virtual bool GetInverse( Self* inverse) const
     {
-      itkExceptionMacro ("this type of transform does not handle Inversion !");
-      return false;
+        itkExceptionMacro ("this type of transform does not handle Inversion !");
+        return false;
     }
-    
+
     /**
        Set the transform to identity. Basically remove (and unregister)
        the displacement field from the transform
     */
     virtual void SetIdentity(void)
     {
-      m_DisplacementField = NULL;
+        m_DisplacementField = NULL;
     }
     /**
        Set/Get the displacement field used for transforming points and vectors
     */
     itkGetConstObjectMacro( DisplacementField, DisplacementFieldType );
     virtual void SetDisplacementField (DisplacementFieldConstPointerType field);
-    
-    
-    protected:
-    
+
+
+    /**
+     * Gets the origin of the field.
+     */
+    OriginType GetOrigin(void)
+    {
+        return m_DisplacementField->GetOrigin();
+    }
+
+
+    /**
+     * Gets the spacing of the field.
+     */
+    SpacingType GetSpacing(void)
+    {
+        return m_DisplacementField->GetSpacing();
+    }
+
+
+    /**
+     * Gets the direction of the field.
+     */
+    DirectionType GetDirection(void)
+    {
+        return m_DisplacementField->GetDirection();
+    }
+
+
+    /**
+     * Gets the region object that defines the size and starting index for the largest possible
+     * region this image could represent.
+     */
+    RegionType GetLargestPossibleRegion(void)
+    {
+        return m_DisplacementField->GetLargestPossibleRegion();
+    }
+
+
+
+
+protected:
+
     /** Print contents of an TranslationTransform. */
     void PrintSelf(std::ostream &os, Indent indent) const;
 
     DisplacementFieldTransform();
     virtual ~DisplacementFieldTransform() {};
-    
+
     DisplacementFieldConstPointerType m_DisplacementField;
     InterpolateFunctionPointerType m_InterpolateFunction;
-    
-    private:
+
+private:
 
     /** The weights used to scale partial derivatives during processing */
     double m_DerivativeWeights[NDimensions];
-    
-    };
-  
-  
+
+};
+
+
 } // end of namespace itk
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkDisplacementFieldTransform.txx"
 #endif
-  
+
 
 #endif

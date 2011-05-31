@@ -16,13 +16,15 @@ namespace rpi
  * This method is a fully ITK registration method implemented into the RPI framework.
  * The method is simple and gives a clear example of how a registration method of RPI should be implemented.
  *
- *   TFixedImage           Type of the fixed image. Must be an itk::Image< TPixel, TDimension > where TPixel can
- *                         be potentially anything and TDimension must be equal to 3.
+ * There are three templates for this class:
  *
- *   TMovingImage          Type of the moving image. Must be an itk::Image< TPixel, TDimension > where TPixel can
- *                         be potentially anything and TDimension must be equal to 3.
+ *   TFixedImage           Type of the fixed image. Must be an itk::Image< TPixel, 3 > where
+ *                         TPixel is a scalar type (e.g. unsigned char, short, float, etc.).
  *
- *   TTransformScalarType  Scalar type of the displacement field transformation. Must be only "double".
+ *   TMovingImage          Type of the moving image. Must be an itk::Image< TPixel, 3 > where
+ *                         TPixel is a scalar type (e.g. unsigned char, short, float, etc.).
+ *
+ *   TTransformScalarType  Type of the transformation parameters. Must be "double".
  *
  * @author Vincent Garcia
  * @date   2011/03/15
@@ -36,7 +38,7 @@ public:
             TransformType;
 
     typedef typename TransformType::Pointer
-            TransformPointer;
+            TransformPointerType;
 
 
 protected:

@@ -8,6 +8,7 @@
 #include <itkImageIOBase.h>
 #include <itkDisplacementFieldTransform.h>
 #include <itkStationaryVelocityFieldTransform.h>
+#include <itkAffineTransform.h>
 #include <itkEuler3DTransform.h>
 
 #include <rpiRegistrationMethod.hxx>
@@ -32,17 +33,7 @@ inline itk::ImageIOBase::Pointer readImageInformation( std::string fileName );
  * @return  image
  */
 template< class TImage >
-typename TImage::Pointer  readImage( std::string fileName );
-
-
-/**
- * Read an ITK transformation from an input file.
- * @param   filename  input file name
- * @return  transformation
- */
-template< class TTransformScalarType>
-typename itk::Transform< TTransformScalarType, 3, 3 >::Pointer
-read3DTransformation( std::string fileName );
+typename TImage::Pointer readImage( std::string fileName );
 
 
 /**
@@ -53,6 +44,26 @@ read3DTransformation( std::string fileName );
 template< class TTransformScalarType>
 typename itk::Euler3DTransform< TTransformScalarType >::Pointer
 readEuler3DTransformation( std::string fileName );
+
+
+/**
+ * Read an ITK Affine transformation from an input file.
+ * @param   filename  input file name
+ * @return  Affine transformation
+ */
+template< class TTransformScalarType, int TDimension>
+typename itk::AffineTransform< TTransformScalarType, TDimension >::Pointer
+readAffineTransformation( std::string fileName );
+
+
+/**
+ * Read an ITK transformation from an input file.
+ * @param   filename  input file name
+ * @return  transformation
+ */
+template< class TTransformScalarType>
+typename itk::Transform< TTransformScalarType, 3, 3 >::Pointer
+readLinearTransformation( std::string fileName );
 
 
 /**
@@ -70,9 +81,9 @@ readDisplacementField( std::string fileName );
  * @param   filename  input image name
  * @return  stationary velocity field
  */
-//template< class TTransformScalarType, int TDimension >
-//typename itk::StationaryVelocityFieldTransform< TTransformScalarType, TDimension >::Pointer
-//readStationaryVelocityField( std::string fileName );
+template< class TTransformScalarType, int TDimension >
+typename itk::StationaryVelocityFieldTransform< TTransformScalarType, TDimension >::Pointer
+readStationaryVelocityField( std::string fileName );
 
 
 /**
@@ -82,11 +93,11 @@ readDisplacementField( std::string fileName );
  * @param   linearTransform  linear transformation
  * @return  displacement field transformation
  */
-template< class TTransformScalarType, class TImage >
-typename itk::DisplacementFieldTransform< TTransformScalarType, TImage::ImageDimension >::Pointer
+template< class TLinearScalarType, class TFieldScalarType, class TImage >
+typename itk::DisplacementFieldTransform< TFieldScalarType, TImage::ImageDimension >::Pointer
 linearToDisplacementFieldTransformation(
         TImage * image,
-        itk::Transform< TTransformScalarType, TImage::ImageDimension, TImage::ImageDimension > * linearTransform );
+        itk::Transform< TLinearScalarType, TImage::ImageDimension, TImage::ImageDimension > * transform );
 
 
 /**
@@ -96,11 +107,11 @@ linearToDisplacementFieldTransformation(
  * @param   linearTransform  linear transformation
  * @return  stationary velocity field transformation
  */
-//template< class TTransformScalarType, class TImage >
-//typename itk::StationaryVelocityFieldTransform< TTransformScalarType, TImage::ImageDimension >::Pointer
-//linearToStationaryVelocityFieldTransformation(
-//        TImage * image,
-//        itk::Transform< TTransformScalarType, TImage::ImageDimension, TImage::ImageDimension > * linearTransform );
+template< class TLinearScalarType, class TFieldScalarType, class TImage >
+typename itk::StationaryVelocityFieldTransform< TFieldScalarType, TImage::ImageDimension >::Pointer
+linearToStationaryVelocityFieldTransformation(
+        TImage * image,
+        itk::Transform< TLinearScalarType, TImage::ImageDimension, TImage::ImageDimension > * transform );
 
 
 /**
@@ -108,9 +119,9 @@ linearToDisplacementFieldTransformation(
  * @param  transformation  registration object
  * @param  fileName        name of the output file
  */
-template< class TTransformScalarType, int Dimension >
+template< class TTransformScalarType, int TDimension >
 void writeLinearTransformation(
-        itk::Transform< TTransformScalarType, Dimension, Dimension > * transform,
+        itk::Transform< TTransformScalarType, TDimension, TDimension > * transform,
         std::string fileName );
 
 
@@ -119,9 +130,9 @@ void writeLinearTransformation(
  * @param  field     displacement field
  * @param  fileName  name of the output file
  */
-template< class TTransformScalarType, int Dimension >
+template< class TTransformScalarType, int TDimension >
 void writeDisplacementFieldTransformation(
-        itk::Transform< TTransformScalarType, Dimension, Dimension > * field,
+        itk::Transform< TTransformScalarType, TDimension, TDimension > * field,
         std::string fileName );
 
 
@@ -130,10 +141,10 @@ void writeDisplacementFieldTransformation(
  * @param  field     stationary velocity field
  * @param  fileName  name of the output file
  */
-//template< class TTransformScalarType, int Dimension >
-//void writeStationaryVelocityFieldTransformation(
-//        itk::Transform< TTransformScalarType, Dimension, Dimension > * field,
-//        std::string fileName );
+template< class TTransformScalarType, int TDimension >
+void writeStationaryVelocityFieldTransformation(
+        itk::Transform< TTransformScalarType, TDimension, TDimension > * field,
+        std::string fileName );
 
 
 /**
@@ -167,6 +178,7 @@ std::vector<T> StringToVector( const std::string & str );
  */
 template< typename T>
 std::string VectorToString( std::vector<T> vector );
+
 
 /**
  * Displays a boolean as a string.

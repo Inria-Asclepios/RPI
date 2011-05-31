@@ -42,7 +42,8 @@ void parseParameters(int argc, char** argv, struct Param & param)
 
     // Program description
     std::string description = "\b\b\bDESCRIPTION\n";
-    description += "TRex registration method. ";
+    description += "TRex registration method: Toy Registration EXample. The transformation ";
+    description += "computed is a rigid transformation.";
     description += "\nAuthor : Vincent Garcia";
 
     try {

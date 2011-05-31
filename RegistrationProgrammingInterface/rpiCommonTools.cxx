@@ -14,12 +14,14 @@
 #include <itkImageFileWriter.h>
 
 #include <itkTransform.h>
+#include <itkMatrixOffsetTransformBase.h>
 #include <itkAffineTransform.h>
 #include <itkEuler2DTransform.h>
 #include <itkEuler3DTransform.h>
 #include <itkTransformFileReader.h>
 #include <itkTransformFileWriter.h>
 #include <itkTransformToDeformationFieldSource.h>
+#include <itkTransformToVelocityFieldSource.h>
 
 #include <itkResampleImageFilter.h>
 #include <itkWarpImageFilter.h>
@@ -60,7 +62,7 @@ inline itk::ImageIOBase::Pointer readImageInformation( std::string fileName )
 
 
 template< typename TImage >
-typename TImage::Pointer  readImage( std::string fileName )
+typename TImage::Pointer readImage( std::string fileName )
 {
     typedef itk::ImageFileReader< TImage >  ImageReaderType;
     typename ImageReaderType::Pointer reader = ImageReaderType::New();
@@ -77,22 +79,23 @@ typename TImage::Pointer  readImage( std::string fileName )
 }
 
 
-template< class TTransformScalarType>
-typename itk::Transform< TTransformScalarType, 3, 3 >::Pointer
-read3DTransformation( std::string fileName )
+
+/**
+ * Local function. Reads a transform from a text file and returns a TransformBase::Pointer object.
+ * @param  fileName path to the input transformation file
+ * @return transformation read as TransformBase::Pointer object
+ */
+typename itk::TransformBase::Pointer
+readTransformBase( std::string fileName )
 {
 
     // Type definition
     typedef  itk::TransformFileReader                TransformReaderType;
     typedef  TransformReaderType::TransformListType  TransformListType;
-    typedef  TransformReaderType::TransformType      BaseTransformType;
-
-    // Dimension
-    const int TDimension = 3;
 
     // Define transformation reader
     TransformReaderType::Pointer reader = TransformReaderType::New();
-    reader->SetFileName(  fileName );
+    reader->SetFileName( fileName );
 
     // Update the reader
     try
@@ -111,17 +114,94 @@ read3DTransformation( std::string fileName )
     else if ( list->size()>1 )
         throw std::runtime_error( "The input file contains more than one transformation." );
 
-    // Get a pointer on the transformation
-    BaseTransformType * transform = list->front().GetPointer();
-    if ( !strcmp( transform->GetNameOfClass(), "AffineTransform" ) )
-        return static_cast< itk::AffineTransform< TTransformScalarType, TDimension > * >( transform );
-    if ( !strcmp( transform->GetNameOfClass(), "Euler3DTransform" ) )
-        return static_cast< itk::Euler3DTransform< TTransformScalarType > * >( transform );
-    else
-        throw std::runtime_error( "Transformation type not supported yet." );
+    // Return the pointer on the transformation
+    return list->front();
 
-    return 0;
 }
+
+
+
+/**
+ * Local function. Cast the scalar type of an input affine transformation.
+ * @param  input input transformation
+ * @return transformation casted
+ */
+template<class TInputScalarType, class TOutputScalarType>
+typename itk::AffineTransform<TOutputScalarType,3>::Pointer
+castAffineTransform(itk::AffineTransform<TInputScalarType,3> * input)
+{
+    // Typedef for input transformation
+    typedef  itk::AffineTransform<TInputScalarType,3>      InputTransformType;
+    typedef  typename InputTransformType::ParametersType   InputParameterType;
+    typedef  typename InputTransformType::InputPointType   InputCenterType;
+
+    // Typedef for output transformation
+    typedef  itk::AffineTransform<TOutputScalarType,3>     OutputTransformType;
+    typedef  typename OutputTransformType::ParametersType  OutputParameterType;
+    typedef  typename OutputTransformType::InputPointType  OutputCenterType;
+
+    // Get input parameters and center
+    InputParameterType iP = input->GetParameters();
+    InputCenterType    iC = input->GetCenter();
+
+    // Create output parameters and center
+    OutputParameterType oP(InputTransformType::ParametersDimension);
+    OutputCenterType    oC;
+    for (int i=0; i<InputTransformType::ParametersDimension; i++)
+        oP[i] = iP[i];
+    for (int i=0; i<3; i++)
+        oC[i] = iC[i];
+
+    // Create the output transformation
+    typename OutputTransformType::Pointer output = OutputTransformType::New();
+    output->SetParameters( oP );
+    output->SetCenter(     oC );
+
+    return output;
+}
+
+
+
+/**
+ * Local function. Cast the scalar type of an input Euler3D transformation.
+ * @param  input input transformation
+ * @return transformation casted
+ */
+template<class TInputScalarType, class TOutputScalarType>
+typename itk::Euler3DTransform<TOutputScalarType>::Pointer
+castEuler3DTransform(itk::Euler3DTransform<TInputScalarType> * input)
+{
+    // Typedef for input transformation
+    typedef  itk::Euler3DTransform<TInputScalarType>       InputTransformType;
+    typedef  typename InputTransformType::ParametersType   InputParameterType;
+    typedef  typename InputTransformType::InputPointType   InputCenterType;
+
+    // Typedef for output transformation
+    typedef  itk::Euler3DTransform<TOutputScalarType>      OutputTransformType;
+    typedef  typename OutputTransformType::ParametersType  OutputParameterType;
+    typedef  typename OutputTransformType::InputPointType  OutputCenterType;
+
+    // Get input parameters and center
+    InputParameterType iP = input->GetParameters();
+    InputCenterType    iC = input->GetCenter();
+
+    // Create output parameters and center
+    OutputParameterType oP(InputTransformType::ParametersDimension);
+    OutputCenterType    oC;
+    for (int i=0; i<InputTransformType::ParametersDimension; i++)
+        oP[i] = iP[i];
+    for (int i=0; i<3; i++)
+        oC[i] = iC[i];
+
+    // Create the output transformation
+    typename OutputTransformType::Pointer output = OutputTransformType::New();
+    output->Register();
+    output->SetParameters( oP );
+    output->SetCenter(     oC );
+
+    return output;
+}
+
 
 
 template< class TTransformScalarType>
@@ -130,38 +210,102 @@ readEuler3DTransformation( std::string fileName )
 {
 
     // Type definition
-    typedef  itk::TransformFileReader                TransformReaderType;
-    typedef  TransformReaderType::TransformListType  TransformListType;
-    typedef  TransformReaderType::TransformType      BaseTransformType;
+    typedef  itk::TransformBase               TransformBaseType;
+    typedef  itk::Euler3DTransform< float >   Euler3DFloat;
+    typedef  itk::Euler3DTransform< double >  Euler3DDouble;
 
-    // Define transformation reader
-    TransformReaderType::Pointer reader = TransformReaderType::New();
-    reader->SetFileName(  fileName );
+    // Read the TransformBase object
+    TransformBaseType * transform = readTransformBase(fileName).GetPointer();
 
-    // Update the reader
-   try
-    {
-        reader->Update();
-    }
-    catch( itk::ExceptionObject& err )
-    {
-        throw std::runtime_error( "Could not read the input transformation." );
-    }
+    // Try to cast as Euler3DFloat
+    Euler3DFloat *euler3DFloat = dynamic_cast<Euler3DFloat*>(transform);
+    if(euler3DFloat != 0)
+        return castEuler3DTransform<float,TTransformScalarType>(euler3DFloat);
 
-    // Get the list of transformations
-    TransformListType * list = reader->GetTransformList();
-    if ( list->empty() )
-        throw std::runtime_error( "The input file does not contain any transformation." );
-    else if ( list->size()>1 )
-        throw std::runtime_error( "The input file contains more than one transformation." );
+    // Try to cast as Euler3DDouble
+    Euler3DDouble *euler3DDouble = dynamic_cast<Euler3DDouble*>(transform);
+    if(euler3DDouble != 0)
+        return castEuler3DTransform<double,TTransformScalarType>(euler3DDouble);
 
-    // Get a pointer on the transformation
-    BaseTransformType * transform = list->front().GetPointer();
-    if ( !strcmp( transform->GetNameOfClass(), "Euler3DTransform" ) )
-        return static_cast< itk::Euler3DTransform< TTransformScalarType > * >( transform );
-    else
-        throw std::runtime_error( "Transformation type not supported yet." );
+    // Otherwise, throw an exception
+    throw std::runtime_error( "Transformation type not supported." );
+    return 0;
+}
 
+
+
+template< class TTransformScalarType, int TDimension>
+typename itk::AffineTransform< TTransformScalarType, TDimension >::Pointer
+readAffineTransformation( std::string fileName )
+{
+
+    // Type definition
+    typedef  itk::TransformBase                 TransformBaseType;
+    typedef  itk::AffineTransform< float, 3 >   AffineFloat;
+    typedef  itk::AffineTransform< double, 3 >  AffineDouble;
+
+    // Read the TransformBase object
+    TransformBaseType * transform = readTransformBase(fileName).GetPointer();
+
+    // Try to cast as AffineFloat
+    AffineFloat *affineFloat = dynamic_cast<AffineFloat*>(transform);
+    if(affineFloat != 0)
+        return castAffineTransform<float,TTransformScalarType>(affineFloat);
+
+    // Try to cast as AffineDouble
+    AffineDouble *affineDouble = dynamic_cast<AffineDouble*>(transform);
+    if(affineDouble != 0)
+        return castAffineTransform<double,TTransformScalarType>(affineDouble);
+
+    // Otherwise, throw an exception
+    throw std::runtime_error( "Transformation type not supported." );
+    return 0;
+}
+
+
+
+template<class TTransformScalarType>
+typename itk::Transform< TTransformScalarType, 3, 3 >::Pointer
+readLinearTransformation( std::string fileName )
+{
+
+    // Type definition
+    typedef  itk::TransformBase                 TransformBaseType;
+    typedef  itk::Euler3DTransform< float >     Euler3DFloat;
+    typedef  itk::Euler3DTransform< double >    Euler3DDouble;
+    typedef  itk::AffineTransform< float, 3 >   AffineFloat;
+    typedef  itk::AffineTransform< double, 3 >  AffineDouble;
+    typedef  itk::MatrixOffsetTransformBase< float, 3, 3 >   MatrixOffsetFloat;
+    typedef  itk::MatrixOffsetTransformBase< double, 3, 3 >  MatrixOffsetDouble;
+
+    // Read the TransformBase object
+    TransformBaseType * transform = readTransformBase(fileName).GetPointer();
+
+    // Note : In the following, we return the pointer (using GetPointer) instead of the itk::Pointer
+    // to allow the automatic cast of the returned transform into a itk::Transform object.
+
+    // Try to cast as Euler3DFloat
+    Euler3DFloat *euler3DFloat = dynamic_cast<Euler3DFloat*>(transform);
+    if(euler3DFloat != 0)
+        return castEuler3DTransform<float,TTransformScalarType>(euler3DFloat).GetPointer();
+
+    // Try to cast as Euler3DDouble
+    Euler3DDouble *euler3DDouble = dynamic_cast<Euler3DDouble*>(transform);
+    if(euler3DDouble != 0)
+        return castEuler3DTransform<double,TTransformScalarType>(euler3DDouble).GetPointer();
+
+    // Try to cast as AffineFloat
+    AffineFloat *affineFloat = dynamic_cast<AffineFloat*>(transform);
+    if(affineFloat != 0)
+        return castAffineTransform<float,TTransformScalarType>(affineFloat).GetPointer();
+
+    // Try to cast as AffineDouble
+    AffineDouble *affineDouble = dynamic_cast<AffineDouble*>(transform);
+    if(affineDouble != 0)
+        return castAffineTransform<double,TTransformScalarType>(affineDouble).GetPointer();
+
+    // Otherwise, throw an exception
+    throw std::runtime_error( "Transformation type not supported." );
     return 0;
 }
 
@@ -202,7 +346,7 @@ readDisplacementField( std::string fileName )
 
 
 
-/*template< class TTransformScalarType, int TDimension >
+template< class TTransformScalarType, int TDimension >
 typename itk::StationaryVelocityFieldTransform< TTransformScalarType, TDimension >::Pointer
 readStationaryVelocityField( std::string fileName )
 {
@@ -234,27 +378,28 @@ readStationaryVelocityField( std::string fileName )
     transform->SetVelocityField( static_cast<typename FieldContainerType::ConstPointer>( field.GetPointer() ) );
     return transform;
 }
-*/
 
 
-template< class TTransformScalarType, class TImage >
-typename itk::DisplacementFieldTransform< TTransformScalarType, TImage::ImageDimension >::Pointer
-linearToDisplacementFieldTransformation( TImage * image, itk::Transform< TTransformScalarType, TImage::ImageDimension, TImage::ImageDimension > * linearTransform )
+
+template< class TLinearScalarType, class TFieldScalarType, class TImage >
+typename itk::DisplacementFieldTransform< TFieldScalarType, TImage::ImageDimension >::Pointer
+linearToDisplacementFieldTransformation(
+        TImage * image,
+        itk::Transform< TLinearScalarType, TImage::ImageDimension, TImage::ImageDimension > * transform )
 {
-    // Type definition
-    typedef  itk::DisplacementFieldTransform< TTransformScalarType, TImage::ImageDimension >     FieldTransformType;
-    typedef  typename  FieldTransformType::DisplacementFieldType                                 FieldContainerType;
-    typedef  itk::TransformToDeformationFieldSource< FieldContainerType, TTransformScalarType >  GeneratorType;
+    typedef  itk::DisplacementFieldTransform< TFieldScalarType, TImage::ImageDimension >
+            FieldTransformType;
+
+    typedef  typename FieldTransformType::DisplacementFieldType
+            FieldContainerType;
+
+    typedef  itk::TransformToDeformationFieldSource< FieldContainerType, TLinearScalarType >
+            GeneratorType;
 
     // Create a field generator
     typename GeneratorType::Pointer fieldGenerator = GeneratorType::New();
-    fieldGenerator->SetTransform(       linearTransform );
-    fieldGenerator->SetOutputRegion(    image->GetRequestedRegion() );
-    fieldGenerator->SetOutputOrigin(    image->GetOrigin() );
-    fieldGenerator->SetOutputSpacing(   image->GetSpacing() );
-    fieldGenerator->SetOutputDirection( image->GetDirection() );
-    //fieldGenerator->SetOutputSize(    image->GetRequestedRegion().GetSize() );
-    //fieldGenerator->SetOutputIndex(   image->GetRequestedRegion().GetIndex() );
+    fieldGenerator->SetTransform(                 transform );
+    fieldGenerator->SetOutputParametersFromImage( image );
 
     // Update the field generator
     try
@@ -267,29 +412,35 @@ linearToDisplacementFieldTransformation( TImage * image, itk::Transform< TTransf
     }
 
     // Gets the displacement field (image)
-    typename FieldContainerType::Pointer field = fieldGenerator->GetOutput();
-    field->DisconnectPipeline();
+    typename FieldContainerType::Pointer container = fieldGenerator->GetOutput();
+    container->DisconnectPipeline();
 
     // Create the displacement field (transformation)
-    typename FieldTransformType::Pointer transform = FieldTransformType::New();
-    transform->SetDisplacementField( static_cast<typename FieldContainerType::ConstPointer>( field.GetPointer() ) );
-    return transform;
+    typename FieldTransformType::Pointer field = FieldTransformType::New();
+    field->SetDisplacementField( static_cast<typename FieldContainerType::ConstPointer>( container.GetPointer() ) );
+    return field;
 }
 
 
-/*
-template< class TTransformScalarType, class TImage >
-typename itk::StationaryVelocityFieldTransform< TTransformScalarType, TImage::ImageDimension >::Pointer
-linearToStationaryVelocityFieldTransformation( TImage * image, itk::Transform< TTransformScalarType, TImage::ImageDimension, TImage::ImageDimension > * linearTransform )
+
+template< class TLinearScalarType, class TFieldScalarType, class TImage >
+typename itk::StationaryVelocityFieldTransform< TFieldScalarType, TImage::ImageDimension >::Pointer
+linearToStationaryVelocityFieldTransformation(
+        TImage * image,
+        itk::Transform< TLinearScalarType, TImage::ImageDimension, TImage::ImageDimension > * transform )
 {
-    // Type definition
-    typedef  itk::StationaryVelocityFieldTransform< TTransformScalarType, TImage::ImageDimension >    FieldTransformType;
-    typedef  typename  FieldTransformType::VelocityFieldType                                FieldContainerType;
-    typedef  itk::TransformToVelocityFieldSource<FieldContainerType, TTransformScalarType>  GeneratorType;
+    typedef  itk::StationaryVelocityFieldTransform< TFieldScalarType, TImage::ImageDimension >
+            FieldTransformType;
+
+    typedef  typename FieldTransformType::VelocityFieldType
+            FieldContainerType;
+
+    typedef  itk::TransformToVelocityFieldSource< FieldContainerType, TLinearScalarType >
+            GeneratorType;
 
     // Create a field generator
     typename GeneratorType::Pointer fieldGenerator = GeneratorType::New();
-    fieldGenerator->SetTransform(                 linearTransform );
+    fieldGenerator->SetTransform(                 transform );
     fieldGenerator->SetOutputParametersFromImage( image );
 
     // Update the field generator
@@ -303,20 +454,20 @@ linearToStationaryVelocityFieldTransformation( TImage * image, itk::Transform< T
     }
 
     // Gets the displacement field (image)
-    typename FieldContainerType::Pointer field = fieldGenerator->GetOutput();
-    field->DisconnectPipeline();
+    typename FieldContainerType::Pointer container = fieldGenerator->GetOutput();
+    container->DisconnectPipeline();
 
     // Create the displacement field (transformation)
-    typename FieldTransformType::Pointer transform = FieldTransformType::New();
-    transform->SetVelocityField( static_cast<typename FieldContainerType::ConstPointer>( field.GetPointer() ) );
-    return transform;
+    typename FieldTransformType::Pointer field = FieldTransformType::New();
+    field->SetVelocityField( static_cast<typename FieldContainerType::ConstPointer>( container.GetPointer() ) );
+    return field;
 }
-*/
 
 
-template< class TTransformScalarType, int Dimension >
+
+template< class TTransformScalarType, int TDimension >
 void writeLinearTransformation(
-        itk::Transform< TTransformScalarType, Dimension, Dimension > * transform,
+        itk::Transform< TTransformScalarType, TDimension, TDimension > * transform,
         std::string fileName )
 {
     typedef itk::TransformFileWriter TrasformWriterType;
@@ -328,17 +479,17 @@ void writeLinearTransformation(
 
 
 
-template< class TTransformScalarType, int Dimension >
+template< class TTransformScalarType, int TDimension >
 void writeDisplacementFieldTransformation(
-        itk::Transform< TTransformScalarType, Dimension, Dimension > * field,
+        itk::Transform< TTransformScalarType, TDimension, TDimension > * field,
         std::string fileName )
 {
     // Cast the transformation into a displacement field
-    typedef  itk::DisplacementFieldTransform< TTransformScalarType, Dimension >  FieldTransformType;
+    typedef  itk::DisplacementFieldTransform< TTransformScalarType, TDimension >  FieldTransformType;
     FieldTransformType * transform = dynamic_cast<FieldTransformType *>(field);
 
     // Write the output field
-    typedef itk::Image< itk::Vector< TTransformScalarType, Dimension >, Dimension >  FieldContainerType;
+    typedef itk::Image< itk::Vector< TTransformScalarType, TDimension >, TDimension >  FieldContainerType;
     typedef itk::ImageFileWriter< FieldContainerType > FieldWriterType;
     typename FieldWriterType::Pointer fieldWriter = FieldWriterType::New();
     fieldWriter->SetInput(    transform->GetDisplacementField() );
@@ -347,25 +498,25 @@ void writeDisplacementFieldTransformation(
 }
 
 
-/*
-template< class TTransformScalarType, int Dimension >
+
+template< class TTransformScalarType, int TDimension >
 void writeStationaryVelocityFieldTransformation(
-        itk::Transform< TTransformScalarType, Dimension, Dimension > * field,
+        itk::Transform< TTransformScalarType, TDimension, TDimension > * field,
         std::string fileName )
 {
     // Cast the transformation into a displacement field
-    typedef  itk::StationaryVelocityFieldTransform< TTransformScalarType, Dimension >  FieldTransformType;
+    typedef  itk::StationaryVelocityFieldTransform< TTransformScalarType, TDimension >  FieldTransformType;
     FieldTransformType * transform = dynamic_cast<FieldTransformType *>(field);
 
     // Write the output field
-    typedef  itk::Image< itk::Vector< TTransformScalarType, Dimension >, Dimension >  FieldContainerType;
+    typedef  itk::Image< itk::Vector< TTransformScalarType, TDimension >, TDimension >  FieldContainerType;
     typedef itk::ImageFileWriter< FieldContainerType > FieldWriterType;
     typename FieldWriterType::Pointer fieldWriter = FieldWriterType::New();
     fieldWriter->SetInput(    transform->GetVelocityField() );
     fieldWriter->SetFileName( fileName );
     fieldWriter->Update();
 }
-*/
+
 
 
 template< class TFixedImage, class TMovingImage, class TTransformScalarType >
@@ -423,6 +574,7 @@ inline int atoi_check( const char * str )
 template< typename T >
 std::vector<T> StringToVector( const std::string & str)
 {
+
     std::vector<T> vect;
 
     std::string::size_type crosspos = str.find('x',0);
@@ -457,7 +609,7 @@ std::vector<T> StringToVector( const std::string & str)
 template< typename T>
 std::string VectorToString( std::vector<T> vector )
 {
-    unsigned int       size = vector.size();
+    unsigned int size = vector.size();
     std::ostringstream oss;
     oss << "[ ";
     if (size>0)
@@ -471,7 +623,7 @@ std::string VectorToString( std::vector<T> vector )
 
 inline std::string BooleanToString( bool value )
 {
-    return  (std::string)(value?"true":"false");
+    return (std::string)(value?"true":"false");
 }
 
 

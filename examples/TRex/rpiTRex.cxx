@@ -10,6 +10,7 @@
 #include "rpiTRex.hxx"
 
 
+
 // Namespace RPI : Registration Programming Interface
 namespace rpi
 {
@@ -17,7 +18,8 @@ namespace rpi
 
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
-TRex< TFixedImage, TMovingImage, TTransformScalarType >::TRex(void)
+TRex< TFixedImage, TMovingImage, TTransformScalarType >
+::TRex(void)
 {
 
     // Initialization
@@ -28,7 +30,8 @@ TRex< TFixedImage, TMovingImage, TTransformScalarType >::TRex(void)
 
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
-TRex< TFixedImage, TMovingImage, TTransformScalarType >::~TRex(void)
+TRex< TFixedImage, TMovingImage, TTransformScalarType >
+::~TRex(void)
 {
     // Do nothing
 }
@@ -37,7 +40,8 @@ TRex< TFixedImage, TMovingImage, TTransformScalarType >::~TRex(void)
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 unsigned int
-TRex< TFixedImage, TMovingImage, TTransformScalarType >::GetNumberOfIterations(void) const
+TRex< TFixedImage, TMovingImage, TTransformScalarType >
+::GetNumberOfIterations(void) const
 {
     return this->m_iterations;
 }
@@ -46,7 +50,8 @@ TRex< TFixedImage, TMovingImage, TTransformScalarType >::GetNumberOfIterations(v
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 void
-TRex< TFixedImage, TMovingImage, TTransformScalarType >::SetNumberOfIterations(unsigned int value)
+TRex< TFixedImage, TMovingImage, TTransformScalarType >
+::SetNumberOfIterations(unsigned int value)
 {
     this->m_iterations = value;
 }
@@ -55,7 +60,8 @@ TRex< TFixedImage, TMovingImage, TTransformScalarType >::SetNumberOfIterations(u
 
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 void
-TRex< TFixedImage, TMovingImage, TTransformScalarType >::StartRegistration(void)
+TRex< TFixedImage, TMovingImage, TTransformScalarType >
+::StartRegistration(void)
 {
 
 
@@ -141,13 +147,9 @@ TRex< TFixedImage, TMovingImage, TTransformScalarType >::StartRegistration(void)
         throw std::runtime_error( "Unexpected error." );
     }
 
-
-    // Save the finale transformation
-    typename TransformType::Pointer final_transform = TransformType::New();
-    final_transform->SetCenter(     transform->GetCenter() );
-    final_transform->SetParameters( registration->GetLastTransformParameters() );
-    this->m_transform = final_transform;
-
+    // Set the transformation parameters
+    static_cast< TransformType * >(this->m_transform.GetPointer())->SetCenter(     transform->GetCenter() );
+    static_cast< TransformType * >(this->m_transform.GetPointer())->SetParameters( registration->GetLastTransformParameters() );
 }
 
 

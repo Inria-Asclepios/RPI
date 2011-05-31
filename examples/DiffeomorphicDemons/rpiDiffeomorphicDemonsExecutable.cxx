@@ -48,6 +48,7 @@ void parseParameters(int argc, char** argv, struct Param & param)
     // Program description
     std::string description = "\b\b\bDESCRIPTION\n";
     description += "Diffeomorphic demons registration method. ";
+    description += "The transformation computed is a dense displacement field.";
     description += "\nAuthors : Vincent Garcia and Tom Vercauteren";
 
     // Option description
@@ -166,9 +167,9 @@ void PrintParameters( std::string fixedImagePath,
     // Print method parameters
     std::cout << "METHOD PARAMETERS"                          << std::endl;
     std::cout << "  Iterations                            : " << rpi::VectorToString<unsigned int>( registration->GetNumberOfIterations() ) << std::endl;
-    std::cout << "  Update rule                           : " << registration->GetUpdateRule()                                              << std::endl;
+    std::cout << "  Update rule                           : " << registration->GetUpdateRuleAsString()                                      << std::endl;
     std::cout << "  Maximum step length                   : " << registration->GetMaximumUpdateStepLength()              << " (voxel unit)" << std::endl;
-    std::cout << "  Gradient type                         : " << registration->GetGradientType()                                            << std::endl;
+    std::cout << "  Gradient type                         : " << registration->GetGradientTypeAsString()                                    << std::endl;
     std::cout << "  Update field standard deviation       : " << registration->GetUpdateFieldStandardDeviation()         << " (voxel unit)" << std::endl;
     std::cout << "  Displacement field standard deviation : " << registration->GetDisplacementFieldStandardDeviation()   << " (voxel unit)" << std::endl;
     std::cout << "  Use histogram matching?               : " << rpi::BooleanToString( registration->GetUseHistogramMatching() )            << std::endl << std::endl;
@@ -191,7 +192,7 @@ int StartMainProgram(struct Param param)
     typedef rpi::DiffeomorphicDemons< TFixedImage, TMovingImage, TransformScalarType >
             RegistrationMethod;
 
-    typedef itk::Transform<TransformScalarType, 3, 3>
+    typedef itk::Transform<double, 3, 3>
             LinearTransformType;
 
     typedef itk::DisplacementFieldTransform<TransformScalarType, 3>
@@ -261,8 +262,8 @@ int StartMainProgram(struct Param param)
         }
         else if ( param.intialLinearTransformPath.compare("")!=0 )
         {
-            typename LinearTransformType::Pointer linear = rpi::read3DTransformation<TransformScalarType>( param.intialLinearTransformPath );
-            typename FieldTransformType::Pointer  field  = rpi::linearToDisplacementFieldTransformation<TransformScalarType, TFixedImage>( fixedImage, linear );
+            typename LinearTransformType::Pointer linear = rpi::readLinearTransformation<double>( param.intialLinearTransformPath );
+            typename FieldTransformType::Pointer  field  = rpi::linearToDisplacementFieldTransformation<double,TransformScalarType, TFixedImage>( fixedImage, linear );
             registration->SetInitialTransformation( field );
         }
 

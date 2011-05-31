@@ -6,6 +6,7 @@
 #include <itkDisplacementFieldTransform.h>
 #include "rpiRegistrationMethod.hxx"
 
+
 // Namespace RPI : Registration Programming Interface
 namespace rpi
 {
@@ -14,9 +15,18 @@ namespace rpi
 /**
  * Diffeomorphic demons registration method. This class is based on the ITK diffeormorphic demons
  * implementation (filter).
- *   TFixedImage           Type of the fixed image. Must be an itk::Image.
- *   TMovingImage          Type of the moving image. Must be an itk::Image.
- *   TTransformScalarType  Scalar type of the displacement field transformation. Must be "float" or "double".
+ *
+ * There are three templates for this class:
+ *
+ *   TFixedImage           Type of the fixed image. Must be an itk::Image< TPixel, 3 > where
+ *                         TPixel is a scalar type among "float" and "double".
+ *
+ *   TMovingImage          Type of the moving image. Must be an itk::Image< TPixel, 3 > where
+ *                         TPixel is a scalar type among "float" and "double".
+ *
+ *   TTransformScalarType  Type of the transformation parameters. Must be "float" or "double".
+ *
+ * In the current implementation, TFixedImage and TMovingImage must be identical.
  *
  * @author Vincent Garcia and Tom Vercauteren
  * @date   2010/10/29
@@ -27,17 +37,23 @@ class ITK_EXPORT DiffeomorphicDemons : public RegistrationMethod< TFixedImage, T
 
 public:
 
+    /**
+     * Update rule
+     */
     enum UpdateRule {
-        UPDATE_DIFFEOMORPHIC, // 0 : s <- s o exp(u)
-        UPDATE_ADDITIVE,      // 1 : s <- s + u        (ITK basic)
-        UPDATE_COMPOSITIVE    // 2 : s <- s o (Id+u)   (Thirion's proposal?)
+        UPDATE_DIFFEOMORPHIC, /** s <- s o exp(u)                       */
+        UPDATE_ADDITIVE,      /** s <- s + u      (ITK basic)           */
+        UPDATE_COMPOSITIVE    /** s <- s o (Id+u) (Thirion's proposal?) */
     };
 
+    /**
+     * Gradient type
+     */
     enum GradientType {
-        GRADIENT_SYMMETRIZED,
-        GRADIENT_FIXED_IMAGE,
-        GRADIENT_WARPED_MOVING_IMAGE,
-        GRADIENT_MAPPED_MOVING_IMAGE
+        GRADIENT_SYMMETRIZED,         /** symmetrized         */
+        GRADIENT_FIXED_IMAGE,         /** fixed image         */
+        GRADIENT_WARPED_MOVING_IMAGE, /** warped moving image */
+        GRADIENT_MAPPED_MOVING_IMAGE  /** mapped moving image */
     };
 
     typedef itk::DisplacementFieldTransform< TTransformScalarType, TFixedImage::ImageDimension >
@@ -133,6 +149,13 @@ public:
 
 
     /**
+     * Gets the update rule as string.
+     * @return  string describing the update rule
+     */
+    std::string                 GetUpdateRuleAsString(void) const;
+
+
+    /**
      * Sets the update rule:
      *   UPDATE_DIFFEOMORPHIC : s <- s o exp(u)
      *   UPDATE_ADDITIVE      : s <- s + u        (ITK basic)
@@ -147,6 +170,13 @@ public:
      * @return  gradient type
      */
     GradientType                GetGradientType(void) const;
+
+
+    /**
+     * Gets the gradient type used for computing the demons force as string.
+     * @return  string describing gradient type
+     */
+    std::string                 GetGradientTypeAsString(void) const;
 
 
     /**
