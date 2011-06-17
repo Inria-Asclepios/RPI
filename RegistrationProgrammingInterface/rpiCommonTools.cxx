@@ -85,7 +85,7 @@ typename TImage::Pointer readImage( std::string fileName )
  * @param  fileName path to the input transformation file
  * @return transformation read as TransformBase::Pointer object
  */
-typename itk::TransformBase::Pointer
+inline itk::TransformBase::Pointer
 readTransformBase( std::string fileName )
 {
 
