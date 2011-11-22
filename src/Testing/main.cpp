@@ -27,7 +27,11 @@
 
 #include <stdexcept>
 
-typedef itk::Image<short, 3> ImageType;
+typedef itk::Image<unsigned short, 3> ImageType;
+
+
+
+const double IsoValue = 1000;
 
 void printBounds( const double * bounds )
 {
@@ -189,7 +193,7 @@ public:
         surfaceGen = vtkSmartPointer<vtkMarchingCubes>::New();
         surfaceGen->SetInput(ImageStreamer->GetOutput());
         surfaceGen->SetNumberOfContours(1);
-        surfaceGen->SetValue(0, 200);
+        surfaceGen->SetValue(0, IsoValue);
 
         clipBox = clipBoxIn;
 
@@ -214,6 +218,9 @@ public:
 
     void GetImageBounds( double * bounds ) {
         DownsampledImageVtk->Update();
+        double range[2];
+        DownsampledImageVtk->GetScalarRange(range);
+        std::cout << " Range : " << range[0] << " to " << range[1] << std::endl;
         return DownsampledImageVtk->GetBounds(bounds);
     }
 protected:
@@ -273,7 +280,7 @@ public:
         surfaceGen = vtkSmartPointer<vtkMarchingCubes>::New();
         surfaceGen->SetInput(clipper->GetOutput());
         surfaceGen->SetNumberOfContours(1);
-        surfaceGen->SetValue(0, 200);
+        surfaceGen->SetValue(0, IsoValue);
 
         surfaceActor = vtkSmartPointer<vtkActor>::New();
         surfaceMapper =vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -310,7 +317,9 @@ vtkStandardNewMacro(HighResPipeline);
 int main(int argc, char * argv[])
 {
 
-    const std::string inputFilename = "c:/Temp/brebix.mha";
+    //const std::string inputFilename = "c:/Temp/brebix.mha";
+    //const std::string inputFilename = "c:/Temp/testfile.mha";
+    const std::string inputFilename = "C:/Users/jstark/Projects/sampleData/AMC_2011-11/Ex365Em505T12000ms.nii";
     vtkSmartPointer<vtkBox> clipBox = vtkSmartPointer<vtkBox>::New();
 
     vtkSmartPointer<LowResPipeline> lowRes = vtkSmartPointer<LowResPipeline>::New();
