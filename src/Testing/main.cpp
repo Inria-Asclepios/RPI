@@ -14,6 +14,7 @@
 #include <vtkImageData.h>
 #include <vtkImageDataStreamer.h>
 #include <vtkImageResample.h>
+#include <vtkInteractorStyleSwitch.h>
 #include <vtkMarchingCubes.h>
 #include <vtkObjectFactory.h>
 #include <vtkPolyDataMapper.h>
@@ -86,8 +87,8 @@ public:
             std::copy( range, range+6, LatestExtent);
             std::copy( bounds, bounds+6, LatestBounds);
 
-            printExtents(extent);   std::cout << std::endl;
-            printExtents(range);   std::cout << std::endl;
+            //printExtents(extent);   std::cout << std::endl;
+            //printExtents(range);   std::cout << std::endl;
 
             boxWidget->GetInteractor()->Render();
 
@@ -338,12 +339,15 @@ int main(int argc, char * argv[])
         throw( std::runtime_error("Bad bounds") );
     }
 
-    printBounds(bounds);   std::cout << std::endl;
+    //printBounds(bounds);   std::cout << std::endl;
 
     vtkSmartPointer<vtkBoxWidget2> boxWidget = addBoxWidget(bounds, rWinIn, myCallback);
 
     rWinIn->SetRenderWindow(rWin);
     rWin->SetSize(800, 640);
+    vtkInteractorStyleSwitch * sw = vtkInteractorStyleSwitch::SafeDownCast( rWinIn->GetInteractorStyle() );
+    if ( sw ) 
+        sw->SetCurrentStyleToTrackballCamera();
 
     boxWidget->EnabledOn();
 
