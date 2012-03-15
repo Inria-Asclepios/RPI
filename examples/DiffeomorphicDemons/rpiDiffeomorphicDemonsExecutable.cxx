@@ -33,6 +33,7 @@ struct Param{
     float        updateFieldStandardDeviation;
     float        displacementFieldStandardDeviation;
     bool         useHistogramMatching;
+    rpi::ImageInterpolatorType interpolatorType;
 };
 
 
@@ -52,6 +53,11 @@ void parseParameters(int argc, char** argv, struct Param & param)
     description += "\nAuthors : Vincent Garcia and Tom Vercauteren";
 
     // Option description
+    std::string des_interpolatorType;
+    des_interpolatorType  = "Type of image interpolator used for resampling the moving image at the ";
+    des_interpolatorType += "very end of the program. Must be an integer value among 0 = nearest ";
+    des_interpolatorType += "neighbor, 1 = linear, 2 = b-spline, and 3 = sinus cardinal (default 1).";
+
     std::string des_useHistogramMatching = "Use histogram matching before processing? (default false). ";
 
     std::string des_disFieldSigma        = "Standard deviation of the Gaussian smoothing of the displacement field (voxel units). ";
@@ -91,6 +97,7 @@ void parseParameters(int argc, char** argv, struct Param & param)
         TCLAP::CmdLine cmd( description, ' ', "1.0", true );
 
         // Set options
+        TCLAP::ValueArg<unsigned int> arg_interpolatorType( "", "interpolator-type", des_interpolatorType, false, 1, "int", cmd);
         TCLAP::SwitchArg              arg_useHistogramMatching( "",  "use-histogram-matching", des_useHistogramMatching, cmd, false);
         TCLAP::ValueArg<float>        arg_disFieldSigma( "d", "displacement-field-sigma", des_disFieldSigma, false, 1.5, "float", cmd );
         TCLAP::ValueArg<float>        arg_upFieldSigma( "u", "update-field-sigma", des_upFieldSigma, false, 0.0, "float", cmd );
@@ -122,6 +129,19 @@ void parseParameters(int argc, char** argv, struct Param & param)
         param.updateFieldStandardDeviation       = arg_upFieldSigma.getValue();
         param.displacementFieldStandardDeviation = arg_disFieldSigma.getValue();
         param.useHistogramMatching               = arg_useHistogramMatching.getValue();
+
+        // Set the interpolator type
+        unsigned int interpolator_type = arg_interpolatorType.getValue();
+        if      ( interpolator_type==0 )
+            param.interpolatorType = rpi::INTERPOLATOR_NEAREST_NEIGHBOR;
+        else if ( interpolator_type==1 )
+            param.interpolatorType = rpi::INTERPOLATOR_LINEAR;
+       else if  ( interpolator_type==2 )
+            param.interpolatorType = rpi::INTERPOLATOR_BSLPINE;
+        else if ( interpolator_type==3 )
+            param.interpolatorType = rpi::INTERPOLATOR_SINUS_CARDINAL;
+        else
+            throw std::runtime_error("Image interpolator not supported.");
     }
     catch (TCLAP::ArgException &e)
     {
@@ -140,6 +160,7 @@ void parseParameters(int argc, char** argv, struct Param & param)
   * @param  outputTransformPath        path to the output file containing the transformation
   * @param  initialLinearTransformPath path to the output file containing the transformation
   * @param  initialFieldTransformPath  path to the output file containing the transformation
+  * @param  interpolatorType           interpolator type
   * @param  registration               registration object
   */
 template< class TFixedImage, class TMovingImage, class TTransformScalarType >
@@ -149,6 +170,7 @@ void PrintParameters( std::string fixedImagePath,
                       std::string outputTransformPath,
                       std::string initialLinearTransformPath,
                       std::string initialFieldTransformPath,
+                      rpi::ImageInterpolatorType interpolatorType,
                       rpi::DiffeomorphicDemons<TFixedImage, TMovingImage, TTransformScalarType> * registration )
 {
     // Print I/O parameters
@@ -172,7 +194,9 @@ void PrintParameters( std::string fixedImagePath,
     std::cout << "  Gradient type                         : " << registration->GetGradientTypeAsString()                                    << std::endl;
     std::cout << "  Update field standard deviation       : " << registration->GetUpdateFieldStandardDeviation()         << " (voxel unit)" << std::endl;
     std::cout << "  Displacement field standard deviation : " << registration->GetDisplacementFieldStandardDeviation()   << " (voxel unit)" << std::endl;
-    std::cout << "  Use histogram matching?               : " << rpi::BooleanToString( registration->GetUseHistogramMatching() )            << std::endl << std::endl;
+    std::cout << "  Use histogram matching?               : " << rpi::BooleanToString( registration->GetUseHistogramMatching() )            << std::endl;
+    std::cout << "  Interpolator type                     : " << rpi::getImageInterpolatorTypeAsString(interpolatorType)                    << std::endl;
+    std::cout << std::endl;
 }
 
 
@@ -257,7 +281,7 @@ int StartMainProgram(struct Param param)
         }
         else if ( param.intialFieldTransformPath.compare("")!=0 )
         {
-            typename FieldTransformType::Pointer field = rpi::readDisplacementField<TransformScalarType, TFixedImage::ImageDimension>( param.intialFieldTransformPath );
+            typename FieldTransformType::Pointer field = rpi::readDisplacementField<TransformScalarType>( param.intialFieldTransformPath );
             registration->SetInitialTransformation( field );
         }
         else if ( param.intialLinearTransformPath.compare("")!=0 )
@@ -270,13 +294,14 @@ int StartMainProgram(struct Param param)
 
         // Print parameters
         PrintParameters<TFixedImage, TMovingImage, TransformScalarType>(
-                param.fixedImagePath,
-                param.movingImagePath,
-                param.outputImagePath,
-                param.outputTransformPath,
-                param.intialLinearTransformPath,
-                param.intialFieldTransformPath,
-                registration );
+                    param.fixedImagePath,
+                    param.movingImagePath,
+                    param.outputImagePath,
+                    param.outputTransformPath,
+                    param.intialLinearTransformPath,
+                    param.intialFieldTransformPath,
+                    param.interpolatorType,
+                    registration );
 
 
         // Display
@@ -290,25 +315,26 @@ int StartMainProgram(struct Param param)
 
 
         // Write the output transformation
-        std::cout << "  Writing transformation               : " << std::flush;
+        std::cout << "  Writing transformation                : " << std::flush;
         rpi::writeDisplacementFieldTransformation<TransformScalarType, TFixedImage::ImageDimension>(
-                registration->GetTransformation(),
-                param.outputTransformPath );
+                    registration->GetTransformation(),
+                    param.outputTransformPath );
         std::cout << "OK" << std::endl;
 
 
         // Write the output image
-        std::cout << "  Writting image                        : " << std::flush;
-        rpi::writeImage<TFixedImage, TMovingImage, TransformScalarType>(
-                registration->GetTransformation(),
-                fixedImage,
-                movingImage,
-                param.outputImagePath );
+        std::cout << "  Writing image                         : " << std::flush;
+        rpi::resampleAndWriteImage<TFixedImage, TMovingImage, TransformScalarType>(
+                    fixedImage,
+                    movingImage,
+                    registration->GetTransformation(),
+                    param.outputImagePath,
+                    param.interpolatorType );
         std::cout << "OK" << std::endl << std::endl;
     }
     catch( std::exception& e )
     {
-        std::cerr << "Error: " << e.what() << std::endl;
+        std::cerr << e.what() << std::endl;
         delete registration;
         return EXIT_FAILURE;
     };

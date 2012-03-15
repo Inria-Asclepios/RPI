@@ -143,8 +143,9 @@ TRex< TFixedImage, TMovingImage, TTransformScalarType >
     }
     catch( itk::ExceptionObject & err )
     {
-        std::cout << err << std::endl;
-        throw std::runtime_error( "Unexpected error." );
+        std::string message = "Unexpected error: ";
+        message += err.GetDescription();
+        throw std::runtime_error( message  );
     }
 
     // Set the transformation parameters

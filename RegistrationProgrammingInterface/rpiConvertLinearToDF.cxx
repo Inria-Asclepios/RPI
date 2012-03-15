@@ -7,6 +7,7 @@
 
 #include <tclap/CmdLine.h>
 
+
 #include "rpiCommonTools.hxx"
 
 
@@ -90,7 +91,6 @@ void parseParameters(int argc, char** argv, struct Param & param)
  */
 int main(int argc, char** argv)
 {
-
     // Type definition
     typedef  itk::ImageIOBase                                       ImageIOType;
     typedef  itk::Image<float,3>                                    ImageType;

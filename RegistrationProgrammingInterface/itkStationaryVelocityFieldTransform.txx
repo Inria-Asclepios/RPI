@@ -1,28 +1,47 @@
 #ifndef _itkStationaryVelocityFieldTransform_cxx_
 #define _itkStationaryVelocityFieldTransform_cxx_
 
+#include "itkStationaryVelocityFieldTransform.h"
+
 #include <itkNeighborhoodAlgorithm.h>
 #include <itkImageRegionIterator.h>
 #include <vnl/vnl_det.h>
-
-#include "itkStationaryVelocityFieldTransform.h"
-
+#include <itkInverseDeformationFieldImageFilter.h>
+#include <itkVectorLinearInterpolateNearestNeighborExtrapolateImageFunction.h>
+#include <itkMultiplyByConstantImageFilter.h>
+#include <itkWarpVectorImageFilter.h>
+#include <itkImageRegionIterator.h>
+#include <itkDivideByConstantImageFilter.h>
 
 namespace itk
 {
 
 
-// Constructor with default arguments
+
 template <class TScalarType, unsigned int NDimensions>
-StationaryVelocityFieldTransform<TScalarType, NDimensions>
-::StationaryVelocityFieldTransform():
- Superclass( SpaceDimension, ParametersDimension )
+StationaryVelocityFieldTransform<TScalarType, NDimensions>::
+StationaryVelocityFieldTransform() : Superclass( SpaceDimension, ParametersDimension )
 {
-    m_VelocityField       = 0;
-    m_InterpolateFunction = InterpolateFunctionType::New();
+    this->m_InterpolateFunction = InterpolateFunctionType::New();
 }
 
-// Print self
+
+
+template <class TScalarType, unsigned int NDimensions>
+void
+StationaryVelocityFieldTransform<TScalarType, NDimensions>::
+SetIdentity(void)
+{
+    TScalarType            value = 0;
+    VectorFieldPointerType field = VectorFieldType::New();
+    field->Allocate();
+    field->FillBuffer(value);
+    field->Register();
+    this->m_VectorField = field;
+}
+
+
+
 template<class TScalarType, unsigned int NDimensions>
 void
 StationaryVelocityFieldTransform<TScalarType, NDimensions>::
@@ -32,127 +51,259 @@ PrintSelf(std::ostream &os, Indent indent) const
 }
 
 
+
+template<class TScalarType, unsigned int NDimensions>
+const typename StationaryVelocityFieldTransform<TScalarType, NDimensions>::VectorFieldType *
+StationaryVelocityFieldTransform<TScalarType, NDimensions>::
+GetParametersAsVectorField(void) const
+{
+    return this->m_VectorField.GetPointer();
+}
+
+
+
 template<class TScalarType, unsigned int NDimensions>
 void
 StationaryVelocityFieldTransform<TScalarType, NDimensions>::
-SetVelocityField(VelocityFieldConstPointerType field)
+SetParametersAsVectorField(const VectorFieldType * field)
 {
-    m_VelocityField = field;
-    m_InterpolateFunction->SetInputImage( m_VelocityField );
-
-    itk::Vector<double, NDimensions> spacing = m_VelocityField->GetSpacing();
-    for (unsigned int i=0; i<NDimensions; i++)
-        m_DerivativeWeights[i] = (double)(1.0/spacing[i]);
-
+    this->m_VectorField = field;
+    this->m_InterpolateFunction->SetInputImage(this->m_VectorField);
     this->Modified();
 }
 
 
-// Transform a point
+
+
+template<class TScalarType, unsigned int NDimensions>
+bool
+StationaryVelocityFieldTransform<TScalarType, NDimensions>::
+GetInverse( Self* inverse ) const
+{
+    // Initial field
+    VectorFieldConstPointerType initial_field = this->m_VectorField;
+
+    // Initialize the field inverter
+    typedef itk::MultiplyByConstantImageFilter<VectorFieldType, int, VectorFieldType> FilterType;
+    typename FilterType::Pointer filter = FilterType::New();
+    filter->SetInput(    initial_field );
+    filter->SetConstant( -1 );
+    filter->SetInPlace(  false);
+
+    // Update the filter
+    filter->UpdateLargestPossibleRegion();
+
+    // Get the inverted field and set the orientation that has been lost
+    VectorFieldPointerType inverted_field = filter->GetOutput();
+    inverted_field->SetDirection( initial_field->GetDirection() );
+
+    // Set the displacement field to the current objet
+    inverse->SetParametersAsVectorField( inverted_field );
+
+    return true;
+}
+
+
+
+template<class TScalarType, unsigned int NDimensions>
+typename StationaryVelocityFieldTransform<TScalarType, NDimensions>::InverseTransformBasePointer
+StationaryVelocityFieldTransform<TScalarType, NDimensions>::
+GetInverseTransform() const
+{
+    Pointer inv = New();
+    return GetInverse(inv) ? inv.GetPointer() : NULL;
+}
+
+
+
 template<class TScalarType, unsigned int NDimensions>
 typename StationaryVelocityFieldTransform<TScalarType, NDimensions>::OutputPointType
 StationaryVelocityFieldTransform<TScalarType, NDimensions>::
-TransformPoint(const InputPointType &point) const 
+TransformPoint(const InputPointType & point) const
 {
-    itkExceptionMacro( "TransformPoint method not implemented yet." );
-    //throw std::runtime_error( "TransformPoint() method not implemented yet." );
-    //return point;
+    double minpixelspacing = m_VectorField->GetSpacing()[0];
+    for (unsigned int i = 0; i<3; ++i)
+    {
+        if ( m_VectorField->GetSpacing()[i] < minpixelspacing/2 )
+        {
+            minpixelspacing = m_VectorField->GetSpacing()[i];
+        }
+    }
+
+    typedef typename itk::ImageRegionIterator<VectorFieldType> IteratorType;
+
+    IteratorType InputIt(const_cast<VectorFieldType*>(m_VectorField.GetPointer()), m_VectorField->GetRequestedRegion());
+
+    float norm2,maxnorm2=0;
+    for( InputIt.GoToBegin(); !InputIt.IsAtEnd(); ++InputIt )
+    {
+        norm2 = InputIt.Get().GetSquaredNorm();
+        if (maxnorm2<norm2) maxnorm2=norm2;
+    }
+
+    maxnorm2 /= vnl_math_sqr(minpixelspacing);
+
+    float numiterfloat = 2.0 +
+            0.5 * vcl_log(maxnorm2)/vnl_math::ln2;
+    std::cout<<"Num iter float: "<<numiterfloat<<std::endl;
+
+    unsigned int constant=static_cast<unsigned int>(1<<static_cast<unsigned int>(abs(numiterfloat)));
+
+    typedef typename itk::DivideByConstantImageFilter<VectorFieldType,float,VectorFieldType> DividerType;
+    typename DividerType::Pointer Divider=DividerType::New();
+    Divider->SetInput(m_VectorField);
+    Divider->SetConstant( constant );
+    std::cout<<"divider "<<  static_cast<unsigned int>(1<<static_cast<unsigned int>(abs(numiterfloat))) <<std::endl;
+
+    Divider->Update();
+
+    VectorFieldPointerType UpdatedVector = Divider->GetOutput();
+
+    typedef typename itk::WarpVectorImageFilter<VectorFieldType,VectorFieldType,VectorFieldType> VectorWarperType;
+    typename VectorWarperType::Pointer VectorWarper=VectorWarperType::New();
+
+    VectorWarper->SetOutputOrigin(UpdatedVector->GetOrigin());
+    VectorWarper->SetOutputSpacing(UpdatedVector->GetSpacing());
+    VectorWarper->SetOutputDirection(UpdatedVector->GetDirection());
+
+
+    OutputPointType output = point;
+
+    for (unsigned int i =0; i < constant;++i)
+    {
+        this->m_InterpolateFunction->SetInputImage(UpdatedVector);
+        typename InterpolateFunctionType::OutputType vector = m_InterpolateFunction->Evaluate(output);
+
+        for (unsigned int i=0; i<NDimensions; i++)
+            output[i] += vector[i];
+
+        VectorWarper->SetInput(UpdatedVector);
+        VectorWarper->SetDeformationField(UpdatedVector);
+        VectorWarper->Update();
+
+        UpdatedVector=VectorWarper->GetOutput();
+        UpdatedVector->DisconnectPipeline();
+    }
+
+    return output;
 }
 
 
-// Transform a vector
+
 template<class TScalarType, unsigned int NDimensions>
 typename StationaryVelocityFieldTransform<TScalarType, NDimensions>::OutputVectorType
 StationaryVelocityFieldTransform<TScalarType, NDimensions>::
-TransformVector(const InputVectorType &vect) const 
+TransformVector(const InputVectorType & vector) const
 {
-    itkExceptionMacro ("cannot transform vector !");
+    // Convert vector into point
+    InputPointType point_0;
+    for (unsigned int i=0; i<NDimensions; i++)
+        point_0[i] = vector[i];
+
+    // Transform point
+    InputPointType point_1 = TransformPoint(point_0);
+
+    // Convert point into vector
+    OutputVectorType vector_1;
+    for (unsigned int i=0; i<NDimensions; i++)
+        vector_1[i] = point_1[i];
+    return vector_1;
 }
 
 
-// Transform a vnl_vector_fixed
+
 template<class TScalarType, unsigned int NDimensions>
 typename StationaryVelocityFieldTransform<TScalarType, NDimensions>::OutputVnlVectorType
-StationaryVelocityFieldTransform<TScalarType, NDimensions>::
-TransformVector(const InputVnlVectorType &vect) const 
+StationaryVelocityFieldTransform<TScalarType, NDimensions>::TransformVector
+(const InputVnlVectorType & vector) const
 {
-    itkExceptionMacro ("cannot transform vnl_vector !");
+    // Convert vector into point
+    InputPointType point_0;
+    for (unsigned int i=0; i<NDimensions; i++)
+        point_0[i] = vector[i];
+
+    // Transform point
+    InputPointType point_1 = TransformPoint(point_0);
+    return point_1.GetVnlVector();
 }
 
 
-// Transform a CovariantVector
+
 template<class TScalarType, unsigned int NDimensions>
-typename StationaryVelocityFieldTransform<TScalarType, NDimensions>::OutputCovariantVectorType
+typename StationaryVelocityFieldTransform<TScalarType, NDimensions>::VectorFieldPointerType
 StationaryVelocityFieldTransform<TScalarType, NDimensions>::
-TransformCovariantVector(const InputCovariantVectorType &vect) const 
-{  
-    itkExceptionMacro ("cannot transform covariant vector !");
-}
-  
-// Compute the Jacobian determinant in one position 
-template<class TScalarType, unsigned int NDimensions>
-typename StationaryVelocityFieldTransform<TScalarType, NDimensions>::ScalarType
-StationaryVelocityFieldTransform< TScalarType,  NDimensions >::
-GetJacobianDeterminantWithRespectToCoordinates( const InputPointType & point) const
-{ 
-    itkExceptionMacro( "GetJacobianDeterminantWithRespectToCoordinates method not implemented yet." );
-    //throw std::runtime_error( "GetJacobianDeterminantWithRespectToCoordinates() method not implemented yet." );
-    //return static_cast<ScalarType>(vnl_det(this->GetJacobianWithRespectToCoordinates (point)));
-}
-
-// Compute the Jacobian in one position 
-template<class TScalarType, unsigned int NDimensions>
-vnl_matrix_fixed<double,NDimensions,NDimensions>
-StationaryVelocityFieldTransform<TScalarType, NDimensions>::
-GetJacobianWithRespectToCoordinates( const InputPointType & point) const
+GetDisplacementFieldAsVectorField(typename SVFExponentialType::NumericalScheme scheme) const
 {
-
-    itkExceptionMacro( "GetJacobianWithRespectToCoordinates method not implemented yet." );
-    /*std::cout << "WARNING : The GetJacobianWithRespectToCoordinates() method of the StationaryVelocityFieldTransform object is wrong!!! " << std::endl;
-    unsigned int i, j;
-    vnl_matrix_fixed<double,NDimensions,NDimensions> J;
-
-    if (!m_VelocityField)
-    {
-        itkExceptionMacro ("No displacement field, cannot compute jacobian !");
-    }
-
-    double weight;
-    itk::Vector<double, NDimensions> spacing = m_VelocityField->GetSpacing();
-
-    InputPointType point_prev, point_next;
-
-    for (i = 0; i < NDimensions; ++i)
-    {
-        point_prev[i] = static_cast<double>(point[i]) - spacing[i];
-        point_next[i] = static_cast<double>(point[i]) + spacing[i];
-    }
-
-    typename InterpolateFunctionType::OutputType vector = m_InterpolateFunction->Evaluate (point);
-    typename InterpolateFunctionType::OutputType vector_prev = m_InterpolateFunction->Evaluate (point_prev);
-    typename InterpolateFunctionType::OutputType vector_next = m_InterpolateFunction->Evaluate (point_next);
-
-    for (i = 0; i < NDimensions; ++i)
-    {
-        weight = 0.5*m_DerivativeWeights[i];
-
-        for (j = 0; j < NDimensions; ++j)
-        {
-
-            J[i][j]=weight*(static_cast<double>(vector_next[j])
-                            -static_cast<double>(vector_prev[j]));
-        }
-
-        // add one on the diagonal to consider the warp
-        // and not only the deformation field
-        J[i][i] += 1.0;
-    }
-
-    return J;*/
+    typename SVFExponentialType::Pointer exp = SVFExponentialType::New();
+    exp->SetInput( this->m_VectorField );
+    exp->SetIterativeScheme( scheme );
+    exp->UpdateLargestPossibleRegion();
+    return exp->GetOutput();
 }
 
 
-  
+
+template<class TScalarType, unsigned int NDimensions>
+typename StationaryVelocityFieldTransform<TScalarType, NDimensions>::ScalarImagePointerType
+StationaryVelocityFieldTransform<TScalarType, NDimensions>::
+GetLogSpatialJacobianDeterminant(typename SVFExponentialType::NumericalScheme scheme) const
+{
+    typename SVFExponentialType::Pointer exp = SVFExponentialType::New();
+    exp->SetInput( this->m_VectorField );
+    exp->SetIterativeScheme( scheme );
+    exp->UpdateLargestPossibleRegion();
+    return exp->GetLogJacobianDeterminant();
+}
+
+
+
+template<class TScalarType, unsigned int NDimensions>
+typename StationaryVelocityFieldTransform<TScalarType, NDimensions>::OriginType
+StationaryVelocityFieldTransform<TScalarType, NDimensions>::
+GetOrigin(void) const
+{
+    if (this->m_VectorField.IsNull())
+        itkExceptionMacro("No field has been set.");
+    return this->m_VectorField->GetOrigin();
+}
+
+
+
+template<class TScalarType, unsigned int NDimensions>
+typename StationaryVelocityFieldTransform<TScalarType, NDimensions>::SpacingType
+StationaryVelocityFieldTransform<TScalarType, NDimensions>::
+GetSpacing(void) const
+{
+    if (this->m_VectorField.IsNull())
+        itkExceptionMacro("No field has been set.");
+    return this->m_VectorField->GetSpacing();
+}
+
+
+
+template<class TScalarType, unsigned int NDimensions>
+typename StationaryVelocityFieldTransform<TScalarType, NDimensions>::DirectionType
+StationaryVelocityFieldTransform<TScalarType, NDimensions>::
+GetDirection(void) const
+{
+    if (this->m_VectorField.IsNull())
+        itkExceptionMacro("No field has been set.");
+    return this->m_VectorField->GetDirection();
+}
+
+
+
+template<class TScalarType, unsigned int NDimensions>
+typename StationaryVelocityFieldTransform<TScalarType, NDimensions>::RegionType
+StationaryVelocityFieldTransform<TScalarType, NDimensions>::
+GetLargestPossibleRegion(void) const
+{
+    if (this->m_VectorField.IsNull())
+        itkExceptionMacro("No field has been set.");
+    return this->m_VectorField->GetLargestPossibleRegion();
+}
+
+
 } // namespace
 
-#endif
+#endif // _itkStationaryVelocityFieldTransform_cxx_

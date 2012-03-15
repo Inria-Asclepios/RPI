@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 
+#include <itkImageBase.h>
 #include <itkImageIOBase.h>
 #include <itkDisplacementFieldTransform.h>
 #include <itkStationaryVelocityFieldTransform.h>
@@ -24,7 +25,8 @@ namespace rpi
  * @param   fileName  name of the image to read
  * @return  image information
  */
-inline itk::ImageIOBase::Pointer readImageInformation( std::string fileName );
+inline itk::ImageIOBase::Pointer
+readImageInformation( std::string fileName );
 
 
 /**
@@ -32,86 +34,93 @@ inline itk::ImageIOBase::Pointer readImageInformation( std::string fileName );
  * @param   fileName  name of the image to read
  * @return  image
  */
-template< class TImage >
-typename TImage::Pointer readImage( std::string fileName );
+template<class TImage>
+typename TImage::Pointer
+readImage( std::string fileName );
 
 
 /**
- * Read an ITK Euler3D transformation from an input file.
+ * Registers useful ITK transformations with the itk::TransformFactory object.
+ */
+inline void registerUsefulITKTransformations(void);
+
+
+/**
+ * Reads an ITK Euler3D transformation from an input file.
  * @param   filename  input file name
  * @return  Euler3D transformation
  */
-template< class TTransformScalarType>
-typename itk::Euler3DTransform< TTransformScalarType >::Pointer
+template<class TTransformScalarType>
+typename itk::Euler3DTransform<TTransformScalarType>::Pointer
 readEuler3DTransformation( std::string fileName );
 
 
 /**
- * Read an ITK Affine transformation from an input file.
+ * Reads an ITK affine 3D transformation from an input file.
  * @param   filename  input file name
  * @return  Affine transformation
  */
-template< class TTransformScalarType, int TDimension>
-typename itk::AffineTransform< TTransformScalarType, TDimension >::Pointer
+template<class TTransformScalarType>
+typename itk::AffineTransform<TTransformScalarType, 3>::Pointer
 readAffineTransformation( std::string fileName );
 
 
 /**
- * Read an ITK transformation from an input file.
+ * Reads an ITK linear 3D transformation from an input file.
  * @param   filename  input file name
  * @return  transformation
  */
-template< class TTransformScalarType>
-typename itk::Transform< TTransformScalarType, 3, 3 >::Pointer
+template<class TTransformScalarType>
+typename itk::Transform<TTransformScalarType, 3, 3>::Pointer
 readLinearTransformation( std::string fileName );
 
 
 /**
- * Read an ITK disaplcement field from an input image.
+ * Reads an ITK displacement field 3D from an input image.
  * @param   filename  input image name
  * @return  displacement field
  */
-template< class TTransformScalarType, int TDimension >
-typename itk::DisplacementFieldTransform< TTransformScalarType, TDimension >::Pointer
+template<class TTransformScalarType>
+typename itk::DisplacementFieldTransform<TTransformScalarType, 3>::Pointer
 readDisplacementField( std::string fileName );
 
 
 /**
- * Read an ITK stationary velocity field from an input image.
+ * Reads an ITK stationary velocity field 3D from an input image.
  * @param   filename  input image name
  * @return  stationary velocity field
  */
-template< class TTransformScalarType, int TDimension >
-typename itk::StationaryVelocityFieldTransform< TTransformScalarType, TDimension >::Pointer
+template<class TTransformScalarType>
+typename itk::StationaryVelocityFieldTransform<TTransformScalarType, 3>::Pointer
 readStationaryVelocityField( std::string fileName );
 
 
 /**
- * Converts a linear transformation into a displacement field transformation.
+ * Converts a linear 3D transformation into a displacement field 3D transformation.
  * The geometry of the displacement field is taken from the input image.
  * @param   image            image
  * @param   linearTransform  linear transformation
  * @return  displacement field transformation
  */
-template< class TLinearScalarType, class TFieldScalarType, class TImage >
-typename itk::DisplacementFieldTransform< TFieldScalarType, TImage::ImageDimension >::Pointer
+template<class TLinearScalarType, class TFieldScalarType, class TImage>
+typename itk::DisplacementFieldTransform<TFieldScalarType, TImage::ImageDimension>::Pointer
 linearToDisplacementFieldTransformation(
         TImage * image,
-        itk::Transform< TLinearScalarType, TImage::ImageDimension, TImage::ImageDimension > * transform );
+        itk::Transform<TLinearScalarType, TImage::ImageDimension, TImage::ImageDimension> * transform );
 
 
 /**
- * Converts a linear transformation into a stationary velocity field transformation.
+ * Converts a linear 3D transformation into a stationary velocity field 3D transformation.
  * The geometry of the displacement field is taken from the input image.
  * @param   image            image
  * @param   linearTransform  linear transformation
  * @return  stationary velocity field transformation
  */
-template< class TLinearScalarType, class TFieldScalarType, class TImage >
-typename itk::StationaryVelocityFieldTransform< TFieldScalarType, TImage::ImageDimension >::Pointer
+template<class TLinearScalarType, class TFieldScalarType, class TImage>
+typename itk::StationaryVelocityFieldTransform<TFieldScalarType, TImage::ImageDimension>::Pointer
 linearToStationaryVelocityFieldTransformation(
         TImage * image,
-        itk::Transform< TLinearScalarType, TImage::ImageDimension, TImage::ImageDimension > * transform );
+        itk::Transform<TLinearScalarType, TImage::ImageDimension, TImage::ImageDimension> * transform );
 
 
 /**
@@ -119,9 +128,10 @@ linearToStationaryVelocityFieldTransformation(
  * @param  transformation  registration object
  * @param  fileName        name of the output file
  */
-template< class TTransformScalarType, int TDimension >
-void writeLinearTransformation(
-        itk::Transform< TTransformScalarType, TDimension, TDimension > * transform,
+template<class TTransformScalarType, int TDimension>
+void
+writeLinearTransformation(
+        itk::Transform<TTransformScalarType, TDimension, TDimension> * transform,
         std::string fileName );
 
 
@@ -130,9 +140,10 @@ void writeLinearTransformation(
  * @param  field     displacement field
  * @param  fileName  name of the output file
  */
-template< class TTransformScalarType, int TDimension >
-void writeDisplacementFieldTransformation(
-        itk::Transform< TTransformScalarType, TDimension, TDimension > * field,
+template<class TTransformScalarType, int TDimension>
+void
+writeDisplacementFieldTransformation(
+        itk::Transform<TTransformScalarType, TDimension, TDimension> * field,
         std::string fileName );
 
 
@@ -141,34 +152,203 @@ void writeDisplacementFieldTransformation(
  * @param  field     stationary velocity field
  * @param  fileName  name of the output file
  */
-template< class TTransformScalarType, int TDimension >
-void writeStationaryVelocityFieldTransformation(
-        itk::Transform< TTransformScalarType, TDimension, TDimension > * field,
+template<class TTransformScalarType, int TDimension>
+void
+writeStationaryVelocityFieldTransformation(
+        itk::Transform<TTransformScalarType, TDimension, TDimension> * field,
         std::string fileName );
 
 
 /**
- * Resamples the moving image in the geometry of the fixed image and saves the resulting image into an output file.
+ * Image interpolator used for image resampling.
+ */
+enum ImageInterpolatorType{
+    INTERPOLATOR_NEAREST_NEIGHBOR,  /** nearest neighbor */
+    INTERPOLATOR_LINEAR,            /** linear           */
+    INTERPOLATOR_BSLPINE,           /** b-spline         */
+    INTERPOLATOR_SINUS_CARDINAL     /** sinus cardinal   */
+};
+
+/**
+ * Return the input image interpolation type as string.
+ * @param  type image interpolation type
+ * @return string describing the image interpolation type
+ */
+inline std::string getImageInterpolatorTypeAsString(ImageInterpolatorType interpolator);
+
+
+/**
+ * Resamples an image given a geometry and a transformation.
+ * @param  image         image to resample
+ * @param  origin        origin of the ouptut image
+ * @param  spacing       voxel size of the ouptut image
+ * @param  size          size of the ouptut image
+ * @param  direction     orientation of the ouptut image
+ * @param  transform     transformation
+ * @param  interpolator  type of the image interpolation
+ */
+template<class TImage, class TTransformScalarType>
+typename TImage::Pointer
+resampleImage(
+    TImage * image,
+    const typename TImage::PointType     & origin,
+    const typename TImage::SpacingType   & spacing,
+    const typename TImage::SizeType      & size,
+    const typename TImage::DirectionType & direction,
+    itk::Transform<TTransformScalarType, TImage::ImageDimension, TImage::ImageDimension> * transform,
+    ImageInterpolatorType interpolator = INTERPOLATOR_LINEAR
+    );
+
+
+/**
+ * Resamples the moving image in the geometry of the fixed image using a given transformation.
+ * @param  fixedImage   fixed image
+ * @param  movingImage  moving image
+ * @param  transform    transformation
+ * @param  interpolator type of the image interpolation
+ */
+template<class TFixedImage, class TMovingImage, class TTransformScalarType>
+typename TMovingImage::Pointer
+resampleImage(
+    TFixedImage  * fixedImage,
+    TMovingImage * movingImage,
+    itk::Transform<TTransformScalarType, TFixedImage::ImageDimension, TFixedImage::ImageDimension> * transform,
+    ImageInterpolatorType interpolator = INTERPOLATOR_LINEAR
+    );
+
+
+/**
+ * Resamples an image given a geometry.
+ * @param  image         image to resample
+ * @param  origin        origin of the ouptut image
+ * @param  spacing       voxel size of the ouptut image
+ * @param  size          size of the ouptut image
+ * @param  direction     orientation of the ouptut image
+ * @param  interpolator  type of the image interpolation
+ */
+template<class TImage, class TTransformScalarType>
+typename TImage::Pointer
+resampleImage(
+    TImage * image,
+    const typename TImage::PointType     & origin,
+    const typename TImage::SpacingType   & spacing,
+    const typename TImage::SizeType      & size,
+    const typename TImage::DirectionType & direction,
+    ImageInterpolatorType interpolator = INTERPOLATOR_LINEAR
+    );
+
+
+/**
+ * Resamples the moving image in the geometry of the fixed image.
  * @param  transform    transformation
  * @param  fixedImage   fixed image
  * @param  movingImage  moving image
- * @param  fileName     name of the output file
+ * @param  interpolator type of the image interpolation
  */
-template< class TFixedImage, class TMovingImage, class TTransformScalarType >
-void writeImage(
-        itk::Transform< TTransformScalarType, TFixedImage::ImageDimension, TFixedImage::ImageDimension > * transform,
-        TFixedImage * fixedImage,
-        TMovingImage * movingImage,
-        std::string fileName );
+template<class TFixedImage, class TMovingImage, class TTransformScalarType>
+typename TMovingImage::Pointer
+resampleImage(
+    TFixedImage  * fixedImage,
+    TMovingImage * movingImage,
+    ImageInterpolatorType interpolator = INTERPOLATOR_LINEAR
+    );
 
 
 /**
- * Parse a string and generate a vector of unsigned int.
+ * Resamples an image given a geometry and a transformation and saves the resampled image into an output file.
+ * @param  image         image to resample
+ * @param  origin        origin of the ouptut image
+ * @param  spacing       voxel size of the ouptut image
+ * @param  size          size of the ouptut image
+ * @param  direction     orientation of the ouptut image
+ * @param  transform     transformation
+ * @param  fileName      name of the output file
+ * @param  interpolator  type of the image interpolation
+ */
+template<class TImage, class TTransformScalarType>
+void
+resampleAndWriteImage(
+    TImage * image,
+    const typename TImage::PointType     & origin,
+    const typename TImage::SpacingType   & spacing,
+    const typename TImage::SizeType      & size,
+    const typename TImage::DirectionType & direction,
+    itk::Transform<TTransformScalarType, TImage::ImageDimension, TImage::ImageDimension> * transform,
+    std::string fileName,
+    ImageInterpolatorType interpolator = INTERPOLATOR_LINEAR
+    );
+
+
+/**
+ * Resamples the moving image in the geometry of the fixed image using a given transformation.
+ * Then saves the resampled image into an output file.
+ * @param  fixedImage   fixed image
+ * @param  movingImage  moving image
+ * @param  transform    transformation
+ * @param  fileName     name of the output file
+ * @param  interpolator type of the image interpolation
+ */
+template<class TFixedImage, class TMovingImage, class TTransformScalarType>
+void
+resampleAndWriteImage(
+    TFixedImage  * fixedImage,
+    TMovingImage * movingImage,
+    itk::Transform<TTransformScalarType, TFixedImage::ImageDimension, TFixedImage::ImageDimension> * transform,
+    std::string fileName,
+    ImageInterpolatorType interpolator = INTERPOLATOR_LINEAR
+    );
+
+
+/**
+ * Gets the geometry of an image from its header. The geometry is writen into the input references
+ * (origin, spacing, size, direction). The function has one template NDimension representing the
+ * dimension of the geometry-related inputs.
+ * @param  fileName   input image
+ * @param  origin     image origin
+ * @param  spacing    voxel size
+ * @param  size       image size
+ * @param  direction  image direction
+ */
+template <unsigned int NDimension>
+void
+getGeometryFromImageHeader(
+    std::string fileName,
+    typename itk::ImageBase<NDimension>::PointType     & origin,
+    typename itk::ImageBase<NDimension>::SpacingType   & spacing,
+    typename itk::ImageBase<NDimension>::SizeType      & size,
+    typename itk::ImageBase<NDimension>::DirectionType & direction
+    );
+
+
+/**
+ * Gets the geometry from an input image. The geometry is writen into the input references
+ * (origin, spacing, size, direction). The function has one template TImageType. The type of the
+ * geometry-related inputs is deduced from this template.
+ * @param  image      input image
+ * @param  origin     image origin
+ * @param  spacing    voxel size
+ * @param  size       image size
+ * @param  direction  image direction
+ */
+template <class TImageType>
+void
+getGeometryFromImage(
+    const TImageType * image,
+    typename TImageType::PointType     & origin,
+    typename TImageType::SpacingType   & spacing,
+    typename TImageType::SizeType      & size,
+    typename TImageType::DirectionType & direction
+    );
+
+
+/**
+ * Parses a string and generate a vector of unsigned int.
  * @param   str  string to parse
  * @return  vector of unsigned int
  */
-template< typename T >
-std::vector<T> StringToVector( const std::string & str );
+template<typename T>
+std::vector<T>
+StringToVector( const std::string & str );
 
 
 /**
@@ -176,8 +356,9 @@ std::vector<T> StringToVector( const std::string & str );
  * @param   vector  the std::vector to be displayed
  * @return  std::vector as a string
  */
-template< typename T>
-std::string VectorToString( std::vector<T> vector );
+template<typename T>
+std::string
+VectorToString( std::vector<T> vector );
 
 
 /**
@@ -185,7 +366,8 @@ std::string VectorToString( std::vector<T> vector );
  * @param   value  boolean value
  * @return  boolean as a string
  */
-inline std::string BooleanToString( bool value );
+inline std::string
+BooleanToString( bool value );
 
 
 } // End of namespace

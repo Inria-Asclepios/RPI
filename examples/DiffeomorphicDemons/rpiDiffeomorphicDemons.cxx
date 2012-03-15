@@ -274,13 +274,13 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
     typedef  typename  TransformType::ScalarType
             ScalarType;
 
-    typedef  typename  TransformType::DisplacementFieldType
-            FieldContainerType;
+    typedef  typename  TransformType::VectorFieldType
+            VectorFieldType;
 
-    typedef  typename  itk::MultiResolutionPDEDeformableRegistration< TFixedImage, TMovingImage, FieldContainerType, typename TFixedImage::PixelType >
+    typedef  typename  itk::MultiResolutionPDEDeformableRegistration< TFixedImage, TMovingImage, VectorFieldType, typename TFixedImage::PixelType >
             MultiResRegistrationFilterType;
 
-    typedef  typename  itk::PDEDeformableRegistrationFilter< TFixedImage, TMovingImage, FieldContainerType >
+    typedef  typename  itk::PDEDeformableRegistrationFilter< TFixedImage, TMovingImage, VectorFieldType >
             BaseRegistrationFilterType;
 
 
@@ -306,7 +306,7 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
         {
             matcher->Update();
         }
-        catch( itk::ExceptionObject& )
+        catch( itk::ExceptionObject& err )
         {
             throw std::runtime_error( "Could not match the histogram of input images." );
         }
@@ -325,7 +325,7 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
         case UPDATE_DIFFEOMORPHIC:
             {
                 // Type definition
-                typedef  typename  itk::DiffeomorphicDemonsRegistrationFilter< TFixedImage, TMovingImage, FieldContainerType >  ActualRegistrationFilterType;
+                typedef  typename  itk::DiffeomorphicDemonsRegistrationFilter< TFixedImage, TMovingImage, VectorFieldType >  ActualRegistrationFilterType;
                 typedef  typename  ActualRegistrationFilterType::GradientType                                                   Gradient;
                 // Create the "actual" registration filter, and set it to the existing filter
                 typename ActualRegistrationFilterType::Pointer actualfilter = ActualRegistrationFilterType::New();
@@ -338,7 +338,7 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
         case UPDATE_ADDITIVE:
             {
                 // Type definition
-                typedef  typename  itk::FastSymmetricForcesDemonsRegistrationFilter< TFixedImage, TMovingImage, FieldContainerType>  ActualRegistrationFilterType;
+                typedef  typename  itk::FastSymmetricForcesDemonsRegistrationFilter< TFixedImage, TMovingImage, VectorFieldType>  ActualRegistrationFilterType;
                 typedef  typename  ActualRegistrationFilterType::GradientType                                                        Gradient;
                 // Create the "actual" registration filter, and set it to the existing filter
                 typename ActualRegistrationFilterType::Pointer actualfilter = ActualRegistrationFilterType::New();
@@ -351,7 +351,7 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
         case UPDATE_COMPOSITIVE:
             {
                 // Type definition
-                typedef  typename  itk::DiffeomorphicDemonsRegistrationFilter< TFixedImage, TMovingImage, FieldContainerType >  ActualRegistrationFilterType;
+                typedef  typename  itk::DiffeomorphicDemonsRegistrationFilter< TFixedImage, TMovingImage, VectorFieldType >  ActualRegistrationFilterType;
                 typedef  typename  ActualRegistrationFilterType::GradientType                                                   Gradient;
                 // Create the "actual" registration filter, and set it to the existing filter
                 typename ActualRegistrationFilterType::Pointer actualfilter = ActualRegistrationFilterType::New();
@@ -401,7 +401,7 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
 
 
     // Set the field interpolator
-    typedef  itk::VectorLinearInterpolateNearestNeighborExtrapolateImageFunction< FieldContainerType, double >  FieldInterpolatorType;
+    typedef  itk::VectorLinearInterpolateNearestNeighborExtrapolateImageFunction< VectorFieldType, double >  FieldInterpolatorType;
     typename FieldInterpolatorType::Pointer interpolator = FieldInterpolatorType::New();
     multires->GetFieldExpander()->SetInterpolator( interpolator );
 
@@ -409,9 +409,9 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
     // Set the initial displacement field only if it exists
     if (this->m_initialTransform.IsNotNull())
     {
-        typename TransformType::Pointer           transform = this->m_initialTransform;
-        typename FieldContainerType::ConstPointer field     = transform->GetDisplacementField();
-        multires->SetArbitraryInitialDeformationField( const_cast<FieldContainerType *>(field.GetPointer()) );
+        typename TransformType::Pointer        transform = this->m_initialTransform;
+        typename VectorFieldType::ConstPointer field     = transform->GetParametersAsVectorField();
+        multires->SetArbitraryInitialDeformationField( const_cast<VectorFieldType *>(field.GetPointer()) );
     }
 
 
@@ -422,13 +422,14 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
     }
     catch( itk::ExceptionObject& err )
     {
-        std::cout << err << std::endl;
-        throw std::runtime_error( "Unexpected error." );
+        std::string message = "Unexpected error: ";
+        message += err.GetDescription();
+        throw std::runtime_error( message  );
     }
 
     // Set the displacement field to the transformation object
-    static_cast< TransformType * >(this->m_transform.GetPointer())->SetDisplacementField(
-            static_cast<typename FieldContainerType::ConstPointer>(multires->GetOutput()));
+    static_cast< TransformType * >(this->m_transform.GetPointer())->SetParametersAsVectorField(
+            static_cast<typename VectorFieldType::ConstPointer>(multires->GetOutput()));
 }
 
 

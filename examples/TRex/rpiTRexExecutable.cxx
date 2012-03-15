@@ -152,24 +152,24 @@ int StartMainProgram(struct Param param)
         std::cout << "OK" << std::endl;
 
         // Write output transformation
-        std::cout << "  Writting transformation    : " << std::flush;
+        std::cout << "  Writing transformation     : " << std::flush;
         rpi::writeLinearTransformation<TransformScalarType, TFixedImage::ImageDimension>(
                 registration->GetTransformation(),
                 param.outputTransformPath );
         std::cout << "OK" << std::endl;
 
         // Write output image
-        std::cout << "  Writting image             : " << std::flush;
-        rpi::writeImage<TFixedImage, TMovingImage, TransformScalarType>(
-                registration->GetTransformation(),
-                fixedImage,
-                movingImage,
-                param.outputImagePath );
+        std::cout << "  Writing image              : " << std::flush;
+        rpi::resampleAndWriteImage<TFixedImage, TMovingImage, TransformScalarType>(
+                    fixedImage,
+                    movingImage,
+                    registration->GetTransformation(),
+                    param.outputImagePath );
         std::cout << "OK" << std::endl << std::endl;
     }
     catch( std::exception& e )
     {
-        std::cerr << "Error: " << e.what() << std::endl;
+        std::cerr << e.what() << std::endl;
         delete registration;
         return EXIT_FAILURE;
     };

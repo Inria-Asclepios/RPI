@@ -42,7 +42,7 @@
  * field stored into the -- image -- file "t1.nii.gz". The computed transformation is given by
  * T0 o T1. Thus, the order the transformations written into the XML file is important since the
  * composition of two transformations is usually not commutative. The XML file can contain any
- * strictely positive number of transformations.
+ * strictly positive number of transformations.
  *
  * The meaning of the different tags is:
  *
@@ -67,7 +67,7 @@
  * The type of the output transformation depends on the transformations of the list. A list of
  * linear transformation will be fused into a linear transformation. If the list contains at least
  * one displacement field, the output transformation will be a displacement field. If the option
- * "--force-displacement-field" is used, the ouput transformation will be a displacement field.
+ * "--force-displacement-field" is used, the output transformation will be a displacement field.
  * One should choose the output file extension according to the transformation computed. Indeed, if
  * the output transformation is a displacement field, only image format are supported (e.g. .nii).
  * No checking on the file extension will be performed since the output transformation type is
@@ -113,6 +113,11 @@ struct Data
 };
 
 
+/**
+ * Returns the transformation type as string.
+ * @param  transformation transformation
+ * @return string describing the transformation
+ */
 std::string getTransformationAsString(Transformation transformation)
 {
     if (transformation==LINEAR)
@@ -146,10 +151,12 @@ void parseParameters(int argc, char** argv, struct Param & param)
     description += "      <transformation>\n";
     description += "          <type>linear</type>\n";
     description += "          <path>t0.txt</path>\n";
+    description += "          <invert>0</invert>\n";
     description += "      </transformation>\n";
     description += "      <transformation>\n";
     description += "          <type>displacementfield</type>\n";
     description += "          <path>t1.nii.gz</path>\n";
+    description += "          <invert>0</invert>\n";
     description += "      </transformation>\n";
     description += "  </listoftransformations>\n";
 
@@ -176,12 +183,11 @@ void parseParameters(int argc, char** argv, struct Param & param)
     description += "  This tag must be an element of the tag <transformation>. This tag is mandatory.\n";
 
     description += " -Tag <invert> indicates if the considered transformation has to be inverted before the fusion. ";
-    description += "  The value \"1\" induce the transformation inversion ; the value \"0\" means no inversion. The only ";
-    description += "  transformations that can be inverted yet are the linear transformations. This tag is optional. ";
-    description += "  By default, no inversion is performed.\n";
+    description += "  The value \"1\" induces the transformation inversion ; the value \"0\" means no inversion. ";
+    description += "  This tag is optional. By default, no inversion is performed.\n";
 
     description += "The type of the output transformation depends on the transformations of the list. A list of ";
-    description += "linear transformation will be fused into a linear transformation. If the list contains at least ";
+    description += "linear transformations will be fused into a linear transformation. If the list contains at least ";
     description += "one displacement field, the output transformation will be a displacement field. If the option ";
     description += "\"--force-displacement-field\" is used, the ouput transformation will be a displacement field. ";
     description += "One should choose the output file extension according to the transformation computed. Indeed, if ";
@@ -299,7 +305,7 @@ void parseXML(const char* fileName, struct Data & data)
                         std::string invert(pInvert->GetText());
                         if (invert.compare("1")==0)
                         {
-                            if ( type.compare("displacementfield")==0 || type.compare("stationaryvelocityfield")==0 )
+                            if ( type.compare("stationaryvelocityfield")==0 )
                             {
                                 std::string warning;
                                 warning += "Warning : a transformation of type \"" + type + "\" cannot ";
@@ -383,7 +389,9 @@ void printData(struct Data & data, bool verbose)
 
 
 /**
- *
+ * Build the list of transformations.
+ * @param  data data structure
+ * @return list of transformations
  */
 template<class TScalarType>
 typename itk::GeneralTransform<TScalarType,3>::Pointer
@@ -400,51 +408,55 @@ buildListOfTransformations(struct Data & data)
     typename ListType::Pointer list = ListType::New();
     for (unsigned int i=0; i<data.type.size(); i++)
     {
+
         if (data.type[i]==LINEAR)
         {
+
+            typename LinearType::Pointer linear = rpi::readLinearTransformation<TScalarType>(data.path[i]);
+
             if (data.invert[i]==false)
-            {
-                // Get the linear transform and add it to the transformation list
-                typename LinearType::Pointer linear = rpi::readLinearTransformation<TScalarType>(data.path[i]);
                 list->InsertTransform( linear.GetPointer() );
-            }
             else
             {
-                // Get the linear transform
-                typename LinearType::Pointer linear = rpi::readLinearTransformation<TScalarType>(data.path[i]);
-                MatrixType *                 matrix = dynamic_cast<MatrixType *>(linear.GetPointer());
-                // Inverse the transform
+                MatrixType * matrix = dynamic_cast<MatrixType *>(linear.GetPointer());
+                if (matrix==0)
+                    throw std::runtime_error("Cannot cast the transformation into an itk::MatrixOffsetTransformBase.");
                 typename MatrixType::Pointer inverse = MatrixType::New();
                 inverse->SetCenter(matrix->GetCenter());
                 matrix->GetInverse(inverse);
-                // Add it to the transformation list
-                if (matrix!=0)
-                    list->InsertTransform( inverse.GetPointer() );
-                else
-                    throw std::runtime_error("Cannot cast the transformation into an itk::MatrixOffsetTransformBase.");
+                list->InsertTransform( inverse.GetPointer() );
             }
+
         }
         else if (data.type[i]==DISPLACEMENT_FIELD)
         {
+            typename DFType::Pointer field = rpi::readDisplacementField<TScalarType>(data.path[i]);
+
             if (data.invert[i]==true)
-                throw std::runtime_error("Cannot invert a non linear transformation.");
-            list->InsertTransform( rpi::readDisplacementField<TScalarType, 3>(data.path[i]).GetPointer() );
+                field->GetInverse(field);
+            list->InsertTransform( field.GetPointer() );
+
+
         }
         else if (data.type[i]==STATIONARY_VELOCITY_FIELD)
         {
+            typename SVFType::Pointer field = rpi::readStationaryVelocityField<TScalarType>(data.path[i]);
+
             if (data.invert[i]==true)
-                throw std::runtime_error("Cannot invert a non linear transformation.");
-            list->InsertTransform( rpi::readStationaryVelocityField<TScalarType, 3>(data.path[i]).GetPointer() );
+                field->GetInverse(field);
+            list->InsertTransform( field.GetPointer() );
         }
         else
-            throw std::runtime_error("Transformation not recognized.");
+            throw std::runtime_error("Transformation not supported.");
     }
     return list;
 }
 
 
 /**
- *
+ * Decides the type of transformation computed.
+ * @param  list list of transformation
+ * @return transformation type as enum
  */
 template<class TScalarType>
 Transformation decideOuputTransformationType(typename itk::GeneralTransform<TScalarType,3>::Pointer list)
@@ -457,7 +469,9 @@ Transformation decideOuputTransformationType(typename itk::GeneralTransform<TSca
 
 
 /**
- *
+ * Generates linear transformation from the transformation list and exports it.
+ * @param list      list of transformations
+ * @param fileName  output file name
  */
 template<class TScalarType>
 void exportLinearTransformation(itk::GeneralTransform<TScalarType,3> * list, std::string fileName)
@@ -481,18 +495,22 @@ void exportLinearTransformation(itk::GeneralTransform<TScalarType,3> * list, std
 
 
 /**
- *
+ * Generates a displacement field from the transformation list and exports it as image.
+ * @param list              list of transformations
+ * @param data              data structure
+ * @param geometryFileName  path to the image containing the geometry
+ * @param fileName          output file name
  */
 template<class TScalarType>
 void exportDFTransformation(itk::GeneralTransform<TScalarType,3> * list, struct Data data, std::string geometryFileName, std::string fileName)
 {
 
     // Type definition
-    typedef  itk::GeneralTransform<TScalarType,3>                                       TransformListType;
-    typedef  itk::DisplacementFieldTransform< TScalarType, 3 >                          DFType;
-    typedef  itk::StationaryVelocityFieldTransform< TScalarType, 3 >                    SVFType;
-    typedef  typename DFType::DisplacementFieldType                                     FieldContainerType;
-    typedef  itk::TransformToDeformationFieldSource< FieldContainerType, TScalarType >  GeneratorType;
+    typedef  itk::GeneralTransform<TScalarType,3>                                    TransformListType;
+    typedef  itk::DisplacementFieldTransform< TScalarType, 3 >                       DFType;
+    typedef  itk::StationaryVelocityFieldTransform< TScalarType, 3 >                 SVFType;
+    typedef  typename DFType::VectorFieldType                                        VectorFieldType;
+    typedef  itk::TransformToDeformationFieldSource< VectorFieldType, TScalarType >  GeneratorType;
 
     // Create a field generator
     typename GeneratorType::Pointer fieldGenerator = GeneratorType::New();
@@ -511,6 +529,10 @@ void exportDFTransformation(itk::GeneralTransform<TScalarType,3> * list, struct 
         // Read image header
         typename ImageIOBase::Pointer imageBase = rpi::readImageInformation( geometryFileName );
 
+        // Check the image dimension
+        if (imageBase->GetNumberOfDimensions()!=3)
+            throw std::runtime_error("Only 3D images are supported yet.");
+
         // Create and fill origin, spacing, direction, and region from image header
         OriginType    origin;
         SpacingType   spacing;
@@ -518,7 +540,7 @@ void exportDFTransformation(itk::GeneralTransform<TScalarType,3> * list, struct 
         RegionType    region;
         for (int i=0; i<3; i++)
         {
-            origin[i]  =imageBase->GetOrigin(i);
+            origin[i]  = imageBase->GetOrigin(i);
             spacing[i] = imageBase->GetSpacing(i);
             region.SetSize(i,imageBase->GetDimensions(i));
             for (int j=0; j<3; j++)
@@ -548,7 +570,7 @@ void exportDFTransformation(itk::GeneralTransform<TScalarType,3> * list, struct 
         const SVFType * svf = dynamic_cast<const SVFType*>(list->GetTransform(index).GetPointer());
         if (df!=0)
         {
-            typename FieldContainerType::ConstPointer container = df->GetDisplacementField();
+            typename VectorFieldType::ConstPointer container = df->GetParametersAsVectorField();
             fieldGenerator->SetOutputOrigin(    container->GetOrigin() );
             fieldGenerator->SetOutputSpacing(   container->GetSpacing() );
             fieldGenerator->SetOutputDirection( container->GetDirection() );
@@ -556,7 +578,7 @@ void exportDFTransformation(itk::GeneralTransform<TScalarType,3> * list, struct 
         }
         else if (svf!=0)
         {
-            typename FieldContainerType::ConstPointer container = svf->GetVelocityField();
+            typename VectorFieldType::ConstPointer container = svf->GetParametersAsVectorField();
             fieldGenerator->SetOutputOrigin(    container->GetOrigin() );
             fieldGenerator->SetOutputSpacing(   container->GetSpacing() );
             fieldGenerator->SetOutputDirection( container->GetDirection() );
@@ -577,12 +599,12 @@ void exportDFTransformation(itk::GeneralTransform<TScalarType,3> * list, struct 
     }
 
     // Gets the displacement field (image)
-    typename FieldContainerType::Pointer container = fieldGenerator->GetOutput();
+    typename VectorFieldType::Pointer container = fieldGenerator->GetOutput();
     container->DisconnectPipeline();
 
     // Create the displacement field (transformation)
     typename DFType::Pointer field = DFType::New();
-    field->SetDisplacementField( static_cast<typename FieldContainerType::ConstPointer>( container.GetPointer() ) );
+    field->SetParametersAsVectorField( static_cast<typename VectorFieldType::ConstPointer>( container.GetPointer() ) );
 
     // Write displacement field
     rpi::writeDisplacementFieldTransformation<TScalarType,3>(field, fileName );

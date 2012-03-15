@@ -5,6 +5,8 @@
 #include <itkImage.h>
 #include <itkTransform.h>
 
+#include "rpiObserver.hxx"
+
 
 // Namespace RPI : Registration Programming Interface
 namespace rpi
@@ -44,6 +46,17 @@ public:
     typedef typename TransformType::Pointer
             TransformPointerType;
 
+    typedef Observer<TFixedImage, TMovingImage, TTransformScalarType>
+            ObserverType;
+
+    /**
+     * Registration status.
+     */
+    enum RegistrationStatus {
+        REGISTRATION_STATUS_PROCESSING, /** Processing registration */
+        REGISTRATION_STATUS_STOP        /** Stop: no activity       */
+    };
+
 
 protected:
 
@@ -61,6 +74,16 @@ protected:
      * Transformation estimated by the registration method
      */
     TransformPointerType         m_transform;
+
+    /**
+     * Observer
+     */
+    std::vector<ObserverType*>   m_observers;
+
+    /**
+     * Registration status
+     */
+    RegistrationStatus           m_registrationStatus;
 
 
 public :
@@ -106,6 +129,29 @@ public :
      * @return  estimated transformation
      */
     TransformPointerType         GetTransformation(void) const;
+
+    /**
+     * Attachs an observer to the registration method
+     * @param observer observer
+     */
+    void                         AttachObserver(ObserverType * observer);
+
+    /**
+     * Notify observer that the registration status changed.
+     */
+    void                         Notify(void);
+
+    /**
+     * Gets the registration status.
+     * @return registration status
+     */
+    RegistrationStatus           GetRegistrationStatus(void);
+
+    /**
+     * Sets the registration status.
+     * @param status registration status
+     */
+    void                         SetRegistrationStatus(RegistrationStatus status);
 
     /**
      * Registers the moving image on the fixed image.

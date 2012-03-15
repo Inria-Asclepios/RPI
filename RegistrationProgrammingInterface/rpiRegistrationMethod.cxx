@@ -16,8 +16,12 @@ namespace rpi
 template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 RegistrationMethod< TFixedImage, TMovingImage, TTransformScalarType >::RegistrationMethod(void)
 {
+    // Verify that both images have same dimension
     if ( (int)TFixedImage::ImageDimension != (int)TMovingImage::ImageDimension )
         throw std::runtime_error("Fixed and moving images must have same dimension.");
+
+    // Initialize registration status
+    this->m_registrationStatus = REGISTRATION_STATUS_STOP;
 }
 
 
@@ -64,7 +68,46 @@ template < class TFixedImage, class TMovingImage, class TTransformScalarType >
 typename RegistrationMethod< TFixedImage, TMovingImage, TTransformScalarType >::TransformPointerType
 RegistrationMethod< TFixedImage, TMovingImage, TTransformScalarType >::GetTransformation(void) const
 {
-    return m_transform;
+    return this->m_transform;
+}
+
+
+template < class TFixedImage, class TMovingImage, class TTransformScalarType >
+void
+RegistrationMethod< TFixedImage, TMovingImage, TTransformScalarType >::
+AttachObserver(ObserverType * observer)
+{
+    this->m_observers.push_back(observer);
+    observer->SetRegistrationMethod(this);
+}
+
+
+template < class TFixedImage, class TMovingImage, class TTransformScalarType >
+void
+RegistrationMethod< TFixedImage, TMovingImage, TTransformScalarType >::
+Notify(void)
+{
+    typename std::vector<ObserverType*>::iterator it;
+    for ( it = this->m_observers.begin(); it!=this->m_observers.end(); it++ )
+        (*it)->Update();
+}
+
+
+template < class TFixedImage, class TMovingImage, class TTransformScalarType >
+typename RegistrationMethod< TFixedImage, TMovingImage, TTransformScalarType >::RegistrationStatus
+RegistrationMethod< TFixedImage, TMovingImage, TTransformScalarType >::GetRegistrationStatus(void)
+{
+    return this->m_registrationStatus;
+}
+
+
+template < class TFixedImage, class TMovingImage, class TTransformScalarType >
+void
+RegistrationMethod< TFixedImage, TMovingImage, TTransformScalarType >::
+SetRegistrationStatus(RegistrationStatus status)
+{
+    this->m_registrationStatus = status;
+    Notify();
 }
 
 
