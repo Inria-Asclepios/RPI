@@ -88,6 +88,10 @@ endif(RPI_BUILD_EXAMPLES)
 
 add_subdirectory(RegistrationProgrammingInterface)
 
+option(STREAMING_DEMO "Build the streaming demo" "OFF")
+if (STREAMING_DEMO)
+    add_subdirectory(streamingDemoSource)
+endif(STREAMING DEMO)
 ##################################################################
 # Setup use file
 ##################################################################
