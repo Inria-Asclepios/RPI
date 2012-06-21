@@ -4,7 +4,6 @@
 #include "itkImageToImageFilter.h"
 #include "itkDivideByConstantImageFilter.h"
 #include "itkCastImageFilter.h"
-#include "itkOppositeImageFilter.h"
 #include "itkWarpVectorImageFilter.h"
 #include "itkWarpImageFilter.h"
 #include "itkVectorLinearInterpolateNearestNeighborExtrapolateImageFunction.h"
