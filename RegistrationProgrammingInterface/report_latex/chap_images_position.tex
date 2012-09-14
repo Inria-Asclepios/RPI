@@ -1,0 +1,216 @@
+\section{Coordinate systems}
+\label{sec:image:systems}
+
+
+Let $I$ be a 3D image. If we consider $I$ as an array in a 3-dimensional space, the element of the array in voxel coordinates can be accessed by $I(i,j,k)$ where $i$, $j$, and $k$ are natural numbers including $0$. Given the voxel coordinates $(i,j,k)$, how to project these coordinates into the world coordinates, and conversely? In this section, we answer this simple but essential question.
+
+
+%----------------------------------------------------------------------------------------------------
+\subsection{Projection of coordinates}
+\label{subsec:images:systems:projection}
+
+Given a 3D image $I$, let $A$ be a matrix 3$\times$3 and $T$ be a vector in the 3-dimensional space. $A$ and $T$ contain the necessary information to position the 3D array (grid) into the world coordinates. Let $(i,j,k)$ be voxel coordinates, the corresponding position in the word coordinates is given by:
+
+\begin{equation}
+\begin{bmatrix} x \\ y \\ z \end{bmatrix}
+=
+A.
+\begin{bmatrix} i \\ j \\ k \end{bmatrix}
++ T
+\label{eq:projection1}
+\end{equation}
+
+where
+
+\begin{equation}
+T = \begin{bmatrix} t_x \\ t_y \\ t_z \end{bmatrix}
+\end{equation}
+
+and
+
+\begin{equation}
+A =
+\begin{bmatrix}
+a_{1,1} & a_{1,2} & a_{1,1} \\
+a_{2,1} & a_{2,2} & a_{2,1} \\
+a_{3,1} & a_{3,2} & a_{3,1}
+\end{bmatrix}.
+\end{equation}
+
+
+$T$ contains the position of the image origin in world coordinates while $A$ contains information on voxel size and image orientation. This projection from the voxel to the world coordinates usually uses a 4$\times$4 matrix in homogeneous coordinates:
+
+\begin{equation}
+\begin{bmatrix} x \\ y \\ z \\ 1 \end{bmatrix}
+=
+M.
+\begin{bmatrix} i \\ j \\ k \\ 1 \end{bmatrix}
+\label{eq:projection2}
+\end{equation}
+
+where
+
+\begin{equation}
+M =
+\begin{bmatrix}
+a_{1,1} & a_{1,2} & a_{1,1} & t_x \\
+a_{2,1} & a_{2,2} & a_{2,1} & t_y \\
+a_{3,1} & a_{3,2} & a_{3,1} & t_z \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\end{equation}
+
+Both projections (\ref{eq:projection1}) and (\ref{eq:projection2}) are identical and we will use in this report one or the other.
+\\
+
+ 
+Let us now consider $(x,y,z)$ a 3D position in the world coordinates. The projection of this point into the voxel coordinates $(i,j,k)$ is given by:
+
+\begin{equation}
+\begin{bmatrix} i \\ j \\ k \end{bmatrix}
+=
+A^{-1}.
+\left(
+\begin{bmatrix} x \\ y \\ z \end{bmatrix}
+- T
+\right)
+\end{equation}
+
+One should note that $i$, $j$, $k$ value are not necessarily integer. If so, the value $I(i,j,k)$ is then obtained by image interpolation. This notion will be discussed on section~\ref{sec:image:interpolation}. If we consider a 4$\times$4 matrix in homogeneous coordinates, the projection from world to voxel coordinates is given by:
+
+\begin{equation}
+\begin{bmatrix} i \\ j \\ k \\ 1 \end{bmatrix}
+=
+M^{-1}.
+\begin{bmatrix} x \\ y \\ z \\ 1 \end{bmatrix}
+\end{equation}
+
+
+For clarity purpose, we may write in this report $I(x,y,z)$ (or simply $I(\mathbf{x})$ where $\mathbf{x}=(x,y,z)$) where $(x,y,z)$ are world coordinates. The notation $I(x,y,z)$ is abusing and we define  
+
+\begin{equation}
+I(x,y,z) \triangleq I(i,j,k)
+\end{equation}
+
+where $(i,j,k)$ is the projection of $(x,y,z)$ into the voxel coordinates. The nature of the coordinates will indicate which notation is used.
+
+
+
+%----------------------------------------------------------------------------------------------------
+\subsection{Positioning information in \texttt{itk::Image} object}
+\label{subsec:images:position:itk}
+
+
+The ITK image format (\texttt{itk::Image}) contains the three following information to position any image into the world coordinated:
+
+\begin{itemize}
+\item position of image origin
+\item voxel size
+\item image orientation (called \textit{direction cosine})
+\end{itemize}
+
+These information are respectively retrieved using functions \texttt{GetOrigin()}, \texttt{GetSpacing()}, and \texttt{GetDirection()}, functions inherited from objet \texttt{itk::ImageBase}. Image origin and voxel size (respectively noted $T$ and $S$) are stored as vector in a 3-dimensional space (\texttt{itk::Vector}):
+
+\begin{equation}
+T = \begin{bmatrix} t_x \\ t_y \\ t_z \end{bmatrix}
+\end{equation}
+
+\begin{equation}
+S = \begin{bmatrix} s_x \\ s_y \\ s_z \end{bmatrix}
+\end{equation}
+
+Image orientation is stored as a 3$\times$3 matrix (\texttt{itk::Matrix}) noted here $D$:
+
+\begin{equation}
+D =
+\begin{bmatrix}
+d_{1,1} & d_{1,2} & d_{1,1} \\
+d_{2,1} & d_{2,2} & d_{2,1} \\
+d_{3,1} & d_{3,2} & d_{3,1}
+\end{bmatrix}
+\end{equation}
+
+To be consistent with notations introduction in Eq.~(\ref{eq:projection1}), we define the 3$\times$3 matrix $A$ as follows:
+
+\begin{equation}
+A=D.S_{diag}
+\end{equation}
+
+where 
+
+\begin{equation}
+S_{diag} =
+\begin{bmatrix}
+s_x & 0 & 0 \\
+0 & s_y & 0 \\
+0 & 0 & s_z
+\end{bmatrix}.
+\end{equation}
+
+Vector $T$ and matrix $A$ allow to project voxel to world coordinates, and conversely (see Eq.~(\ref{eq:projection1})).
+
+
+
+%----------------------------------------------------------------------------------------------------
+\subsection{Positioning information in Inrimages image format}
+
+The Inrimage format contains all the information needed to position any image into the world coordinated:
+
+\begin{itemize}
+\item $TX$, $TY$, and $TZ$ is the position of the image origin (resp. along the X-, Y-, and Z-axes),
+\item $VX$, $VY$, and $VZ$ give the voxel size,
+\item $RX$, $RY$, and $RZ$ correspond to the image orientation.
+\end{itemize}
+
+As in section~\ref{subsec:images:position:itk}, we define the vector $T$ and $S$ as follows:
+
+\begin{equation}
+T = \begin{bmatrix} TX \\ TY \\ TZ \end{bmatrix}
+\end{equation}
+
+\begin{equation}
+S = \begin{bmatrix} VX \\ VY \\ VZ \end{bmatrix}
+\end{equation}
+
+The image orientation (noted $D$ in section~\ref{subsec:images:position:itk}) is computed from values RX, RY et RZ. First, we define the vector $R$ as follows:
+
+\begin{equation}
+R = \begin{bmatrix} RX \\ RY \\ RZ \end{bmatrix}.
+\end{equation}
+
+Then, let $N$ be the normalized vector
+
+\begin{equation}
+N = \begin{bmatrix} n_x \\ n_y \\ n_z \end{bmatrix}
+= \begin{bmatrix} RX/\phi \\ RY/\phi \\ RZ/\phi \end{bmatrix}
+\end{equation}
+
+where $\phi$ is the Euclidean norm of R. Finally, the orientation matrix $D$ is given by:
+
+\begin{equation}
+D =
+cos \phi
+\begin{bmatrix}
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{bmatrix}
++ (1 - cos \phi)
+\begin{bmatrix}
+n_x^2 & n_x n_y & n_x n_z \\
+n_x n_y & n_y^2 & n_y n_z \\
+n_x n_z & n_x n_y & n_z^2
+\end{bmatrix}
++ sin \phi
+\begin{bmatrix}
+0 & -n_z & n_y \\
+n_z & 0 & -n_x \\
+-n_y & n_x & 0
+\end{bmatrix}
+\end{equation}
+
+As in section~\ref{subsec:images:position:itk}, the 3$\times$3 matrix $A$ defined in Eq.~(\ref{eq:projection1}) an necessary to project voxel coordinates into the world coordinates is given by:
+
+\begin{equation}
+A=D.S_{diag}
+\end{equation}

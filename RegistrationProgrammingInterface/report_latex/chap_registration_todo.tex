@@ -1,0 +1,37 @@
+\section{Things to do}
+
+
+
+\subsection{Tensor support for Baloo and SuperBaloo}
+
+Baloo and SuperBaloo are so far the only registration methods of RPI supporting tensor images. However, this support is not guaranteed since Olivier Commowick is still working on tensor registration. The core code of Baloo and SuperBaloo may be updated and therefore Baloo and SuperBaloo (RPI versions) may not work after this update.
+\\
+The resampling of a tensor image is not as easy as for scalar images. You usually have to interpolate the tensor image and you also have to rotate it. So far, we use the \texttt{itk::WarpTensorImageFilter} of TTK which applies a displacement field (as a vector image) to the tensor image. In the case of Baloo, we estimate a linear transformation. To resample the tensor, we generate a displacement field from the linear transformation, and then we use \texttt{itk::WarpTensorImageFilter}. This solution is of course not the correct way to resample a tensor using a linear transformation. A proper function should be written to directly use the linear transformation.
+
+
+
+\subsection{Improve method \texttt{GetSpatialJacobian} of the \texttt{itk::\-Displacement\-Field\-Transform} class}
+
+The \texttt{GetSpatialJacobian} method of the \texttt{itk::\-Displacement\-Field\-Transform} class computes the gradient using a finite difference and considering the neighborhood along one direction for each element of the matrix. The problem of this method is that the estimation of the spatial Jacobian is incorrect and tends to be noisy. A better way to do it would be to consider a larger neighborhood as proposed in~\cite{Pennec_report_2004}.
+
+
+
+\subsection{Improve method \texttt{TransformPoint} of the \texttt{itk::\-Stationary\-Velocity\-Field\-Transform} class}
+
+The \texttt{TransformPoint} method of the \texttt{itk::StationaryVelocityFieldTransform} class first go through all the image to estimate a value (see Xavier or Marco) and then transform the considered point by composing several time with the velocity field. The problem of this method is that if one uses the \texttt{itk::ResampleImageFilter} to resample a given image using a stationary velocity field, the \texttt{TransformPoint} method will be called by every voxel of the image to resample. This means that, for each voxel, the whole image is explored. As a consequence, using a stationary velocity field to resample an image can take days. As proposed in section~\ref{sec:transformations:svf}, one should first compute a displacement field from the stationary velocity field, and then resample the image using the displacement field.
+
+
+
+\subsection{Improve the multi-resolution scheme}
+
+The multi-resolution scheme used by the demons-based registration methods use a pyramidal approach where each dimension is divided by 2 from one resolution to another one. One the image size and voxel size are homogeneous, this works perfectly. However, if one consider for instance an image of size $512 \times 256 \times 64$, it may be more interesting to consider the following pyramidal approach:
+%
+\begin{itemize}
+\item $512 \times 256 \times 64$
+\item $256 \times 256 \times 64$
+\item $128 \times 128 \times 64$
+\item $64 \times 64 \times 64$
+\item $32 \times 32 \times 32$
+\end{itemize}
+%
+The goal here is to reduce the size of the image in order to tend to have images of size as isotrope as possible. I haven't tried this, but if the voxels also have an isotropique size, this makes sense.

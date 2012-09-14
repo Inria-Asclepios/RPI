@@ -1,0 +1,96 @@
+\chapter{Transformations}
+\label{chap:transformations}
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Linear transformation}
+
+
+A linear transformation is a function between two vector spaces (3-dimensional spaces in our case) that preserves the operations of vector addition and scalar multiplication. A linear transformation in a 3-dimensional space (input and output vector space) is usually given as a $4\times4$ matrix in homogeneous coordinates:
+%
+\begin{equation}
+M =
+\begin{pmatrix}
+ m_{1,1} & m_{1,2} & m_{1,3} & m_{1,4} \\
+ m_{2,1} & m_{2,2} & m_{2,3} & m_{2,4} \\
+ m_{3,1} & m_{3,2} & m_{3,3} & m_{3,4} \\
+ 0 & 0 & 0 & 1
+\end{pmatrix}
+\label{eq:linear_transformation}
+\end{equation}
+%
+Let $p$ be a point in $\mathds{R}^3$ and $M$ be a linear transformation in the same space. The application of $M$ to $p$
+%
+\begin{equation}
+p' = M.p
+\end{equation}
+%
+transform $p$ into a new point $p'$.
+
+
+\subsection{Rigid transformation}
+
+A rigid transformation preserves distances between every pair of points (isometry). In particular, any object will have the same shape and size before and after a rigid transformation.
+\\
+A rigid transformation (in a 3-dimensional space) is parametrized by 6 parameters: 3 parameters for the rotation (resp. around the X-, Y-, and Z-axes) and 3 parameters for the translation. The parametrization of a rigid transformation is not unique. A parametrization is given relatively to a specific interpretation of these parameters. In ITK, there is at least two rigid transformation objects: \texttt{RigidTransform} and \texttt{Euler3DTransform}. The 3 rotation parameters correspond to a rotation vector for \texttt{RigidTransform} and to Euler's angles for \texttt{Euler3DTransform}. Given the 6 parameters and their associate interpretation, one can compute the $4\times4$ matrix as presented in~\ref{eq:linear_transformation}.
+
+
+\subsection{Affine}
+
+An affine transformation preserves the collinearity relation between points and the ratios of distances along a line.
+\\
+An affine transformation is parametrizes by 12 parameters: 3 for the rotation, 3 for the translation, 3 for the scaling, and 3 for the shearing. One may notice that the number of parameters of an affine transformation is equal to the number of parameters of a linear transformation (see~(\ref{eq:linear_transformation}). Along with the parameters, an associated interpretation is needed in order to generate the corresponding transformation matrix.
+\\
+In practice the parameters of an affine transformation are usually directly the parameters of the corresponding linear transformation (see~(\ref{eq:linear_transformation})) since the number of parameters is similar. In this case, no parameter interpretation is required. This is the case for instance for the parameters of any ITK \texttt{AffineTransform} object. However, in the case of optimization for instance, one may still want to consider the initial parametrization (e.g. rotation, translation, etc. separated) in order to increase the precision and the robustness of the parameter estimation by adding some \textit{a priori} on parameters.
+
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Displacement field}
+\label{sec:transformations:df}
+
+
+In the context of medical imaging, a displacement field (DF for short) corresponds usually to a 3D grid defined into the 3D vector space. A 3D displacement vector is assigned to each element of the grid, hence the name \textit{displacement field}. Like for images, each element of the grid can be projected to the world coordinate system using the position and orientation information associated to the field. The transformation is defined in a finite number of points and one should use a field interpolation (such as linear interpolation) to get the transformation in any point of the vector space.
+\\
+
+A DF is usually stored into a vector image since the data organization is similar. The difference is indeed the interpretation of the content which is the integration of a signal on an elementary volume for an image, and a displacement for a DF. Storing a DF into an image is therefore very convenient.
+\\
+If we consider now the programming point of view, considering a DF as an image is a mistake since an image is not a transformation. Mixing both notions may be quite confusing and dangerous. For instance, let us consider the  ITK way of dealing with DFs. DFs are stored are store into ITK image objects. If one wants to resample an image using a DF, on should use the \texttt{itk::WarpImageFilter} which apply an image -- the considered DF -- to another image, and this clearly doesn't make sense. Moreover, displacement field is not the only field-type transformation (e.g. stationary velocity field). By considering a field as an image, a programmer cannot know what kind of field he is dealing with, unless the variable referencing the DF is correctly named which is usually too much to ask.
+\\
+To overcome this problem, we propose a new ITK transformation object named \texttt{itk::\-Displacement\-Field\-Transform} which inherits from the \texttt{itk::Transform} class. In particular, \texttt{itk::\-Displacement\-Field\-Transform} allows to transform any point of the vector space (using linear interpolation) and is able to compute the spatial Jacobian (matrix) in any point. Because \texttt{itk::\-Displacement\-Field\-Transform} is an actual \texttt{itk::Transform} object, one may directly use \texttt{itk::ResampleImageFilter} to resample an image, which is much more convenient than using \texttt{itk::WarpImageFilter}. Finally, we propose the method \texttt{GetParametersAsVectorField} which returns a pointer the DF as an \texttt{itk::Image} in order to use the already implemented ITK filters specialized for DF.
+
+
+
+%----------------------------------------------------------------------------------------------------
+\section{Stationary velocity field}
+\label{sec:transformations:svf}
+
+A stationary velocity field (SVF for short) is very similar to a displacement field, the difference being in the interpretation of the information (vector) assigned to each element of the grid. For SVFs, the vector represents a velocity which has to be integrated over time to deduce a displacement.
+\\
+Similarly to DFs, SVFs are usually stored into \texttt{itk::Image} objects which brings the same benefits and problems as for DFs (see section~\ref{sec:transformations:df}). Once again, we propose a solution with a new ITK transformation object named \texttt{itk::\-Stationary\-Velocity\-Field\-Transform}. As for \texttt{itk::\-Displacement\-Field\-Transform}, \texttt{itk::\-Stationary\-Velocity\-Field\-Transform} inherits from the \texttt{itk::Transform} class. For instance, the class allows to transform any point of the vector space and the method \texttt{GetLogSpatialJacobianDeterminant} computes the log determinant of the spatial Jacobian matrix.
+\\
+The \texttt{itk::\-Stationary\-Velocity\-Field\-Transform} can be used to resample an image using the \texttt{itk::ResampleImageFilter} filter. However, one should never use an \texttt{itk::\-Stationary\-Velocity\-Field\-Transform} to do it because it will literally take days to complete the resampling. Instead, one should generate a DF directly from the considered SVF. Let \texttt{svf} be a \texttt{itk::\-Stationary\-Velocity\-Field\-Transform} (of dimension 3 and coded on \texttt{float}) that we want to convert into a \texttt{itk::\-Displacement\-Field\-Transform}:
+%
+\begin{lstlisting}
+typedef itk::DisplacementFieldTransform<float,3> DFType;
+typename DFType::Pointer df = DFType::New();
+df->SetParametersAsVectorField(svf->GetDisplacementFieldAsVectorField());
+\end{lstlisting}
+%
+The methods \texttt{GetLogSpatialJacobianDeterminant} and \texttt{GetDisplacementFieldAsVectorField} depend on a \texttt{scheme} parameter. The \textit{scaling and squaring} scheme is fast but tends to be noisy and not reliable if the transformation is too big. The \textit{forward Euler} scheme is longer to compute but it is much more stable and reliable.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

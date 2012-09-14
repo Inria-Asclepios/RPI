@@ -1,0 +1,70 @@
+\section{Image interpolation}
+\label{sec:image:interpolation}
+
+
+
+Let $I$ be an image of size $[w,h,d]$ (resp. width, height, and depth). As explained in section~\ref{sec:image:systems}, the image is the representation (discretization) of a volume in the world coordinate system.
+Let $\mathbf{x}=(x,y,z)$ be the coordinates of a point in the world coordinate such that $\mathbf{x}$ is included into the acquired volume. In other words, if $\mathbf{i}=(i,j,k)$ is the projection of $\mathbf{x}$ in the voxel coordinates (see section~\ref{subsec:images:systems:projection}), we have:
+%
+\begin{equation}
+\mathbf{i} \in [0,w-1]\times[0,h-1]\times[0,d-1]
+\end{equation}
+%
+If $\mathbf{x}$ is randomly drawn in the image volume, the coordinates $(i,j,k)$ are probably not integer and $I(i,j,k)$ is not defined. The image interpolation consists in computing the image value at any index $(i,j,k)$ -- integer or not -- usually using the local neighborhood of $(i,j,k)$. Many algorithms have been proposed in the literature and we present in this section a very short list of the most classical interpolation methods. In the case of $(i,j,k)$ are out of the image bound is usually treated differently from the case where $(i,j,k)$ are in the image bound. This case will not be treated below.
+
+
+
+%----------------------------------------------------------------------------------------------------
+\subsection{Nearest neighbor interpolation}
+
+The interpolation to the nearest neighbor is the fastest and the simplest interpolation method.
+Given $(i,j,k)$ a non integer voxel coordinates, the image value at $(i,j,k)$ is given by
+%
+\begin{equation}
+I(i,j,k) \triangleq I( \underline{i}, \underline{j}, \underline{k} )
+\end{equation}
+%
+where $( \underline{i}, \underline{j}, \underline{k} )$ are respectively the round to the nearest integer of $(i,j,k)$.
+One particularity of the nearest neighbor interpolation -- which can be considered as an issue -- is that the image value is constant on an elementary volume centered around the integer coordinates ; if $(i,j,k)$ are here integer coordinates, we have
+%
+\begin{equation}
+I(i+\epsilon_1,j+\epsilon_2,k+\epsilon_3) = I(i,j,k)
+\end{equation}
+%
+for $\epsilon_{i=\{1,3\}} \in (-0.5,0.5)$. Note that in the case where $|\epsilon_{i=\{1,3\}}| = 0.5$, the selected nearest neighbor depends on the implementation of the rounding procedure. Usually, the nearest neighbor of $i+0.5$ is $i+1$, and, as a consequence, the nearest neighbor of $i-0.5$ is $i$.
+
+
+
+%----------------------------------------------------------------------------------------------------
+\subsection{Linear interpolation}
+
+Given $a$ a real number, we define $\lceil a \rceil$ and $\lfloor a \rfloor$ respectively as the round up (towards plus infinity) andthe round down (towards minus infinity) of $a$. Let $(i,j,k)$ be non integer voxel coordinates, and let $\alpha, \beta, \gamma$ be the weights defined as:
+%
+\begin{align}
+\alpha= & \lceil i \rceil - i \\
+\beta=  & \lceil j \rceil - j \\
+\gamma= & \lceil k \rceil - k \\
+\end{align}
+%
+The coordinates $(i,j,k)$ belongs by definition to the intervale $[ \lfloor i \rfloor , \lceil i \rceil]\times$ $[ \lfloor j \rfloor , \lceil i \rceil]\times$ $[ \lfloor i \rfloor , \lceil k \rceil]$. This intervale corresponds to a cuboid in the world coordinates where each one of its height corners is an element of the grid. The tri-linear interpolation uses the image values at these corners, the value at a given corner being simply weighted by a function of the distance between of the corner and the index $(i,j,k)$:
+%
+\begin{align}
+\nonumber I(i,j,k) & \triangleq I(\lfloor i \rfloor, \lfloor j \rfloor, \lfloor k \rfloor) * \alpha \beta \gamma\\
+\nonumber          & + I(\lceil  i \rceil , \lfloor j \rfloor, \lfloor k \rfloor) * (1-\alpha)\beta\gamma\\
+\nonumber          & + I(\lfloor i \rfloor, \lceil  j \rceil , \lfloor k \rfloor) * \alpha (1-\beta) \gamma\\
+\nonumber          & + I(\lfloor i \rfloor, \lfloor j \rfloor, \lceil  k \rceil ) * \alpha\beta(1-\gamma)\\
+\nonumber          & + I(\lceil  i \rceil , \lceil  j \rceil , \lfloor k \rfloor) * (1-\alpha) (1-\beta) \gamma\\
+\nonumber          & + I(\lceil  i \rceil , \lfloor j \rfloor, \lceil  k \rceil ) * (1-\alpha)\beta(1-\gamma)\\
+\nonumber          & + I(\lfloor i \rfloor, \lceil  j \rceil , \lceil  k \rceil ) * \alpha(1-\beta)(1-\gamma)\\
+                   & + I(\lceil  i \rceil , \lceil  j \rceil , \lceil  k \rceil ) * (1-\alpha)(1-\beta)(1-\gamma                   \label{eq:images:interpolation:linear}
+\end{align}
+%
+One interesting property of this interpolation method is that, contrary to the nearest neighbor interpolation method, there are no discontinuity in terms of values in the image volume. Moreover, the formula (\ref{eq:images:interpolation:linear}) is still valid even if $(i,j,k)$ are valid integer coordinates.
+\\
+However, if the initial image was coded for instance on integer (\textit{e.g.} \texttt{short}), the interpolation introduce non integer value that may be not adapted for some processing or visualization. In this case, the nearest neighbor interpolation is more adapted.
+
+
+
+
+%----------------------------------------------------------------------------------------------------
+%\subsection{Interpolation en volumes partiels}

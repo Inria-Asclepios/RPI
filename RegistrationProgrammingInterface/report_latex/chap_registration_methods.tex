@@ -1,0 +1,64 @@
+\section{RPI methods}
+
+
+In this section, we briefly present all the registration methods implemented into RPI. For a complete and accurate description of the method and of the parameters used, please refer to the corresponding code and publication (if any).
+
+
+
+\subsection{Baladin}
+
+Baladin~\cite{Ourselin_MICCAI_2000} is a registration method for scalar images and based on a pyramidal block-matching algorithm. Blocks are built in the moving image and, for each block, the most similar block is searched in the fixed image (exploration). Each paring of blocks defines a displacement vector. The set of displacement vector is finally used to estimate a linear transformation from the fixed to the moving image. The linear transformation computed can be a rigid transformation, a similitude, or an affine transformation.
+\\
+The output transformation computed by the library is represented as an \texttt{itk::\-Affine\-Transform\-<ScalarType,\-3>} object where \texttt{ScalarType} is either \texttt{float} or \texttt{double}. The output transformation computed by the executable is represented by an \texttt{itk::\-Affine\-Transform\-<double,\-3>} stored into a text file.
+\\
+Baladin can be initialized with a linear transformation (rigid, similitude, or affine) computed using Baladin, Baloo, or Optimus. If no initial transformation is provided, the initial transformation is simply the identity. If the type of the initial transformation is different from the type specified, the output transformation may not be of the type specified. The reason is that Baladin computes a linear transformation of the specified type that will be fused to the global transformation. For instance, if the initial transformation is the identity, the composition of rigid transformations is a rigid transformation. However, if the initial transformation is affine, the composition of affine and rigid transformations is an affine transformation.
+
+
+
+\subsection{Optimus}
+
+Optimus is a registration method for scalar images and based on the New UOA optimizer of Powell. The transformation computed by the registration method is a rigid transformation represented as an \texttt{itk::Euler3DTransform<double,3>} object and written into a text file for the executable. Optimus can only be initialized by an \texttt{itk::Euler3DTransform<double,3>} transformation. So far, the only registration in RPI able to compute an \texttt{itk::\-Euler3D\-Transform\-<double,\-3>} is Optimus.
+
+
+
+\subsection{Baloo}
+
+Baloo is a registration method for scalar and tensor images (2 classes) and based on a pyramidal block-matching algorithm. The transformation computed by the registration method is a linear transformation among rigid, similitude, or affine transformation. The output transformation computed by the library is represented as an \texttt{itk::\-Affine\-Transform\-<ScalarType,\-3>} object where \texttt{ScalarType} is either \texttt{float} or \texttt{double}. The output transformation computed by the executable is represented by an \texttt{itk::\-Affine\-Transform\-<double,\-3>} stored into a text file. Baloo cannot be initialized by any transformation.
+
+
+
+\subsection{SuperBaloo}
+
+Similarly to Baloo, SuperBaloo  is a registration method for scalar and tensor images (2 classes) and based on a pyramidal block-matching algorithm. However, SuperBaloo computes a displacement field transformation.
+\\
+The output transformation computed by the library is represented as an \texttt{itk::\-Displacement\-Field\-Transform\-<ScalarType,\-3>} object where \texttt{ScalarType} is either \texttt{float} or \texttt{double}. The executable writes the output transformation into a vector image (NifTi, Inrimage, NRRD, etc.) where values are coded as \texttt{float}. SuperBaloo cannot be initialized by any transformation.
+
+
+
+\subsection{Diffeomorphic Demons}
+
+Diffeomorphic demons is a registration method for scalar images and based on the demons algorithm. The difference with the classical demons is that the transformation computed -- a displacement field -- is a diffeomorphism.
+\\
+The output transformation computed by the library is represented as an \texttt{itk::\-Displacement\-Field\-Transform\-<ScalarType,\-3>} object where \texttt{ScalarType} is either \texttt{float} or \texttt{double}. The executable writes the output transformation into a vector image (NifTi, Inrimage, NRRD, etc.) where values are coded as \texttt{float}.
+\\
+The library can be initialized only by an \texttt{itk::\-Displacement\-Field\-Transform\-<SclaraType,\-3>} object. The executable can be initialized by a displacement field (vector image) or by an (ITK) linear transformation. In the case of linear transformation, the input transformation is converted into a displacement field which can initialize the corresponding library.
+
+
+
+\subsection{Log-Demons}
+
+Log-Demons is a registration method for scalar images and based on the demons algorithm. The difference with the classical demons is that the transformation computed is a stationary velocity field (SVF for short) and not a displacement field. This type of transformation is a convenient tool for registration since a SVF can be trivially converted into a displacement field that is a diffeomorphism.
+\\
+The output transformation computed by the library is represented as an \texttt{itk::\-Stationary\-Velocity\-Field\-Transform\-<ScalarType,\-3>} object where \texttt{ScalarType} is either \texttt{float} or \texttt{double}. The executable writes the output transformation into a vector image (NifTi, Inrimage, NRRD, etc.) where values are coded as \texttt{float}.
+\\
+The library can be initialized only by an \texttt{itk::\-Stationary\-Velocity\-Field\-Transform\-<SclaraType,\-3>} object. The executable can be initialized by a SVF (vector image) or by an (ITK) linear transformation. In the case of linear transformation, the input transformation is converted into a SVF which can initialize the corresponding library.
+
+
+
+\subsection{Incompressible Log-Demons}
+
+Incompressible Log-demons -- or iLogDemons for short -- is a registration method for scalar images and based on the Log-demons algorithm. The transformation computed is a stationary velocity field (SVF for short). The difference with the Log-demons is that the method accept an input mask image ; the iLogDemons adds a constraint on the computed SVF so that the volume of the zone defined into the mask is similar before and after applying the transformation.
+\\
+ The output transformation computed by the library is represented as an \texttt{itk::\-Stationary\-Velocity\-Field\-Transform\-<ScalarType,\-3>} object where \texttt{ScalarType} is either \texttt{float} or \texttt{double}. The executable writes the output transformation into a vector image (NifTi, Inrimage, NRRD, etc.) where values are coded as \texttt{float}.
+\\
+The library can be initialized only by an \texttt{itk::\-Stationary\-Velocity\-Field\-Transform\-<SclaraType,\-3>} object. The executable can be initialized by a SVF (vector image) or by an (ITK) linear transformation. In the case of linear transformation, the input transformation is converted into a SVF which can initialize the corresponding library.

@@ -1,0 +1,14 @@
+\begin{thebibliography}{ORPA00}
+
+\bibitem[ORPA00]{Ourselin_MICCAI_2000}
+S.~Ourselin, A.~Roche, S.~Prima, and N.~Ayache.
+\newblock Block matching: A general framework to improve robustness of rigid
+  registration of medical images.
+\newblock In {\em MICCAI '00}, volume 1935 of {\em LNCS}, pages 557--566, 2000.
+
+\bibitem[PFA04]{Pennec_report_2004}
+Xavier Pennec, Pierre Fillard, and Nicholas Ayache.
+\newblock A {R}iemannian {F}ramework for {T}ensor {C}omputing.
+\newblock Technical report, INRIA, July 2004.
+
+\end{thebibliography}

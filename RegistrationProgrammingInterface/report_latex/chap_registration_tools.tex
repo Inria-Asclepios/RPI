@@ -1,0 +1,35 @@
+\section{Other useful tools}
+
+
+
+\subsection{\texttt{imageConvert}}
+
+The \texttt{imageConvert} tool converts an image from one format to another. The format of each image is determined by its extension. Scalar images (2D and 3D) as well as DTI (3D) images are supported. Using some appropriate options, one can also modify the image origin, the voxel size, and the image orientation (direction). This will affect only the image header but not the content.
+
+
+
+\subsection{\texttt{imageDisplayProperties}}
+
+The \texttt{imageConvert} tool displays the properties of an input image. Scalar and vector images (DTI) are supported. 2D and 3D images are supported. See the example below to know what kind of information is displayed:
+ 
+\begin{lstlisting}
+[vgarcia@koch ~]$ imageDisplayProperties ~/Data/T1.nii 
+Image name       : /user/vgarcia/home/Data/T1.nii
+Image dimension  : 3
+Image size       : [ 181, 217, 181] voxels
+Pixel type       : scalar
+Component number : 1
+Component type   : float
+Component size   : 4 bytes
+Image origin     : [    0.000,    0.000,    0.000 ]
+Voxel size       : [    1.000,    1.000,    1.000 ]
+Direction cosine : [    1.000,    0.000,    0.000 ]
+                   [   -0.000,   -1.000,    0.000 ]
+                   [   -0.000,    0.000,    1.000 ]
+\end{lstlisting}
+
+
+
+\subsection{\texttt{imageResize}}
+
+The \texttt{imageResize} tool resizes an input image given either the new voxel size or the new image size. Voxel size and image size cannot be set simultaneously. Image orientation is preserved. Image origin may be shifted in order to perserved the borders of the image in the real world coordinates. However, if the voxel size set does not allow to discretize the initial volume into an integer number of voxels, the image size in units (image size in voxels * voxel size) and the image border of the output image will be different from those of the input image.

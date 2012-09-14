@@ -1,0 +1,107 @@
+\section{Composition of transformations}
+
+
+
+%-------------------------------------------------------------------------------------------
+\subsection{Order of composition}
+\label{subsec:tools:composition:order}
+
+Let us consider two images $I_F$ and $I_M$ (resp. fixed and moving images). We want to register $I_M$ to $I_F$ and a common way to do it is to apply successively different registration methods. In this example, we use three registration methods (e.g. rigid, affine, and non-linear). First, we apply the first registration method between images $I_F$ and $I_M$. We obtain a transformation (form the fixed to the moving image) $T_0$ and an image $I_0$ ($I_M$ re-sampled in the geometry of $I_F$):
+
+\begin{equation}
+\textrm{method}_1(I_F,I_M) \rightarrow \{T_1,I_1\}
+\end{equation}
+
+Then we apply the second registration method between images $I_F$ and $I_1$. By considering the image $I_1$ instead of $I_M$, we initialize the registration process by starting the algorithm \textit{closer} to the optimal transformation. We obtain a transformation $T_2$ and an image $I_2$ ($I_1$ re-sampled in the geometry of $I_F$):
+
+\begin{equation}
+\textrm{method}_2(I_F,I_1) \rightarrow \{T_2,I_2\}
+\end{equation}
+
+Finally, we apply the third registration method between images $I_F$ and $I_2$. We obtain a transformation $T_3$ and an image $I_3$ ($I_2$ re-sampled in the geometry of $I_F$):
+
+\begin{equation}
+\textrm{method}_3(I_F,I_2) \rightarrow \{T_3,I_3\}
+\end{equation}
+
+If we assume that the successive registration processes improved the image registration, the image $I_3$ should be the image the most similar to $I_F$, then $I_2$, $I_1$, and finally $I_M$. An important issue here is that $I_3$ is the result of three consecutive re-samplings of the initial moving image $I_M$. In order to avoid the multiple approximations due to these re-samplings, one may want to re-sample only once $I_M$ using the global transformation from $I_F$ to $I_M$. However, this global transformation is not $T_3$ but the composition of $T_1$, $T_2$, and $T_3$. Indeed, $T_3$ is the transformation from $I_F$ to $I_2$ ; the image $I_M$ re-sampled using $T_3$ is probably not correctly registered onto $I_F$.
+\\
+
+Let us consider the image re-sampling of $I_M$ using $T_1$. Let $\mathbf{x}=(x,y,z)$ be a point (in the real world coordinates) in the real grid of the fixed image. The re-sampling is defined as:
+
+\begin{equation}
+I_1(\mathbf{x}) = I_M(T_1(\mathbf{x}))
+\end{equation}
+
+Now, let us now consider the image re-sampling of $I_1$ using $T_2$:
+
+\begin{align}
+I_2(\mathbf{x}) & = I_1(T_2(\mathbf{x})) \\
+                & = I_M(T_1(T_2(\mathbf{x}))
+\end{align}
+
+Finally, we re-sample $I_2$ using $T_3$:
+
+\begin{align}
+I_3(\mathbf{x}) & = I_2(T_3(\mathbf{x})) \\
+                & = I_1(T_2(T_3(\mathbf{x})) \\
+                & = I_M(T_1(T_2(T_3(\mathbf{x}))) \\
+                & \triangleq I_M( T_1 \circ T_2 \circ T_3(\mathbf{x}) ) \label{eq:composition}
+\end{align}
+
+Eq.~\ref{eq:composition} shows that the global transformation allowing to re-sample the image $I_M$ onto $I_F$ using a single global transformation $T$ which is the composition of $T_1$, $T_2$, and $T_3$:
+
+\begin{equation}
+T = T_1 \circ T_2 \circ T_3
+\end{equation}
+
+
+
+%-------------------------------------------------------------------------------------------
+\subsection{Composing transformations using \texttt{rpiFuseTransformation}}
+
+The \texttt{rpiFuseTransformation} executable is a program that allow to fuse (compose) a list of transformation into a unique transformation. Since it is not possible yet -- at least in a general case -- to store a list of transformations into a single file, we propose to store the list as a XML file. This XML lists the type of each transformation and the path to the files containing the transformations :
+%
+\begin{lstlisting}
+<?xml version="1.0" encoding="UTF-8"?>
+
+<listoftransformations>
+
+    <transformation>
+        <type>linear</type>
+        <path>t0.txt</path>
+        <invert>1</invert>
+    </transformation>
+
+    <transformation>
+        <type>displacementfield</type>
+        <path>t1.nii.gz</path>
+        <invert>0</invert>
+    </transformation>
+
+</listoftransformations>
+\end{lstlisting}
+%
+
+In this example, we have 2 transformations. The first one (denoted $T_0$) is a linear transformation stored into the text file ``t0.txt''. The second transformation (denoted $T_1$) is a displacement field stored into the -- image -- file ``t1.nii.gz''. The computed transformation is given by $T_0 \circ T_1$. Thus, the order the transformations written into the XML file is important since the composition of two transformations is usually not commutative (see section~\ref{subsec:tools:composition:order}). The XML file can contain any strictely positive number of transformations. The meaning of the different tags is:
+%
+\begin{itemize}
+%
+\item Tag \texttt{<listoftransformations>} contains a set of transformations. This tag is mandatory.
+%
+\item Tag \texttt{<transformation>} contains a transformation. This tag must be an element of the tag \texttt{<listoftransformations>}. This tag is mandatory.
+%
+\item Tag \texttt{<type>} contains the type of the considered transformation. The available types are ``linear'', ``displacemendfield'', and ``stiaionaryvelocityfield''. This tag must be an element of the tag \texttt{<transformation>}. This tag is mandatory.
+%   
+\item Tag \texttt{<path>} contains the path to the file containing the transformation. A displacement field or a stationary velocity field must be stored into an image file (e.g. Nifty, Analyse, etc.). This tag must be an element of the tag \texttt{<transformation>}. This tag is mandatory.
+%
+\item Tag \texttt{<invert>} indicates if the considered transformation has to be inverted before the fusion. The value ``1'' induces the transformation inversion ; the value ``0'' means no inversion. This tag is optional. By default, no inversion is performed.
+%
+\end{itemize}
+%
+The type of the output transformation depends on the transformations of the list. A list of linear transformations will be fused into a linear transformation. If the list contains at least one displacement field, the output transformation will be a displacement field. If the option "--force-displacement-field" is used, the ouput transformation will be a displacement field.
+For now on, if the list contains linear transformations and stationary velocity fields, the computed transformation will be a displacement field. However, this will change in the near future in order to compute a unique stationary velocity field (thanks to Marco Lorenzi).
+\\
+One should choose the output file extension according to the transformation computed. Indeed, if the output transformation is a displacement field, only image format are supported (e.g. .nii). No checking on the file extension will be performed since the output transformation type is easily predictable.
+
+

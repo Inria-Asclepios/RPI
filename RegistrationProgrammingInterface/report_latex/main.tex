@@ -1,0 +1,34 @@
+% Preambule
+\input{preambule}
+
+% Style: By removing the following line, the style used is the basic book style
+\input{style}
+
+% Document
+\begin{document}
+
+    % Roman numbering
+    \frontmatter
+
+    % Cover page
+    \include{cover}
+
+    % Table of content
+    \tableofcontents
+
+    % Arabe numbering
+    \mainmatter
+
+    % Chapters
+    \include{chap_images}
+    \include{chap_transformations}
+    \include{chap_registration}
+
+    % Bibliography
+    \cleardoublepage
+    %\phantomsection
+    \addcontentsline{toc}{part}{Bibliography}
+    \bibliography{bibliography}
+    \bibliographystyle{alpha}
+
+\end{document}

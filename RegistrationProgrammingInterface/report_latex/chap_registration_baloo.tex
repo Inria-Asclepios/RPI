@@ -1,0 +1,97 @@
+\subsection{Baloo}
+
+
+
+\subsubsection{Description}
+
+The Baloo method was introduced by Olivier Commowick and allows one to compute a linear transformation (rigid, similitude, or affine) between two images.
+The method is based on a multi-resolution block-matching algorithm. The core of the algorithm is similar to SuperBaloo registration method. In Baloo, displacement vectors are used to compute a linear transformation.
+\\
+Because the similiarity measure is based on the correlation coefficient, Baloo is able to compute the transformation between images with different modality. Only scalar images are supported yet but tensor images will be supported soon.
+
+
+\subsubsection{Usage}
+
+\textcolor{red}{To be removed}
+
+\texttt{rpiBaloo -f <string> -m <string>}\\
+
+\noindent where the two strings are respectively replaced by the path the fixed and moving images.
+By default, the computed transformation is saved in output\_transform.txt while the resampled (moving) image is saved in output\_image.mha.
+
+
+\subsubsection{Options}
+
+\paragraph{\texttt{-f <string>,  --fixed-image <string>}}
+Required parameter. Path to the fixed image.
+
+\paragraph{\texttt{-m <string>,  --moving-image <string>}}
+Required parameter. Path to the moving image.
+
+\paragraph{\texttt{-t <string>,  --output-transform <string>}}
+Path of the output transformation (default output\_transform.txt).
+
+\paragraph{\texttt{-i <string>,  --output-image <string>}}
+Path to the output image (default output\_image.mha).
+
+\paragraph{\texttt{--fixed-mask <string>}}
+Path to the binary mask of the fixed image.
+
+\paragraph{\texttt{--coarse-pyramid-level <uint>}}
+Coarsest pyramid level (default 3).
+
+\paragraph{\texttt{--fine-pyramid-level <uint>}}
+Finest pyramid level (default 0).
+
+\paragraph{\texttt{-a <uint>,  --iterations <uint>}}
+Number of iterations at each pyramid level (default 10).
+
+\paragraph{\texttt{-d,  --double-iterations}}
+If activated, double the number of iterations at coarsest pyramid
+levels.
+
+\paragraph{\texttt{-p <int>,  --processors <int>}}
+Number of logical processors to be used (default 1).
+
+\paragraph{\texttt{--transform-type <uint>}}
+Transformation type.  Must fit in the range [0,5] where 0=rigid,
+1=similitude, and 2=affine (default 0).
+
+\paragraph{\texttt{--similarity-measure <uint>}}
+Similarity measure. Must fit in the range [0,5] where 0=Sum of Squared
+Differences, 1=Correlation Coefficient, 2=Squared Correlation
+Coefficient, 3=Tensor Squared Correlation Coefficient (for tensor
+images only), 4=Mixed Squared Correlation Coefficient, 5=Maximum
+Correlation Coefficient (default 2).
+
+\paragraph{\texttt{--lts <float>}}
+LTS cut value for LTSW estimator (default 0.8).
+
+\paragraph{\texttt{--blocks-overstep}}
+If activated, allows the blocks to overstep the image border.
+
+\paragraph{\texttt{-k <float>,  --percentage-to-keep <float>}}
+Percentage of block to keep (default 0.8).
+
+\paragraph{\texttt{--variance-block-pruning <float>}}
+Minimal variance for block pruning (default 0.0).
+
+\paragraph{\texttt{--block-half-size <uintxuintxuint>}}
+Half size (in voxels) of blocks along the X-, Y-, and Z-axis
+(block-matching). Values must be separated by "x". Example, string
+"2x3x4" indicates that blocks of size 5x7x9 pixels will be used
+(default 2x2x2).
+
+\paragraph{\texttt{--block-spacing <uintxuintxuint>}}
+Space (in voxels) between blocks along the X-, Y-, and Z-axis
+(block-matching). Values must be separated by "x" (default 2x2x2).
+
+\paragraph{\texttt{--window-half-size <uintxuintxuint>}}
+Half size (in voxels) of search window blocks along the X-, Y-, and
+Z-axis (block-matching). Values must be separated by "x". Example,
+string "2x3x4" indicates that a window of size 5x7x9 pixels will be
+used (default 1x1x1).
+
+\paragraph{\texttt{--step-size <uintxuintxuint>}}
+Step size (in voxels) along the X-, Y-, and Z-axis (block-matching).
+Values must be separated by "x" (default 1x1x1).

@@ -1,0 +1,34 @@
+\section{Definition}
+
+In this report, the term \textit{image} will always refer to the notion of \textit{digital image} or \textit{raster image}. Raster images have a finite set of digital values called picture elements or \textit{pixels}. An image can be 2D, 3D, 4D, etc. and contains a fixed number of pixels in each dimension. Typically, the pixels are stored as a $n$-dimensional array where $n$ denotes the image dimension. A given dimension may refer to a spatial dimension (width, height, depth), temporal dimension (time), or anything else (e.g. resolution level, etc.).
+
+
+\subsection{2D images}
+
+The smallest elements of an images are called pixels. The pixels of an image $I$ are indexed by their coordinates
+\\
+Dans le cas d’une image 2D, les éléments de la matrice sont appelés ``pixels'' pour picture elements.  Les pixels d’une image I sont indexés par leurs coordonnées entières (i,j) :
+$$
+I(i,j)
+$$
+Le pixel (0,0) est historiquement situé dans le coin supérieur gauche de l’image (par rapport à sa représentation visuelle), la première dimension parcourant l’image horizontalement, et la seconde la parcourant verticalement (c.f. balayage d’un tube cathodique). Cependant, il peut être plus intéressant de situer cette origine dans le coin inférieur gauche (c.f. repère usuel en mathématiques) ou au centre de l’image.
+Au niveau de la représentation d’un pixel, il est courant de coder la valeur d’un pixel par un char prenant ces valeurs dans [0,255], 0 représentant le noir et 255 le blanc. Dans ce cas, l’image est dite en niveaux de gris. Cependant, tout intervalle de valeur peut être considéré et il n’est pas rare de rencontrer des images codées en float. Il est crucial d’associer la valeur d’un pixel à sa représentation visuelle (sur un écran) ainsi qu’à sa représentation sémantique (e.g. nature d’un tissus : os, chaire, etc.). Un écran étant également constitué de pixels, chaque pixel de l’image est affiché par un pixel de l’écran.
+\\
+Le cas des images couleurs est un cas particulier. Elles peuvent être considérées comme des images 3D (la dernière dimension permettant de changer de canal) ou comme des images 2D où chaque pixel contient autant de valeur que de spectres (e.g. RGB). Dans tous les cas, un espace de couleur associé à une image permet de représenter visuellement cette dernière sur, par exemple, un écran d’ordinateur. La calibration d’un écran est obligatoire pour assurer une représentation unique et ce quel que soit l’écran utilisé.
+Il est possible de trouver dans la définition d’un pixel une notion de surface. Cette notion sera discutée dans la section traitant des images dans l’espace réel.
+
+\subsection{Images 3D}
+
+Les images 3D sont des matrices à 3 dimensions. Chaque élément de la matrice est appelé `` voxel '' pour volumetric pixel. Comme pour les images 2D, les voxels d’une image 3D sont indexés par leurs coordonnées entières (i,j,k) :
+$$
+I(i,j,k)
+$$
+Si on omet de considérer les images couleurs, les images 3D peuvent représenter :
+\begin{itemize}
+    \item Une image 2D évoluant dans le temps. On parle alors d’image 2D+t.
+    \item Une image volumique, chaque voxel représentant une sous-partie d’un volume.
+\end{itemize}
+Les images volumiques sont en particulier utilisées en imagerie médicale. Ce type d’images sera discuté dans la section traitant des images dans l’espace réel.
+Comme dans le cas des pixels, un voxel est codé sur une plage de valeurs (char, float, double, etc.).
+Une image 2D+t peut être affichée sur un écran en parcourant la dimension t et en affichant la sous-image 2D correspondante. L’affichage d’images volumétriques est actuellement très peu rependu (écran holographique). Pour des écrans standards, l’affichage 3D est impossible. Une projection du volume 3D sur un plan 2D couplée à des interactions 2D interprétées en 3D (orientation du volume, navigation dans le volume, etc.) permettant de donner une impression de volume 3D.
+L’origine des images 3D n’est pas liée à leur affichage. Le `` coin supérieur gauche '' n’a pas de sens absolu en 3D. Pour des images volumiques médicales, chaque axe est associé à ce qu’il représente. Par exemple, le système LPS (Left, Posterior, Superior) indique que la première dimension parcourt le patient de droite (main droite) à gauche, la deuxième dimension de devant (ventre) vers l’arrière (dos), et la troisième de bas (pieds) en haut (tête). Notez que ce volume ne contient généralement qu’une partie du corps.

@@ -1,0 +1,182 @@
+\section{RPI Specifications}
+
+
+
+\subsection{\texttt{RegistrationMethod} class}
+
+
+RPI defines a C++ programming class named \texttt{RegistrationMethod}. This class gives to a method author a strict but simple programming framework. The \texttt{RegistrationMethod} class is an abstract class and does not allow to register images. Its purpose is to provide a common interface which has been designed to cover most of registration methods. In this section, we will briefly present the \texttt{RegistrationMethod} class and its key features. The presented code has been intentionally simplified to clarify the explanation. One should read the source code for a complete and accurate specification of RPI.
+\\
+
+\texttt{RegistrationMethod} is a templated class:
+\\
+%
+\begin{lstlisting}
+template < class TFixedImage,
+           class TMovingImage,
+           class TTransformScalar > class RegistrationMethod
+\end{lstlisting}
+%
+\texttt{TFixedImage} and \texttt{TMovingImage} respectively represent the types of the fixed and the moving image. \texttt{TFixedImage} and \texttt{TMovingImage} must be \texttt{itk::Image} objects. As you may know, \texttt{itk::Image} is templated over the the image dimension and the pixel type. Dimension is usually 3 while pixel type can be either a scalar type (e.g. \texttt{short}, \texttt{float}, etc.) or can be a \texttt{itk::Vector} for diffusion tensor images (DTI for short). Type \texttt{TTransformScalar} defines the type of the transformation parameters (e.g. type of each element of a affine transformation matrix). It should be either \texttt{float} or \texttt{double}. Some registration methods support different types of images and/or different types of transformation parameters (e.g. Optimus method) while other methods only support one type of images (e.g. Log-demons) or transformation parameters. In all cases, the image and transformation parameter types supported by a given registration method must clearly be stated in the code documentation. It is not of the responsibility of the user to guess the type of images and transformation parameters supported.
+\\
+
+The \texttt{RegistrationMethod} class provides all the basic necessary functions to register two images. First, the fixed and the moving images can be set and get using the following accessors:
+%
+\begin{lstlisting}
+TFixedImage::ConstPointer  GetFixedImage(void);
+void                       SetFixedImage(const TFixedImage * image);
+TMovingImage::ConstPointer GetMovingImage(void);
+void                       SetMovingImage(const TMovingImage * image);
+\end{lstlisting}
+%
+Images must contain all the information necessary to orient and positioned images in the real word coordinates. One should note that the notion of smart pointer used here (\texttt{Pointer} and \texttt{ConstPointer}) is very common in ITK. The registration process can be started using the function:
+%
+\begin{lstlisting}
+virtual void               StartRegistration(void) = 0;
+\end{lstlisting}
+%
+As the reader may notice, this function is pure virtual since this class is only meant to be inherited. Once the registration process is complete, one can get the output transformation using the function:
+%
+\begin{lstlisting}
+TransformPointerType       GetTransformation(void) const;
+\end{lstlisting}
+%
+where
+%
+\begin{lstlisting}
+typedef itk::Transform< TTransformScalarType,
+                        TFixedImage::ImageDimension,
+                        TMovingImage::ImageDimension > TransformType;
+                        
+typedef typename TransformType::Pointer TransformPointerType;
+\end{lstlisting}
+%
+The computed transformation must be a transformation in the real world coordinates allowing to resample the moving image, \textit{i.e.} the transformation from the fixed image to the moving image.
+\\
+Images and transformations are stored into ITK containers. This choice was decided by the Asclepios team members and was justify by the following points:
+%
+\begin{itemize}
+    \item ITK is an open-source library.
+    \item The ITK code is maintained by hundreds of developers.
+    \item All the registration methods recently developed by the team use ITK objects for images and transformations.
+    \item The IO procedures to read/write images and transformations are provided by ITK.
+    \item Most of image format are supported by ITK.
+    \item ITK provides useful tools to manipulate images and transformations.
+\end{itemize}
+%
+Any transformation computed by any registration method of RPI must inherit from the \texttt{itk::Transform} class (see section\ref{chap:transformations}).
+\\
+
+ITK also provides a registration framework and one may ask why RPI is not included into this framework. The ITK registration framework is too specific and does not allow to easily integrate few of Asclepios' registration methods such as \textit{Baladin} and \textit{SuperBaloo}. As a consequence, it has been decided not to base the registration API on this framework but to design a new framework more simple and more generic. Only the ITK containers were used for the reasons given previously.
+
+
+
+\subsection{Creating a new registration class}
+
+
+Any registration method of RPI must inherit from the super class \texttt{RegistrationMethod}. By definition, a registration method (\textit{i.e.} derived class) inherits all the necessary functions to set inputs, start registration, and get the output transformation. Most of registration methods use parameters to modify the method behavior. The parameters (class members) as well as the corresponding accessors must be implemented into the method -- derived -- class. Several registration methods share parameters such as the maximum number of iterations. In order to have methods as consistent as possible, parameters should be consistent as well (same member's name, same accessor's name). Finally, the code must be clean, should use the latest programming standards, and must be well documented (doxygen style).
+
+
+
+\subsection{Libraries}
+
+So far, most of registration methods of MIPS unfortunately can be called only using a specific executable ; one of them offered a C++ library that could eventually be used within a third party application such as MedInria. In RPI, every single registration method must be compiled into a library. By following all the specifications presented in this document (inheritance from \texttt{RegistrationMethod}, use ITK images and transformations, \textit{etc.}), a library corresponding to a given registration method (called here \texttt{MyMethod}) can then be trivially used into an external application:
+%
+\begin{lstlisting}
+typedef MyMethod<TFixedImage,TMovingImage,TransformScalarType> Method;
+
+MyMethod * method = new MyMethod();
+method->SetFixedImage(fixed);
+method->SetMovingImage(moving);
+method->StartRegistration();
+transform = method->GetTransformation();
+
+// Use the transformation to do what you need to do...
+
+delete method;
+\end{lstlisting}
+%
+This minimal code register the two images with default parameters. To modify the method parameters, one should use the correct accessors.
+
+
+
+\subsection{Executables}
+
+Along with the library, each registration method must provide an executable based on its library. The executable workflow should be (more or less) the following:
+%
+\begin{enumerate}
+\item Read input images (paths given in the command line arguments).
+\item Parse method parameters from command line arguments.
+\item Create a registration object.
+\item Set input images and method parameters.
+\item Start registration.
+\item Get and save the transformation into an output file.
+\item Resample the moving image using the transformation and save it into an output file.
+\end{enumerate}
+%
+An important part of a usable executable is the parsing of the command line arguments. Among all existing tools, we propose to use the TCAL library. TCLAP provides a simple command line parser and automatically generates the usage information (``help'') using options \texttt{--help} or \texttt{-h}. The author must pay an extra attention to the description of the usage information. It is usually the only available help a user may have to learn how to correctly use a given executable.
+\\
+
+All registration executables must share the following options:
+%
+\begin{itemize}
+\item \texttt{-f} and \texttt{--fixed-image} allows to specify the path to the fixed image.
+\item \texttt{-m} and \texttt{--moving-image} allows to specify the path to the moving image.
+\item \texttt{-t} and \texttt{--output-transform} allows to specify the path to the output transformation.
+\item \texttt{-i} and \texttt{--output-image} allows to specify the path to the output image (moving image resampled).
+\end{itemize}
+%
+One easily understands that since these options define the minimal input of any registration method, it becomes trivial to switch from one registration method to another one. Only advanced options must be modified.
+\\
+
+Finally, since only a single library is shared by all applications (executable and third party application), there is no duplication of the registration code. All contributors work on the same code. The code is then easier to maintain and contains necessarily less bugs. The transformation computed by an executable or by third party application (same method and same parameters) is by definition identical.
+
+
+
+\subsection{TRex}
+
+In order to help researchers and engineers to develop and integrate their registration method into RPI, we have developed a toy example. This example named TRex -- for \textit{Toy Registration EXample} -- is a registration method fully based on ITK. The transformation computed is a rigid transformation and the optimization method is a simple gradient descent. This example shows how to write a registration method (class) inheriting from \texttt{RegistrationMethod}, how to compile the class into a library, and how to write the code which will be compiled into a usable executable with the appropriate usage information. This example is simple, well documented and very easy to understand. The method has only one parameter.
+
+
+
+\subsection{Observers}
+
+Depending on the registration method, the set of parameters used, and the input images, the registration process may be very long task. If the considered method is included into an application such as MedInria, it can be very useful to know the progression of the registration process. For instance, the software is usually waiting for the process to be finished before updating the current view. Therefore, we have developed an event observer.
+\\
+An observer is an object which is linked to the considered registration method. When the progression of the registration process changes (\textit{e.g.} registration starts, stops, \textit{etc.}), all the observers are notified. Each notified observer does a specific task defined by the user, for instance update the current view if the registration process is finished.
+\\
+The observer class in RPI is named \texttt{rpi::Observer} and is based on a very simple but efficient design pattern. A user that would want to define an observer must create a class that inherits from \texttt{rpi::Observer} and implement the \texttt{Update()} method which will be called by the registration method during the notification to observers:
+%
+\begin{lstlisting}
+template < class TFixedImage,
+           class TMovingImage,
+           class TTransformScalarType=double >
+class MyObserver : public rpi::Observer<TFixedImage,
+                                        TMovingImage,
+                                        TTransformScalarType>
+{
+public:
+
+  typedef rpi::RegistrationMethod<TFixedImage,
+                                  TMovingImage,
+                                  TTransformScalarType> Method;
+
+  void Update(void)
+  {
+    if (this->m_registrationMethod->GetRegistrationStatus()==
+      Method::REGISTRATION_STATUS_PROCESSING)
+    {
+      std::cout << "I am processing..." << std::endl;
+    }
+    else if (this->m_registrationMethod->GetRegistrationStatus()==
+      Method::REGISTRATION_STATUS_STOP)
+    {
+      std::cout << "I have finished!" << std::endl;
+    }
+  }
+};
+\end{lstlisting}
+%
+The observer is a templated class since the observer object must contain an instance of the \texttt{rpi::RegistrationMethod} object. The signification of the templates is similar too the templates used by \texttt{rpi::RegistrationMethod}. In the example given previously, one understand what does the considered observer: the \texttt{Udpate()} method displays "I have finished!" if the registration process is finished, and "I am processing..." otherwise.
+\\
+To attach an observer to a registration method, simply use the \texttt{AttachObserver()} method. The class \texttt{rpi::RegistrationMethod} also provides the methods \texttt{GetRegistrationStatus()} and \texttt{SetRegistrationStatus()} which respectively gets and sets the status of the registration process. Two status are provided: \texttt{REGISTRATION\_STATUS\_PROCESSING} and \texttt{REGISTRATION\_STATUS\_STOP}. These two status represent the minimum information on the registration status one could expect. However, if a registration method provides a better granularity of the registration progression, this fineness may be used by the observer. In this case, the considered method updates a specific instance variable at each iteration of the algorithm and notify its associated observer. Then, the observers can access -- directly in the \texttt{Update()} method -- to the \textit{improved} progression status using the adapted accessor. This can be very useful for progression bar for instance.

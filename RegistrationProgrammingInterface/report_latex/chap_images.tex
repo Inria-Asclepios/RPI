@@ -1,0 +1,25 @@
+\chapter{Images}
+
+
+Contrary to the classical notion of image employed in image processing, a medical image corresponds to the acquisition of an 3D (anatomical) volume\footnote{We consider here only 3D scalar images. Generalization to other dimensions and other modalities can be trivially deduced from the 3D case.}. The volume is discretized by first defining a virtual grid in the volume to acquire. Each element of the grid, called voxel for \textit{volume element}, receive a value computed from the integration of a given signal on an elementary volume centered on the considered voxel. The grid and its associated values are then stored into a 3D array.
+\\
+
+Considering the 3D array to represent a volume has been norm the for long. However, over the years, research studies proved that adding geometrical and anatomical information allowed to greatly improve computations. For instance, the information relative to the voxel size -- distance between two adjacent voxels -- has been proved to be very useful if not essential. Recent acquisition devices provide more geometrical (or positioning) information, such as image origin and image orientation, that may really help any process on images (see Figure~\ref{fig:position}).
+\\
+As a consequence, for each image, we have two different coordinate systems. First, the image coordinate system allow to access to the voxel value using classical indexes (\textit{e.g.} $I(i,j,k)$). Second, the world coordinate system position each voxel according to a coordinate system shared by all images. These coordinate systems and the projection from one system to the other one are presented in section~\ref{sec:image:systems}.
+\\
+
+Most if discretization implies a lost of information. The notion of image interpolation, well know in the image processing community, tries to recover the information lost during this discretization process. We present briefly in section~\ref{sec:image:interpolation} some interpolation algorithms used in medical imaging.
+
+%
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.5\linewidth]{orientation.pdf} 
+\caption{Acquisition of two images at different angles of incidence. Without position information (bottom left picture), the two acquisition cannot be superimposed and are difficult to compare. With the position information (bottom right picture), the two acquisition are trivially superimposed.}
+\label{fig:position}
+\end{figure}
+
+
+\input{chap_images_position}
+
+\input{chap_images_interpolation}

@@ -1,0 +1,21 @@
+\chapter{Registration API}
+
+
+\section{Goal}
+
+MIPS\footnote{Medical Image Processing and Simulation} is a set of tools (C++ libraries and executables) offering a suite of functionalities for processing and visualizing medical images and geometric meshes. The image registration tools, which now represent a major part of MIPS, have been developed for years by the different members of the Epidaure and Asclepios teams. Due to different causes (multiple image formats, evolution of registration technics, etc.) it is quite hard to compare two methods. For the same reasons, using two different methods into a registration workflow or simply switch from one method to another one is a complicated task. At best, one usually has to write huge and complex conversion procedures which is not trivial and is very time consuming. The goal of the registration API\footnote{Application Programming Interface} is to address these issues by proposing a simple an intuitive interface shared by all registration methods. This common interface greatly simplifies the user experience while helping the author of a new registration method to focus on the algorithm, not on the user interface. We call this interface RPI for \textit{Registration Programming Interface}.
+
+
+\input{chap_registration_specifications}
+
+\input{chap_registration_methods}
+
+\input{chap_registration_resampling}
+
+\input{chap_registration_composition}
+
+\input{chap_registration_conversion}
+
+\input{chap_registration_tools}
+
+\input{chap_registration_todo}

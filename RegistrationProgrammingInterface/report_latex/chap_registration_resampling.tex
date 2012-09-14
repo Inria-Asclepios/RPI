@@ -1,0 +1,35 @@
+\section{Image resampling}
+
+
+%-------------------------------------------------------------------------------------------
+\subsection{Theory}
+\label{subsec:registration:resampling:theory}
+
+Let $F$ and $M$ be respectively the fixed and the moving images. If we want to register $M$ on $F$, we want to modify $M$ so that the modified -- or transformed -- version of $M$ can be superimposed on $F$. Instinctively, one would want to estimate the transformation from $M$ to $F$ in order to apply this transformation to $M$. Well, in fact, we need the transformation from $F$ to $M$ to resample $M$ in the geometry of $F$. This is not trivial and we will try to convince you in this section.
+\\
+Let $\widetilde{M}$ be the resampled version of $M$ in the geometry of $F$. Theoretically, $\widetilde{M}$ and $F$ can be superimposed and then compared for diagnosis purpose for instance. First, we create an empty image $\widetilde{M}$ which has exactly the same geometrical properties of $F$ (image size, voxel size, orientation, and origin). Second, we have to fill $\widetilde{M}$ with information \textbf{taken} from image $M$. Let $(i,j,k)$ be an index (voxel coordinates) of $\widetilde{M}$ and let $(x,y,z)$ be the corresponding world coordinates. Then, let $T_{F \rightarrow M}$ be the transformation from $F$ to $M$. The value assigned to $\widetilde{M}(x,y,z)$ (world coordinates) is given by:
+
+\begin{equation}
+\widetilde{M}(x,y,z) = M(_{F \rightarrow M}(x,y,z))
+\label{eq:registration:resampling:1}
+\end{equation}
+
+If the world coordinates $T_{F \rightarrow M}(x,y,z)$ are not defined on the grid of $M$, $M(_{F \rightarrow M}(x,y,z))$ is estimated by image interpolation (see section~\ref{sec:image:interpolation}).
+\\
+In other words, to resample $M$, we go through the voxels of $\widetilde{M}$. For each voxel of $\widetilde{M}$ we deduce the position of the corresponding voxel into $M$ using the transformation $_{F \rightarrow M}$, and then we \textbf{take} the value at this position in $M$ and assigned it to the initial position in $\widetilde{M}$.
+\\
+
+Still not convince? Let's see now what would happen if we had the transformation $T_{M \rightarrow F}$ from $M$ to $F$. As before, we first create an empty image $\widetilde{M}$ which has exactly the same geometrical properties of $F$. We go through $M$ and for each voxel of $M$, we send its corresponding value to $\widetilde{M}$ using $T_{M \rightarrow F}$. If $(x,y,z)$ is the world coordinates of a voxel of $M$, we have:
+
+\begin{equation}
+\widetilde{M}(T_{M \rightarrow F}(x,y,z)) = M(x,y,z)
+\label{eq:registration:resampling:2}
+\end{equation}
+
+First difficulty here, if coordinates $T_{M \rightarrow F}(x,y,z)$ are not defined on the grid of $\widetilde{M}$, how to assign -- or distribute -- the value $M(x,y,z)$ in $\widetilde{M}$? For the next problem, let us assume that coordinates $T_{M \rightarrow F}(x,y,z)$ are always defined on the grid of $\widetilde{M}$ in order to simplify the explanation. Let us consider the case where $M$ contains $n$ voxels while $F$ contains $2n$ voxels. Using the second scheme (transformation from $M$ to $F$), one understands that only half of voxels of $\widetilde{M}$ will receive a value from $M$. The other half won't be modified and consequently $\widetilde{M}$ will have "holes".
+
+
+%-------------------------------------------------------------------------------------------
+\subsection{\texttt{rpiResampleImage}}
+
+The \texttt{rpiResampleImage} tool resample an input scalar image given an input transformation. The supported transformations are identity, linear transformations, displacement field transformations, and stationary velocity field transformations computed using the registration methods of RPI (but not only). The image specified using the \texttt{--geometry} option is used to set the resample image geometry. If the \texttt{--geometry} option is not used, the geometry of the resampled image will be either similar to the input image geometry if the input transformation is a linear transformation, or will be similar to the geometry of the input field is the input transformation is a displacement field or a stationary velocity field. Several image interpolation methods are proposed.

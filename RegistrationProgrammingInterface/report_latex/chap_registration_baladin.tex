@@ -1,0 +1,124 @@
+\subsection{Baladin}
+
+
+
+\subsubsection{Description}
+
+Baladin~\cite{Ourselin_MICCAI_2000} is a registration method is based on a pyramidal block-matching algorithm. Blocks are built in the moving image. For each block, the most similar block is searched in the fixed image (exploration). Each paring of blocks defines a displacement vector. The set of displacement vector is finally used to estimate a linear transformation from the fixed to the moving image.
+
+
+\subsubsection{Options}
+
+
+\begin{itemize}
+%
+\item \textbf{Initial transformation}: Baladin is able to initialize the image registration process using and initial transformation. The transformation computed by Baladin integrates the initial transformation.
+%
+\item \textbf{Coarse and fine pyramid levels}: The registration process use a pyramidal approach where the fixed and the moving images are defined at different resolution. The level 0 corresponds to the image at its original size. Le level 1 correspond to an image twice smaller, etc. The coarse and fine pyramid levels specify the range of levels on which the registration process is performed.
+%
+\item \textbf{Gaussian pyramid}: Build the pyramid using a recursive Gaussian filtering.
+%
+\item \textbf{RMS}: Use the RMS (root median squares) as an end condition at each pyramid level.
+%
+\item ...
+%
+\end{itemize}
+
+
+%   -a <uint>,  --iterations <uint>
+%     Number of iterations at each pyramid level (default 4).
+%
+%   --block-size <uintxuintxuint>
+%     Block size (in voxels) along the X-, Y-, and Z-axis. Values must be
+%     separated by "x" (default 4x4x4).
+%
+%   --block-border-size <uintxuintxuint>
+%     Block border (in voxels and in each direction) used to estimate first
+%     order statistics. Let S be the block size and B the border size, the
+%     size of blocks (for the dimension d) used to estimate these statistics
+%     is S[d] + 2 * B[d]. Values must be separated by "x" (default 0x0x0).
+%
+%   --block-spacing <uintxuintxuint>
+%     Space (in voxels) between blocks along the X-, Y-, and Z-axis. Values
+%     must be separated by "x" (default 3x3x3).
+%
+%   --neighborhood-size <uintxuintxuint>
+%     Neighborhood size (in voxels) along the X-, Y-, and Z-axis. This size
+%     defines how far will go the exploration around the initial block.
+%     Values must be separated by "x" (default 3x3x3).
+%
+%   --step-size <uintxuintxuint>
+%     Step size (in voxels) along the X-, Y-, and Z-axis used while
+%     exploring the initial block neighborhood. Values must be separated by
+%     "x" (default 1x1x1).
+%
+%   --transform-type <string>
+%     Transformation type.  Must be a string among RIGID, SIMILITUDE, and
+%     AFFINE (default RIGID).
+%
+%   --estimator-type <string>
+%     Estimator type. Must be a string among: LS (for least squares), LTS
+%     (for least trimmed squares), LSW (for weighted least squares), LTSW
+%     (for weighted leat trimmed squares), (default LTSW).
+%
+%   --estimator-percentage <float>
+%     Percentage of points considered during the parameter estimation using
+%     a 'trimmed' estimator (LTS or LTSW). Has no influence with estimators
+%     LS and LSW (default 1).
+%
+%   --measure-type <string>
+%     Similarity measure type. Must be the string CC (for correlation
+%     coefficient) or ECC (for extended correlation coefficient) (default
+%     CC).
+%
+%   --measure-threshold <float>
+%     Threshold on the similarity measure. Pairings having a measure of
+%     similarity below this threshold will not be considered (default 0).
+%
+%   --fixed-low-threshold <float>
+%     Low threshold on the fixed image. Only voxels of the fixed image with
+%     a value strictly greater than this threshold are considered during the
+%     registration process (default -100000).
+%
+%   --fixed-high-threshold <float>
+%     High threshold on the fixed image. Only voxels of the fixed image with
+%     a value strictly smaller than this threshold are considered during the
+%     registration process (default 100000).
+%
+%   --moving-low-threshold <float>
+%     Low threshold on the moving image. Only voxels of the moving image
+%     with a value strictly greater than this threshold are considered
+%     during the registration process (default -100000).
+%
+%   --moving-high-threshold <float>
+%     High threshold on the moving image. Only voxels of the moving image a
+%     value strictly smaller than this threshold are considered during the
+%     registration process (default 100000).
+%
+%   --fixed-block-threshold <float>
+%     Block acceptance threshold for the fixed image. During the
+%     registration process, a given block of the fixed image is used only if
+%     the proportion of considered voxels (voxels with value between the low
+%     and the high threshold) if greater than or equal to this acceptance
+%     threshold. Value must fit in [0,1) (default 0.5).
+%
+%   --moving-block-threshold <float>
+%     Block acceptance threshold for the moving image. During the
+%     registration process, a given block of the moving image is used only
+%     if the proportion of considered voxels (voxels with value between the
+%     low and the high threshold) if greater than or equal to this
+%     acceptance threshold. Value must fit in [0,1) (default 0.5).
+%
+%   --block-proportion <float>
+%     Proportion of blocks used at the coarsest pyramid level. Only blocks
+%     with the highest variance are used. Value must fit in (0,1] (default
+%     1.0).
+%
+%   --block-proportion-decrement <float>
+%     Decrement value of the proportion of blocks used. Between two
+%     consecutive pyramid levels, the proportion of blocks used is decreased
+%     by this specified value. Value must fit in [0,1) (default 0.2).
+%
+%   --block-minimum-proportion <float>
+%     Minimum proportion of blocks used at every pyramid level. Value must
+%     fit in (0,1] (default 0.5).
