@@ -145,7 +145,7 @@ TransformPoint(const InputPointType & point) const
 
     float numiterfloat = 2.0 +
             0.5 * vcl_log(maxnorm2)/vnl_math::ln2;
-    //std::cout<<"Num iter float: "<<numiterfloat<<std::endl;
+    std::cout<<"Num iter float: "<<numiterfloat<<std::endl;
 
     unsigned int constant=static_cast<unsigned int>(1<<static_cast<unsigned int>(abs(numiterfloat)));
 
@@ -153,7 +153,7 @@ TransformPoint(const InputPointType & point) const
     typename DividerType::Pointer Divider=DividerType::New();
     Divider->SetInput(m_VectorField);
     Divider->SetConstant( constant );
-    //std::cout<<"divider "<<  static_cast<unsigned int>(1<<static_cast<unsigned int>(abs(numiterfloat))) <<std::endl;
+    std::cout<<"divider "<<  static_cast<unsigned int>(1<<static_cast<unsigned int>(abs(numiterfloat))) <<std::endl;
 
     Divider->Update();
 

@@ -60,7 +60,7 @@ set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${PROJECT_BINARY_DIR}/${${PROJECT_NAME}_RU
 set ( CMAKE_LIBRARY_OUTPUT_DIRECTORY  ${PROJECT_BINARY_DIR}/${${PROJECT_NAME}_LIBRARY_OUTPUT_DIRECTORY}  CACHE PATH "Single Directory for all dynamic libraries" )
 set ( CMAKE_ARCHIVE_OUTPUT_DIRECTORY  ${PROJECT_BINARY_DIR}/${${PROJECT_NAME}_ARCHIVE_OUTPUT_DIRECTORY}  CACHE PATH "Single Directory for all static libraries"  )
 
-set(${PROJECT_NAME}_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/src" "${CMAKE_SOURCE_DIR}/examples")
+set(${PROJECT_NAME}_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/src" "${CMAKE_SOURCE_DIR}/RegistrationAddOn" "${CMAKE_SOURCE_DIR}/examples")
 
 # Set runtime, library, and archive install output directories
 set ( RUNTIME_INSTALL_OUTPUT_DIRECTORY  ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_RUNTIME_OUTPUT_DIRECTORY}  CACHE PATH "Single Install Directory for all executables"       )
@@ -87,6 +87,7 @@ if (RPI_BUILD_EXAMPLES)
 endif(RPI_BUILD_EXAMPLES)
 
 add_subdirectory(src)
+add_subdirectory(RegistrationAddOn)
 
 ##################################################################
 # Setup use file

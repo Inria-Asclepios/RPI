@@ -6,7 +6,7 @@
 \subsection{Order of composition}
 \label{subsec:tools:composition:order}
 
-Let us consider two images $I_F$ and $I_M$ (resp. fixed and moving images). We want to register $I_M$ to $I_F$ and a common way to do it is to apply successively different registration methods. In this example, we use three registration methods (e.g. rigid, affine, and non-linear). First, we apply the first registration method between images $I_F$ and $I_M$. We obtain a transformation (form the fixed to the moving image) $T_0$ and an image $I_0$ ($I_M$ re-sampled in the geometry of $I_F$):
+Let us consider two images $I_F$ and $I_M$ (resp. fixed and moving images). We want to register $I_M$ to $I_F$ and a common way to do it is to apply successively different registration methods. In this example, we use three registration methods (e.g. rigid, affine, and non-linear). First, we apply the first registration method between images $I_F$ and $I_M$. We obtain a transformation (form the fixed to the moving image) $T_1$ and an image $I_1$ ($I_M$ re-sampled in the geometry of $I_F$):
 
 \begin{equation}
 \textrm{method}_1(I_F,I_M) \rightarrow \{T_1,I_1\}
