@@ -164,6 +164,15 @@ public:
     {
         itkExceptionMacro("This type of transform does not handle any parameters.");
     }
+    
+    /**
+     * Method not implemented for stationary velocity fields.
+     * @param param parameters
+     */
+    virtual void                        SetFixedParameters( const ParametersType & param )
+    {
+        itkExceptionMacro("This type of transform does not handle any parameters.");
+    }
 
     /**
      * Method not implemented for stationary velocity fields.

@@ -6,7 +6,6 @@
 #include <itkNeighborhoodAlgorithm.h>
 #include <itkImageRegionIterator.h>
 #include <vnl/vnl_det.h>
-#include <itkInverseDeformationFieldImageFilter.h>
 #include <itkVectorLinearInterpolateNearestNeighborExtrapolateImageFunction.h>
 #include <itkMultiplyByConstantImageFilter.h>
 #include <itkWarpVectorImageFilter.h>
@@ -20,7 +19,7 @@ namespace itk
 
 template <class TScalarType, unsigned int NDimensions>
 StationaryVelocityFieldTransform<TScalarType, NDimensions>::
-StationaryVelocityFieldTransform() : Superclass( SpaceDimension, ParametersDimension )
+StationaryVelocityFieldTransform() : Superclass( ParametersDimension )
 {
     this->m_InterpolateFunction = InterpolateFunctionType::New();
 }
@@ -178,7 +177,7 @@ TransformPoint(const InputPointType & point) const
             output[i] += vector[i];
 
         VectorWarper->SetInput(UpdatedVector);
-        VectorWarper->SetDeformationField(UpdatedVector);
+        VectorWarper->SetDisplacementField(UpdatedVector);
         VectorWarper->Update();
 
         UpdatedVector=VectorWarper->GetOutput();

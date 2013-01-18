@@ -16,8 +16,8 @@ PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
 
-#ifndef _itkDisplacementFieldTransform_h_
-#define _itkDisplacementFieldTransform_h_
+#ifndef _rpiDisplacementFieldTransform_h_
+#define _rpiDisplacementFieldTransform_h_
 
 #include <itkTransform.h>
 #include <itkProcessObject.h>
@@ -26,7 +26,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include "itkVectorLinearInterpolateNearestNeighborExtrapolateImageFunction.h"
 
 
-namespace itk
+namespace rpi
 {
 
 
@@ -66,16 +66,16 @@ namespace itk
  * @author Nicolas Toussaint, Vincent Garcia INRIA
  */
 template <class TScalarType=float, unsigned int NDimensions=3>
-class ITK_EXPORT DisplacementFieldTransform : public Transform<TScalarType, NDimensions, NDimensions>
+    class ITK_EXPORT DisplacementFieldTransform : public itk::Transform<TScalarType, NDimensions, NDimensions>
 {
 
 
 public:
 
     typedef DisplacementFieldTransform                        Self;
-    typedef Transform<TScalarType, NDimensions, NDimensions>  Superclass;
-    typedef SmartPointer<Self>                                Pointer;
-    typedef SmartPointer<const Self>                          ConstPointer;
+    typedef itk::Transform<TScalarType, NDimensions, NDimensions>  Superclass;
+    typedef itk::SmartPointer<Self>                                Pointer;
+    typedef itk::SmartPointer<const Self>                          ConstPointer;
 
     typedef Superclass                                        TransformType;
     typedef typename TransformType::ConstPointer              TransformPointerType;
@@ -174,6 +174,14 @@ public:
      * Sets the transformation parameters.
      */
     virtual void                        SetParameters( const ParametersType & )
+    {
+        itkExceptionMacro("This type of transform does not handle any parameters.");
+    }
+
+    /**
+     * Sets the transformation parameters.
+     */
+    virtual void                        SetFixedParameters( const ParametersType & )
     {
         itkExceptionMacro("This type of transform does not handle any parameters.");
     }
@@ -282,7 +290,7 @@ protected:
     /**
      * Prints contents.
      */
-    void PrintSelf(std::ostream &os, Indent indent) const;
+    void PrintSelf(std::ostream &os, itk::Indent indent) const;
 
     /**
      * Default constructor.
@@ -320,7 +328,7 @@ private:
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkDisplacementFieldTransform.txx"
+#include "rpiDisplacementFieldTransform.txx"
 #endif
 
 #endif
