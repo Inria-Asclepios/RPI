@@ -4,10 +4,9 @@
 
 #include <iostream>
 #include <sstream>
-
+#include <itkRegistrationAddOn/itkDisplacementFieldTransform.h>
 #include <itkImageBase.h>
 #include <itkImageIOBase.h>
-#include <itkDisplacementFieldTransform.h>
 #include <itkStationaryVelocityFieldTransform.h>
 #include <itkAffineTransform.h>
 #include <itkEuler3DTransform.h>

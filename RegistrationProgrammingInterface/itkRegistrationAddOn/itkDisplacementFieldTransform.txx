@@ -1,5 +1,22 @@
-#ifndef _itkDisplacementFieldTransform_cxx_
-#define _itkDisplacementFieldTransform_cxx_
+/*=========================================================================
+
+Program:   vtkINRIA3D
+Module:    $Id: itkDisplacementFieldTransform.cxx 1 2008-01-22 19:01:33Z ntoussaint $
+Language:  C++
+Author:    $Author: ntoussaint $
+Date:      $Date: 2008-01-22 20:01:33 +0100 (Tue, 22 Jan 2008) $
+Version:   $Revision: 1 $
+
+Copyright (c) 2007 INRIA - Asclepios Project. All rights reserved.
+See Copyright.txt for details.
+
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
+
+=========================================================================*/
+#ifndef _itkDisplacementFieldTransform_cxx
+#define _itkDisplacementFieldTransform_cxx
 
 #include "itkDisplacementFieldTransform.h"
 #include "itkNeighborhoodAlgorithm.h"
@@ -9,20 +26,24 @@
 #include <itkInverseDeformationFieldImageFilter.h>
 #include "itkFixedPointInverseDeformationFieldImageFilter.h"
 
-
 namespace itk
 {
 
 
+  /*
+ * Constructor
+ */
 
+  
+// Constructor with default arguments
 template <class TScalarType, unsigned int NDimensions>
-DisplacementFieldTransform<TScalarType, NDimensions>::
-DisplacementFieldTransform() : Superclass( SpaceDimension, ParametersDimension )
+DisplacementFieldTransform<TScalarType, NDimensions>
+::DisplacementFieldTransform():
+  Superclass( SpaceDimension, ParametersDimension )
 {
-    this->m_InterpolateFunction = InterpolateFunctionType::New();
+  m_DisplacementField = 0;
+  m_InterpolateFunction = InterpolateFunctionType::New();
 }
-
-
 
 template <class TScalarType, unsigned int NDimensions>
 void
@@ -35,19 +56,17 @@ SetIdentity(void)
     field->FillBuffer(value);
     field->Register();
     this->m_VectorField = field;
+    m_DisplacementField = NULL;
 }
 
-
-
+// Print self
 template<class TScalarType, unsigned int NDimensions>
 void
 DisplacementFieldTransform<TScalarType, NDimensions>::
 PrintSelf(std::ostream &os, Indent indent) const
 {
-    Superclass::PrintSelf(os,indent);
+  Superclass::PrintSelf(os,indent);  
 }
-
-
 
 template<class TScalarType, unsigned int NDimensions>
 const typename DisplacementFieldTransform<TScalarType, NDimensions>::VectorFieldType *
@@ -56,8 +75,6 @@ GetParametersAsVectorField(void) const
 {
     return this->m_VectorField.GetPointer();
 }
-
-
 
 template<class TScalarType, unsigned int NDimensions>
 void
@@ -75,8 +92,6 @@ SetParametersAsVectorField(const VectorFieldType * field)
 
     this->Modified();
 }
-
-
 
 template<class TScalarType, unsigned int NDimensions>
 bool
@@ -108,8 +123,6 @@ GetInverse( Self* inverse ) const
     return true;
 }
 
-
-
 template<class TScalarType, unsigned int NDimensions>
 typename DisplacementFieldTransform<TScalarType, NDimensions>::InverseTransformBasePointer
 DisplacementFieldTransform<TScalarType, NDimensions>::
@@ -119,8 +132,25 @@ GetInverseTransform() const
     return GetInverse(inv) ? inv.GetPointer() : NULL;
 }
 
+template<class TScalarType, unsigned int NDimensions>
+void
+DisplacementFieldTransform<TScalarType, NDimensions>::
+SetDisplacementField (DisplacementFieldConstPointerType field)
+{
+  m_DisplacementField = field;
+  m_InterpolateFunction->SetInputImage (m_DisplacementField);
+
+  itk::Vector<double, NDimensions> spacing = m_DisplacementField->GetSpacing();
+  for (unsigned int i=0; i<NDimensions; i++)
+  {
+    m_DerivativeWeights[i] = (double)(1.0/spacing[i]);
+  }
+  
+  this->Modified();
+}
 
 
+// Transform a point
 template<class TScalarType, unsigned int NDimensions>
 typename DisplacementFieldTransform<TScalarType, NDimensions>::OutputPointType
 DisplacementFieldTransform<TScalarType, NDimensions>::
@@ -138,8 +168,7 @@ TransformPoint(const InputPointType & point) const
     return output;
 }
 
-
-
+// Transform a vector
 template<class TScalarType, unsigned int NDimensions>
 typename DisplacementFieldTransform<TScalarType, NDimensions>::OutputVectorType
 DisplacementFieldTransform<TScalarType, NDimensions>::
@@ -161,7 +190,7 @@ TransformVector(const InputVectorType & vector) const
 }
 
 
-
+// Transform a vnl_vector_fixed
 template<class TScalarType, unsigned int NDimensions>
 typename DisplacementFieldTransform<TScalarType, NDimensions>::OutputVnlVectorType
 DisplacementFieldTransform<TScalarType, NDimensions>::
@@ -177,7 +206,14 @@ TransformVector(const InputVnlVectorType & vector) const
     return point_1.GetVnlVector();
 }
 
-
+// Transform a CovariantVector
+template<class TScalarType, unsigned int NDimensions>
+typename DisplacementFieldTransform<TScalarType, NDimensions>::OutputCovariantVectorType
+DisplacementFieldTransform<TScalarType, NDimensions>::
+TransformCovariantVector(const InputCovariantVectorType &vect) const 
+{  
+  itkExceptionMacro ("cannot transform covariant vector !");
+}
 
 template<class TScalarType, unsigned int NDimensions>
 typename DisplacementFieldTransform<TScalarType, NDimensions>::OriginType
@@ -188,9 +224,7 @@ GetOrigin(void)
         itkExceptionMacro("No field has been set.");
     return this->m_VectorField->GetOrigin();
 }
-
-
-
+  
 template<class TScalarType, unsigned int NDimensions>
 typename DisplacementFieldTransform<TScalarType, NDimensions>::SpacingType
 DisplacementFieldTransform<TScalarType, NDimensions>::
@@ -200,8 +234,6 @@ GetSpacing(void)
         itkExceptionMacro("No field has been set.");
     return this->m_VectorField->GetSpacing();
 }
-
-
 
 template<class TScalarType, unsigned int NDimensions>
 typename DisplacementFieldTransform<TScalarType, NDimensions>::DirectionType
@@ -213,8 +245,6 @@ GetDirection(void)
     return this->m_VectorField->GetDirection();
 }
 
-
-
 template<class TScalarType, unsigned int NDimensions>
 typename DisplacementFieldTransform<TScalarType, NDimensions>::RegionType
 DisplacementFieldTransform<TScalarType, NDimensions>::
@@ -224,8 +254,6 @@ GetLargestPossibleRegion(void)
         itkExceptionMacro("No field has been set.");
     return this->m_VectorField->GetLargestPossibleRegion();
 }
-
-
 
 template<class TScalarType, unsigned int NDimensions>
 vnl_matrix_fixed<double,NDimensions,NDimensions>
@@ -267,8 +295,6 @@ GetSpatialJacobian( const InputPointType & point) const
     return J;
 }
 
-
-
 template<class TScalarType, unsigned int NDimensions>
 typename DisplacementFieldTransform<TScalarType, NDimensions>::ScalarType
 DisplacementFieldTransform< TScalarType,  NDimensions >::
@@ -277,7 +303,67 @@ GetSpatialJacobianDeterminant( const InputPointType & point) const
     return static_cast<ScalarType>(vnl_det(this->GetSpatialJacobian(point)));
 }
 
+// Compute the Jacobian determinant in one position 
+template<class TScalarType, unsigned int NDimensions>
+typename DisplacementFieldTransform<TScalarType, NDimensions>::ScalarType
+DisplacementFieldTransform< TScalarType,  NDimensions >::
+GetJacobianDeterminantWithRespectToCoordinates( const InputPointType & point) const
+{
+  return static_cast<ScalarType>(vnl_det(this->GetJacobianWithRespectToCoordinates (point)));
+}
 
+// Compute the Jacobian in one position 
+template<class TScalarType, unsigned int NDimensions>
+vnl_matrix_fixed<double,NDimensions,NDimensions>
+DisplacementFieldTransform<TScalarType, NDimensions>::
+GetJacobianWithRespectToCoordinates( const InputPointType & point) const
+{
+  
+  unsigned int i, j;
+  vnl_matrix_fixed<double,NDimensions,NDimensions> J;
+
+  if (!m_DisplacementField)
+  {
+    itkExceptionMacro ("No displacement field, cannot compute jacobian !");
+  }
+  
+  double weight;
+  itk::Vector<double, NDimensions> spacing = m_DisplacementField->GetSpacing();
+  
+  InputPointType point_prev, point_next;
+  
+  for (i = 0; i < NDimensions; ++i)
+  {
+    point_prev[i] = static_cast<double>(point[i]) - spacing[i];
+    point_next[i] = static_cast<double>(point[i]) + spacing[i];
+  }
+  
+  typename InterpolateFunctionType::OutputType vector = m_InterpolateFunction->Evaluate (point);
+  typename InterpolateFunctionType::OutputType vector_prev = m_InterpolateFunction->Evaluate (point_prev);
+  typename InterpolateFunctionType::OutputType vector_next = m_InterpolateFunction->Evaluate (point_next);
+  
+  for (i = 0; i < NDimensions; ++i)
+  {        
+    weight = 0.5*m_DerivativeWeights[i];
+    
+    for (j = 0; j < NDimensions; ++j)
+    {
+      
+      J[i][j]=weight*(static_cast<double>(vector_next[j])
+		      -static_cast<double>(vector_prev[j]));
+    }
+    
+    // add one on the diagonal to consider the warp
+    // and not only the deformation field
+    J[i][i] += 1.0;
+  }  
+  
+  return J;
+
+}
+
+
+  
 } // namespace
 
-#endif // _itkDisplacementFieldTransform_cxx_
+#endif

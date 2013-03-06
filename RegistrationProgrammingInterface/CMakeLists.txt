@@ -41,8 +41,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 set(${PROJECT_NAME}_HEADERS
     rpiCommonTools.hxx    
     rpiCommonTools.cxx    
-    itkDisplacementFieldTransform.h
-    itkDisplacementFieldTransform.txx
     itkStationaryVelocityFieldTransform.h
     rpiRegistrationMethod.hxx    
     rpiRegistrationMethod.cxx
@@ -56,6 +54,7 @@ set(${PROJECT_NAME}_HEADERS
 
 install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION include)
 
+add_subdirectory(itkRegistrationAddOn)
 
 # Check if ITK is found and include useful files
 FIND_PACKAGE( ITK )
@@ -75,6 +74,7 @@ INCLUDE_DIRECTORIES( ${TCLAP_INCLUDE_DIR} )
 
 # Set used libraries
 SET(LIBRARIES
+    itkRegistrationAddOn
     ITKIO
     ITKAlgorithms
     ITKCommon
