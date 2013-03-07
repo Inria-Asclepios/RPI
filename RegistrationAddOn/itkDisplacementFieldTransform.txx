@@ -50,24 +50,6 @@ PrintSelf(std::ostream &os, Indent indent) const
 
 
 template<class TScalarType, unsigned int NDimensions>
-void
-DisplacementFieldTransform<TScalarType, NDimensions>::
-SetVectorField (VectorFieldConstPointerType field)
-{
-  m_VectorField = field;
-  m_InterpolateFunction->SetInputImage (m_VectorField);
-
-  itk::Vector<double, NDimensions> spacing = m_VectorField->GetSpacing();
-  for (unsigned int i=0; i<NDimensions; i++)
-  {
-    m_DerivativeWeights[i] = (double)(1.0/spacing[i]);
-  }
-  
-  this->Modified();
-}
-
-
-template<class TScalarType, unsigned int NDimensions>
 const typename DisplacementFieldTransform<TScalarType, NDimensions>::VectorFieldType *
 DisplacementFieldTransform<TScalarType, NDimensions>::
 GetParametersAsVectorField(void) const

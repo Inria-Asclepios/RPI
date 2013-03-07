@@ -235,13 +235,6 @@ public:
     }
 
     /**
-     * Sets/Gets the displacement field used for transforming points and vectors
-     */
-    itkGetConstObjectMacro( VectorField, VectorFieldType );
-    
-    virtual void SetVectorField (VectorFieldConstPointerType field);
-
-    /**
      * Gets the origin of the field.
      */
     OriginType                          GetOrigin(void);

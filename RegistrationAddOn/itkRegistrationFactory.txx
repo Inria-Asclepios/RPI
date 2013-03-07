@@ -684,16 +684,16 @@ RegistrationFactory<TImage>
 
       const DisplacementFieldTransformType* displacementfieldtransform = dynamic_cast< const DisplacementFieldTransformType* >(m_GeneralTransform->GetTransform(0).GetPointer());
 
-      if (!displacementfieldtransform || !(displacementfieldtransform->GetVectorField()))
+      if (!displacementfieldtransform || !(displacementfieldtransform->GetParametersAsVectorField()))
       {
 	itkExceptionMacro(<<"cannot export displacement field, wrong input type !");
       }
       else
       {
-	fieldGenerator->SetOutputRegion(displacementfieldtransform->GetVectorField()->GetRequestedRegion());
-	fieldGenerator->SetOutputSpacing(displacementfieldtransform->GetVectorField()->GetSpacing());
-	fieldGenerator->SetOutputOrigin(displacementfieldtransform->GetVectorField()->GetOrigin());
-	fieldGenerator->SetOutputDirection(displacementfieldtransform->GetVectorField()->GetDirection());
+	fieldGenerator->SetOutputRegion(displacementfieldtransform->GetParametersAsVectorField()->GetRequestedRegion());
+	fieldGenerator->SetOutputSpacing(displacementfieldtransform->GetParametersAsVectorField()->GetSpacing());
+	fieldGenerator->SetOutputOrigin(displacementfieldtransform->GetParametersAsVectorField()->GetOrigin());
+	fieldGenerator->SetOutputDirection(displacementfieldtransform->GetParametersAsVectorField()->GetDirection());
       }
     }
 
