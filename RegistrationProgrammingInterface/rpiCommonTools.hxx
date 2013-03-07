@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include <sstream>
-#include <itkRegistrationAddOn/itkDisplacementFieldTransform.h>
+#include <itkDisplacementFieldTransform.h>
 #include <itkImageBase.h>
 #include <itkImageIOBase.h>
 #include <itkStationaryVelocityFieldTransform.h>

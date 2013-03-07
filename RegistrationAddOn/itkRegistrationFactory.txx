@@ -510,7 +510,7 @@ RegistrationFactory<TImage>
   if (!this->CheckInputs())
     itkExceptionMacro(<<"inputs not set correctly !");
 
-  typename DisplacementFieldType::Pointer displacement = NULL;
+  typename VectorFieldType::Pointer displacement = NULL;
 
   try
   {
@@ -522,7 +522,7 @@ RegistrationFactory<TImage>
     itkExceptionMacro(<<"could not export warped image !");
   }
 
-  typename ImageFileWriter<DisplacementFieldType>::Pointer writer = ImageFileWriter<DisplacementFieldType>::New();
+  typename ImageFileWriter<VectorFieldType>::Pointer writer = ImageFileWriter<VectorFieldType>::New();
   writer->SetFileName (filename);
   writer->SetInput (displacement);
   writer->Update();
@@ -568,7 +568,7 @@ RegistrationFactory<TImage>
 //   if (!this->CheckInputs())
 //     itkExceptionMacro(<<"inputs not set correctly !");
 
-  typename DisplacementFieldType::Pointer displacement = NULL;
+  typename VectorFieldType::Pointer displacement = NULL;
 
   try
   {
@@ -619,7 +619,7 @@ RegistrationFactory<TImage>
     }
   }
 
-  typedef itk::WarpImageFilter < WarpedImageType, WarpedImageType, DisplacementFieldType >  WarperType;
+  typedef itk::WarpImageFilter < WarpedImageType, WarpedImageType, VectorFieldType >  WarperType;
   typename WarperType::Pointer warper = WarperType::New();
   warper->SetInput( gridimage );
   warper->SetOutputSpacing( displacement->GetSpacing() );
@@ -657,13 +657,13 @@ RegistrationFactory<TImage>
 
 
 template <typename TImage>
-typename RegistrationFactory<TImage>::DisplacementFieldPointerType
+typename RegistrationFactory<TImage>::VectorFieldPointerType
 RegistrationFactory<TImage>
 ::ExportGlobalDisplacementField (void)
 {
 
   // Set up the TransformToDeformationFieldFilter
-  typedef itk::TransformToDeformationFieldFilter <DisplacementFieldType, ParametersValueType> FieldGeneratorType;
+  typedef itk::TransformToDeformationFieldFilter <VectorFieldType, ParametersValueType> FieldGeneratorType;
   typename FieldGeneratorType::Pointer fieldGenerator = FieldGeneratorType::New();
 
   fieldGenerator->SetTransform( m_GeneralTransform );
@@ -679,21 +679,21 @@ RegistrationFactory<TImage>
   {
     if (m_GeneralTransform->GetNumberOfTransformsInStack() == 1)
     {
-      //typedef typename itk::DisplacementFieldTransform<ParametersValueType, DisplacementFieldType::ImageDimension> DisplacementFieldTransformType;
+      //typedef typename itk::DisplacementFieldTransform<ParametersValueType, VectorFieldType::ImageDimension> DisplacementFieldTransformType;
       //const DisplacementFieldTransformType* transform = dynamic_cast<const DisplacementFieldTransformType*>(m_GeneralTransform->GetInput().GetPointer());
 
       const DisplacementFieldTransformType* displacementfieldtransform = dynamic_cast< const DisplacementFieldTransformType* >(m_GeneralTransform->GetTransform(0).GetPointer());
 
-      if (!displacementfieldtransform || !(displacementfieldtransform->GetDisplacementField()))
+      if (!displacementfieldtransform || !(displacementfieldtransform->GetVectorField()))
       {
 	itkExceptionMacro(<<"cannot export displacement field, wrong input type !");
       }
       else
       {
-	fieldGenerator->SetOutputRegion(displacementfieldtransform->GetDisplacementField()->GetRequestedRegion());
-	fieldGenerator->SetOutputSpacing(displacementfieldtransform->GetDisplacementField()->GetSpacing());
-	fieldGenerator->SetOutputOrigin(displacementfieldtransform->GetDisplacementField()->GetOrigin());
-	fieldGenerator->SetOutputDirection(displacementfieldtransform->GetDisplacementField()->GetDirection());
+	fieldGenerator->SetOutputRegion(displacementfieldtransform->GetVectorField()->GetRequestedRegion());
+	fieldGenerator->SetOutputSpacing(displacementfieldtransform->GetVectorField()->GetSpacing());
+	fieldGenerator->SetOutputOrigin(displacementfieldtransform->GetVectorField()->GetOrigin());
+	fieldGenerator->SetOutputDirection(displacementfieldtransform->GetVectorField()->GetDirection());
       }
     }
 

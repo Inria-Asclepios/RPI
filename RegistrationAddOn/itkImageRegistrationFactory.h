@@ -73,7 +73,7 @@ namespace itk
     typedef typename Superclass::TransformType TransformType;
     typedef typename Superclass::TransformPointerType TransformPointerType;
     typedef typename Superclass::LinearTransformType LinearTransformType;
-    typedef typename Superclass::DisplacementFieldType DisplacementFieldType;
+    typedef typename Superclass::VectorFieldType VectorFieldType;
     typedef typename Superclass::ImageReaderType ImageReaderType;
     typedef typename Superclass::ImageWriterType ImageWriterType;
     typedef typename Superclass::DisplacementFieldReaderType DisplacementFieldReaderType;

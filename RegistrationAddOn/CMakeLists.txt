@@ -1,4 +1,4 @@
-project(itkRegistrationAddOn)
+project(RegistrationAddOn)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -10,6 +10,12 @@ set(${PROJECT_NAME}_HEADERS
     itkDisplacementFieldTransform.txx
     itkFixedPointInverseDeformationFieldImageFilter.h
     itkFixedPointInverseDeformationFieldImageFilter.txx
+    itkStationaryVelocityFieldExponential.h
+    itkStationaryVelocityFieldExponential.txx
+    itkStationaryVelocityFieldTransform.h
+    itkStationaryVelocityFieldTransform.txx
+    itkTransformToVelocityFieldSource.h
+    itkTransformToVelocityFieldSource.txx
     itkGeneralTransform.h
     itkGeneralTransform.txx
     itkImageRegistrationFactory.h
@@ -41,15 +47,15 @@ IF(WIN32 AND NOT CYGWIN AND NOT MINGW)
   )
 ENDIF(WIN32 AND NOT CYGWIN AND NOT MINGW)
 
-set ( itkRegistrationAddOnSRCS
+set ( RegistrationAddOnSRCS
   itkRegistrationFactory-explicit-template.cxx
 )
 
-add_library ( itkRegistrationAddOn SHARED
-  ${itkRegistrationAddOnSRCS} 
+add_library ( RegistrationAddOn SHARED
+  ${RegistrationAddOnSRCS} 
   )
 
-target_link_libraries(itkRegistrationAddOn
+target_link_libraries(RegistrationAddOn
     ${ITK_LIBRARIES}
  )
 
@@ -59,12 +65,12 @@ add_executable(RegistrationFactory
 
 if(WIN32 AND NOT CYGWIN AND NOT MINGW)
  target_link_libraries(RegistrationFactory 
-  itkRegistrationAddOn 
+  RegistrationAddOn 
   getoptcompatlib
   )
 else (WIN32 AND NOT CYGWIN AND NOT MINGW)
  target_link_libraries(RegistrationFactory
-   itkRegistrationAddOn
+   RegistrationAddOn
    )
 endif(WIN32 AND NOT CYGWIN AND NOT MINGW)
 

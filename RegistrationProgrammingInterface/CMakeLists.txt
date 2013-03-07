@@ -36,25 +36,16 @@ project(RegistrationProgrammingInterface)
 # Define the minimum CMake version needed
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${RPI_INCLUDE_DIRS})
 
 set(${PROJECT_NAME}_HEADERS
     rpiCommonTools.hxx    
     rpiCommonTools.cxx    
-    itkStationaryVelocityFieldTransform.h
     rpiRegistrationMethod.hxx    
     rpiRegistrationMethod.cxx
-    itkStationaryVelocityFieldTransform.txx
-    itkStationaryVelocityFieldTransform.txx
-    itkTransformToVelocityFieldSource.h
-    itkTransformToVelocityFieldSource.txx
-    itkGeneralTransform.h
-    itkGeneralTransform.txx
     )
 
 install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION include)
-
-add_subdirectory(itkRegistrationAddOn)
 
 # Check if ITK is found and include useful files
 FIND_PACKAGE( ITK )
@@ -74,7 +65,7 @@ INCLUDE_DIRECTORIES( ${TCLAP_INCLUDE_DIR} )
 
 # Set used libraries
 SET(LIBRARIES
-    itkRegistrationAddOn
+    RegistrationAddOn
     ITKIO
     ITKAlgorithms
     ITKCommon

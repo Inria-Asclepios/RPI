@@ -223,13 +223,13 @@ class CommandIterationUpdate : public itk::Command
     typedef typename LinearTransformType::Pointer LinearTransformPointerType;
 
 /*     typedef itk::Vector< ParametersValueType, ImageType::ImageDimension >    VectorPixelType; */
-/*     typedef itk::Image<  VectorPixelType, ImageType::ImageDimension > DisplacementFieldType; */
-/*     typedef typename DisplacementFieldType::Pointer DisplacementFieldPointerType; */
+/*     typedef itk::Image<  VectorPixelType, ImageType::ImageDimension > VectorFieldType; */
+/*     typedef typename VectorFieldType::Pointer VectorFieldPointerType; */
     typedef itk::DisplacementFieldTransform<ParametersValueType, ImageType::ImageDimension> DisplacementFieldTransformType;
     typedef typename DisplacementFieldTransformType::Pointer DisplacementFieldTransformPointerType;
-    typedef typename DisplacementFieldTransformType::DisplacementFieldType DisplacementFieldType;
-    typedef typename DisplacementFieldType::Pointer DisplacementFieldPointerType;
-    typedef itk::ImageFileReader<DisplacementFieldType> DisplacementFieldReaderType;
+    typedef typename DisplacementFieldTransformType::VectorFieldType VectorFieldType;
+    typedef typename VectorFieldType::Pointer VectorFieldPointerType;
+    typedef itk::ImageFileReader<VectorFieldType> DisplacementFieldReaderType;
 
     typedef itk::Image<unsigned char, ImageType::ImageDimension> WarpedImageType;
     typedef typename WarpedImageType::Pointer WarpedImagePointerType;
@@ -346,7 +346,7 @@ class CommandIterationUpdate : public itk::Command
     virtual LinearTransformPointerType ExportGlobalLinearTransform (void);
     /** This method concatenates all transforms into a global deformation field. It does not
 	care if transforms are linear or not */
-    virtual DisplacementFieldPointerType ExportGlobalDisplacementField (void);
+    virtual VectorFieldPointerType ExportGlobalDisplacementField (void);
     /** Warps a regular grid (its size can be set using SetWarperGridSize()) with the
 	current global deformation field */
     virtual WarpedImagePointerType ExportWarpedImage (void);
