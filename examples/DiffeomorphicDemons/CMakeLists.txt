@@ -59,7 +59,7 @@ INCLUDE_DIRECTORIES( ${TCLAP_INCLUDE_DIR} )
 
 # Set used libraries
 SET(LIBRARIES
-    itkRegistrationAddOn
+    RegistrationAddOn
     ITKIO
     ITKNumerics
     ITKStatistics
