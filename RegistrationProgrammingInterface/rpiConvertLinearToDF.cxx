@@ -7,6 +7,9 @@
 
 #include <tclap/CmdLine.h>
 
+#ifdef MIPS_FOUND
+#include <mipsInrimageImageIOFactory.h>
+#endif
 
 #include "rpiCommonTools.hxx"
 
@@ -91,6 +94,12 @@ void parseParameters(int argc, char** argv, struct Param & param)
  */
 int main(int argc, char** argv)
 {
+
+#ifdef MIPS_FOUND
+    // Allows the executable to read and write Inrimage
+    itk::InrimageImageIOFactory::RegisterOneFactory();
+#endif
+
     // Type definition
     typedef  itk::ImageIOBase                                       ImageIOType;
     typedef  itk::Image<float,3>                                    ImageType;

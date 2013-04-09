@@ -31,7 +31,8 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE 
 # USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ###############################################################################
-project(RegistrationProgrammingInterface)
+
+PROJECT( RPI )
 
 # Define the minimum CMake version needed
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
@@ -73,14 +74,31 @@ IF( NOT TCLAP_FOUND )
 ENDIF()
 INCLUDE_DIRECTORIES( ${TCLAP_INCLUDE_DIR} )
 
+
+# Check if TinyXML is found and include directory
+IF( NOT TinyXML_FOUND )
+    MESSAGE( "Project ${PROJECT_NAME} requires TinyXML and TinyXML was not found. ${PROJECT_NAME} will not be built." )
+    RETURN()
+ENDIF()
+INCLUDE_DIRECTORIES( ${TinyXML_INCLUDE_DIR} )
+
 # Set used libraries
 SET(LIBRARIES
     ITKIO
     ITKAlgorithms
     ITKCommon
+    ITKBasicFilters
     ITKStatistics
     ITKNumerics
 )
+
+IF (PACKAGENAME EQUAL MIPS_REGISTRATIONPKG)
+	# Add MIPS include directory
+	INCLUDE_DIRECTORIES( ${MIPS_IMAGEPKG_INCLUDE_DIRS} )
+	# Set used libraries
+	SET(LIBRARIES ${LIBRARIES} mipsItkImageIO)
+	ADD_DEFINITIONS(-DMIPS_FOUND)
+ENDIF()
 
 # Create ConvertLinearToDF executable
 ADD_EXECUTABLE(        exeConvertLinearToDF rpiConvertLinearToDF.cxx )
@@ -92,19 +110,10 @@ ADD_EXECUTABLE(        exeConvertLinearToSVF rpiConvertLinearToSVF.cxx )
 TARGET_LINK_LIBRARIES( exeConvertLinearToSVF ${LIBRARIES} )
 SET_TARGET_PROPERTIES( exeConvertLinearToSVF PROPERTIES OUTPUT_NAME "rpiConvertLinearToSVF" )
 
+# Create rpiFuseTransformations executable
+ADD_EXECUTABLE(        exeFuseTransformations rpiFuseTransformations.cxx )
+TARGET_LINK_LIBRARIES( exeFuseTransformations ${LIBRARIES} TinyXML )
+SET_TARGET_PROPERTIES( exeFuseTransformations PROPERTIES OUTPUT_NAME "rpiFuseTransformations" )
 
-# Check if TinyXML is found and include directory
-IF( NOT TinyXML_FOUND )
-    MESSAGE( "Project ${PROJECT_NAME} requires TinyXML and TinyXML was not found. ${PROJECT_NAME} will not be built." )
-    RETURN()
-ELSE()
-    MESSAGE("TinyXML is located in ${TinyXML_INCLUDE_DIR}")
-    INCLUDE_DIRECTORIES( ${TinyXML_INCLUDE_DIR} )
 
-    # Create rpiFuseTransformations executable
-    ADD_EXECUTABLE(        exeFuseTransformations rpiFuseTransformations.cxx )
-    TARGET_LINK_LIBRARIES( exeFuseTransformations ${LIBRARIES} TinyXML )
-    SET_TARGET_PROPERTIES( exeFuseTransformations PROPERTIES OUTPUT_NAME "rpiFuseTransformations" )
-
-ENDIF()
 
