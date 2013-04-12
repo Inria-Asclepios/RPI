@@ -3,9 +3,9 @@
 
 
 
-#include <itkDisplacementFieldTransform.h>
-#include "rpiRegistrationMethod.hxx"
 
+#include "rpiRegistrationMethod.hxx"
+#include <itkDisplacementFieldTransform.h>
 
 // Namespace RPI : Registration Programming Interface
 namespace rpi
