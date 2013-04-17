@@ -91,7 +91,7 @@ add_subdirectory(RegistrationProgrammingInterface)
 option(STREAMING_DEMO "Build the streaming demo" "OFF")
 if (STREAMING_DEMO)
     add_subdirectory(streamingDemoSource)
-endif(STREAMING DEMO)
+endif()
 ##################################################################
 # Setup use file
 ##################################################################
