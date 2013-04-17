@@ -175,13 +175,22 @@ StationaryVelocityFieldExponential<TInputImage,TOutputImage>
   // Divide the norm by the minimum pixel spacing
   maxnorm2 /= vnl_math_sqr(minpixelspacing);
 
-  InputPixelRealValueType numiterfloat = 2.0 +  0.5 * vcl_log(maxnorm2)/vnl_math::ln2;
+  //InputPixelRealValueType numiterfloat = 2.0 +  0.5 * vcl_log(maxnorm2)/vnl_math::ln2;
+  InputPixelRealValueType numiterfloat = 0;
 
+  if (maxnorm2 > 0)
+  {
+    // Not sure about this, from the comments above I would say numiterfloat = 0.5 * vcl_log(maxnorm2)/vnl_math::ln2;
+    numiterfloat = 2.0 +  0.5 * vcl_log(maxnorm2)/vnl_math::ln2;
+
+    if (numiterfloat < 0)
+      numiterfloat = 0;
+  }
 
   // take the ceil and threshold
   numiter = static_cast<unsigned int>(numiterfloat + 1.0);
     
-  std::cout<<"numiter "<<numiter<<" -- numiterfloat "<<numiterfloat<<" -- divider "<<static_cast<InputPixelRealValueType>(1<<numiter) <<std::endl;
+  //std::cout<<"numiter "<<numiter<<" -- numiterfloat "<<numiterfloat<<" -- divider "<<static_cast<InputPixelRealValueType>(1<<numiter) <<std::endl;
 
   // Get the first order approximation (division by 2^numiter)
   m_Divider->SetInput(inputPtr);
