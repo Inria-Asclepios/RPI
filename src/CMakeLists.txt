@@ -61,7 +61,7 @@ install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION include)
 # Check if ITK is found and include useful files
 FIND_PACKAGE( ITK )
 IF( NOT ITK_FOUND )
-    MESSAGE( "Project ${PROJECT_NAME} requires ITK and ITK was not found. ${PROJECT_NAME} will not be built." )
+    MESSAGE( "Project ${PROJECT_NAME} requires ITK which was not found. ${PROJECT_NAME} will not be built." )
     RETURN()
 ENDIF()
 INCLUDE( ${ITK_USE_FILE} )
@@ -69,18 +69,10 @@ INCLUDE( ${ITK_USE_FILE} )
 FIND_PACKAGE( TCLAP )
 # Check if TCLAP is found and include directory
 IF( NOT TCLAP_FOUND )
-    MESSAGE( "Project ${PROJECT_NAME} requires TCLAP and TCLAP was not found. ${PROJECT_NAME} will not be built." )
+    MESSAGE( "The RPI utilities require TCLAP which was not found. They will not be built." )
     RETURN()
 ENDIF()
 INCLUDE_DIRECTORIES( ${TCLAP_INCLUDE_DIR} )
-
-
-# Check if TinyXML is found and include directory
-IF( NOT TinyXML_FOUND )
-    MESSAGE( "Project ${PROJECT_NAME} requires TinyXML and TinyXML was not found. ${PROJECT_NAME} will not be built." )
-    RETURN()
-ENDIF()
-INCLUDE_DIRECTORIES( ${TinyXML_INCLUDE_DIR} )
 
 # Set used libraries
 SET(LIBRARIES
@@ -110,10 +102,20 @@ ADD_EXECUTABLE(        exeConvertLinearToSVF rpiConvertLinearToSVF.cxx )
 TARGET_LINK_LIBRARIES( exeConvertLinearToSVF ${LIBRARIES} )
 SET_TARGET_PROPERTIES( exeConvertLinearToSVF PROPERTIES OUTPUT_NAME "rpiConvertLinearToSVF" )
 
+# Create rpiResampleImage executable
+ADD_EXECUTABLE(        exeResampleImage rpiResampleImage.cxx )
+TARGET_LINK_LIBRARIES( exeResampleImage ${LIBRARIES} )
+SET_TARGET_PROPERTIES( exeResampleImage PROPERTIES OUTPUT_NAME "rpiResampleImage" )
+
+# Check if TinyXML is found and include directory
+IF( NOT TinyXML_FOUND AND NOT TARGET TinyXML )
+    MESSAGE( "The rpiFuseTransformations utility requires TinyXML and TinyXML was not found. It will not be built." )
+    RETURN()
+ENDIF()
+
+INCLUDE_DIRECTORIES( ${TinyXML_INCLUDE_DIR} )
 # Create rpiFuseTransformations executable
 ADD_EXECUTABLE(        exeFuseTransformations rpiFuseTransformations.cxx )
 TARGET_LINK_LIBRARIES( exeFuseTransformations ${LIBRARIES} TinyXML )
 SET_TARGET_PROPERTIES( exeFuseTransformations PROPERTIES OUTPUT_NAME "rpiFuseTransformations" )
-
-
 

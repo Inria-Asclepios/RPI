@@ -16,8 +16,9 @@
 
 #include <tclap/CmdLine.h>
 
+#ifdef MIPS_FOUND
 #include <mipsInrimageImageIOFactory.h>
-
+#endif
 
 /**
  * @description  Resample an input scalar image given an input transformation.
@@ -316,8 +317,10 @@ void resample(Param param)
 int main(int argc, char** argv)
 {
 
+#ifdef MIPS_FOUND
     // Allow to read and write Inrimage
     itk::InrimageImageIOFactory::RegisterOneFactory();
+#endif
 
     // Parameters
     struct Param param;

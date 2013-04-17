@@ -46,14 +46,14 @@ if("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
     OUTPUT_VARIABLE PACKAGE_EXTENSION
     OUTPUT_STRIP_TRAILING_WHITESPACE)
   set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${${PROJECT_NAME}_VERSION}.${PACKAGE_EXTENSION}")
-else("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+else()
   set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${${PROJECT_NAME}_VERSION}.${CMAKE_SYSTEM_PROCESSOR}")
-endif("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+endif()
 
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${PROJECT_NAME}-${${PROJECT_NAME}_VERSION}-src")
 
-set(CPACK_PACKAGE_VENDOR "http://www.inria.fr/asclepios")
-set(CPACK_PACKAGE_CONTACT "Benoit Bleuze <benoit.bleuze@inria.fr>")
+set(CPACK_PACKAGE_VENDOR "http://www-sop.inria.fr/asclepios/software/RPI/")
+set(CPACK_PACKAGE_CONTACT "MedInria <medinria-userfeedback@inria.fr>")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_NAME}: Registration Programming Interface. Wrapping API for registration algorithms")
 set(CPACK_PACKAGE_DESCRIPTION "Registration Programming interface, is an API to help developer wrap their registration algorithms in a single fashion.")
 set(CPACK_PACKAGE_VERSION_MAJOR ${${PROJECT_NAME}_VERSION_MAJOR})
