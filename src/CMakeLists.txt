@@ -32,7 +32,7 @@
 # USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ###############################################################################
 
-PROJECT( RPI )
+PROJECT( RPI-Internal )
 
 # Define the minimum CMake version needed
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
