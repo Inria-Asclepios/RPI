@@ -17,7 +17,9 @@
 
 #include <itkTransformToDeformationFieldSource.h>
 
+#ifdef MIPS_FOUND
 #include <mipsInrimageImageIOFactory.h>
+#endif
 
 #include "rpiCommonTools.hxx"
 
@@ -625,8 +627,10 @@ int main(int argc, char** argv)
     struct Param param;
     struct Data  data;
 
+#ifdef MIPS_FOUND
     // Allows the executable to read and write Inrimage
     itk::InrimageImageIOFactory::RegisterOneFactory();
+#endif
 
     try{
 

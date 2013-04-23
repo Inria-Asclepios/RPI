@@ -32,7 +32,7 @@
 # USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ###############################################################################
 
-PROJECT( RPI )
+PROJECT( RPI-Internal )
 
 # Define the minimum CMake version needed
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
@@ -75,7 +75,7 @@ SET(LIBRARIES
     ITKNumerics
 )
 
-IF (PACKAGENAME EQUAL MIPS_REGISTRATIONPKG)
+IF (PACKAGENAME STREQUAL "MIPS_REGISTRATIONPKG")
 	# Add MIPS include directory
 	INCLUDE_DIRECTORIES( ${MIPS_IMAGEPKG_INCLUDE_DIRS} )
 	# Set used libraries
