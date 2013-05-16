@@ -179,7 +179,9 @@ StationaryVelocityFieldExponential<TInputImage,TOutputImage>
 
 
   // take the ceil and threshold
-  numiter = static_cast<unsigned int>(numiterfloat + 1.0);
+  numiter = 0;
+  if (numiterfloat + 1 > 0)
+    numiter = static_cast<unsigned int>(numiterfloat + 1.0);
     
   //std::cout<<"numiter "<<numiter<<" -- numiterfloat "<<numiterfloat<<" -- divider "<<static_cast<InputPixelRealValueType>(1<<numiter) <<std::endl;
 
