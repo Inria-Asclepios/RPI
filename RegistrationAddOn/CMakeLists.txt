@@ -51,7 +51,7 @@ set ( RegistrationAddOnSRCS
   itkRegistrationFactory-explicit-template.cxx
 )
 
-add_library ( RegistrationAddOn SHARED
+add_library (${PROJECT_NAME}
   ${RegistrationAddOnSRCS} 
   )
 
@@ -74,4 +74,11 @@ else (WIN32 AND NOT CYGWIN AND NOT MINGW)
    )
 endif(WIN32 AND NOT CYGWIN AND NOT MINGW)
 
+## #################################################################
+## Install rules
+## #################################################################
 
+install(TARGETS ${PROJECT_NAME}
+  RUNTIME DESTINATION bin
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib)
