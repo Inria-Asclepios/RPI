@@ -8,14 +8,14 @@
 #include <tinyxml.h>
 
 #include <itkTransform.h>
-#include <itkDisplacementFieldTransform.h>
+#include <rpiDisplacementFieldTransform.h>
 #include <itkStationaryVelocityFieldTransform.h>
 #include <itkGeneralTransform.h>
 #include <itkImageIOBase.h>
 #include <itkImageIOFactory.h>
 #include <itkImageFileReader.h>
 
-#include <itkTransformToDeformationFieldSource.h>
+#include <itkTransformToDisplacementFieldSource.h>
 
 #ifdef MIPS_FOUND
 #include <mipsInrimageImageIOFactory.h>
@@ -403,7 +403,7 @@ buildListOfTransformations(struct Data & data)
     typedef itk::GeneralTransform<TScalarType,3>               ListType;
     typedef itk::Transform<TScalarType,3,3>                    LinearType;
     typedef itk::MatrixOffsetTransformBase<TScalarType,3,3>    MatrixType;
-    typedef itk::DisplacementFieldTransform<TScalarType>       DFType;
+    typedef rpi::DisplacementFieldTransform<TScalarType>       DFType;
     typedef itk::StationaryVelocityFieldTransform<TScalarType> SVFType;
 
     // Create and fill the list of transformations
@@ -509,7 +509,7 @@ void exportDFTransformation(itk::GeneralTransform<TScalarType,3> * list, struct 
 
     // Type definition
     typedef  itk::GeneralTransform<TScalarType,3>                                    TransformListType;
-    typedef  itk::DisplacementFieldTransform< TScalarType, 3 >                       DFType;
+    typedef  rpi::DisplacementFieldTransform< TScalarType, 3 >                       DFType;
     typedef  itk::StationaryVelocityFieldTransform< TScalarType, 3 >                 SVFType;
     typedef  typename DFType::VectorFieldType                                        VectorFieldType;
     typedef  itk::TransformToDeformationFieldSource< VectorFieldType, TScalarType >  GeneratorType;

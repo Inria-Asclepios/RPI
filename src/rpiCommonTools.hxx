@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include <sstream>
-#include <itkDisplacementFieldTransform.h>
+#include <rpiDisplacementFieldTransform.h>
 #include <itkImageBase.h>
 #include <itkImageIOBase.h>
 #include <itkStationaryVelocityFieldTransform.h>
@@ -80,7 +80,7 @@ readLinearTransformation( std::string fileName );
  * @return  displacement field
  */
 template<class TTransformScalarType>
-typename itk::DisplacementFieldTransform<TTransformScalarType, 3>::Pointer
+typename rpi::DisplacementFieldTransform<TTransformScalarType, 3>::Pointer
 readDisplacementField( std::string fileName );
 
 
@@ -102,7 +102,7 @@ readStationaryVelocityField( std::string fileName );
  * @return  displacement field transformation
  */
 template<class TLinearScalarType, class TFieldScalarType, class TImage>
-typename itk::DisplacementFieldTransform<TFieldScalarType, TImage::ImageDimension>::Pointer
+typename rpi::DisplacementFieldTransform<TFieldScalarType, TImage::ImageDimension>::Pointer
 linearToDisplacementFieldTransformation(
         TImage * image,
         itk::Transform<TLinearScalarType, TImage::ImageDimension, TImage::ImageDimension> * transform );

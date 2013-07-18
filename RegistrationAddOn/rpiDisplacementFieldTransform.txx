@@ -1,23 +1,23 @@
-#ifndef _itkDisplacementFieldTransform_cxx_
-#define _itkDisplacementFieldTransform_cxx_
+#ifndef _rpiDisplacementFieldTransform_cxx_
+#define _rpiDisplacementFieldTransform_cxx_
 
 #include "itkDisplacementFieldTransform.h"
 #include "itkNeighborhoodAlgorithm.h"
 #include "itkImageRegionIterator.h"
 #include "vnl/vnl_det.h"
 
-#include <itkInverseDeformationFieldImageFilter.h>
+#include <itkInverseDisplacementFieldImageFilter.h>
 #include "itkFixedPointInverseDeformationFieldImageFilter.h"
 
 
-namespace itk
+namespace rpi
 {
 
 
 
 template <class TScalarType, unsigned int NDimensions>
 DisplacementFieldTransform<TScalarType, NDimensions>::
-DisplacementFieldTransform() : Superclass( SpaceDimension, ParametersDimension )
+DisplacementFieldTransform() : Superclass( ParametersDimension )
 {
     this->m_InterpolateFunction = InterpolateFunctionType::New();
 }
@@ -42,7 +42,7 @@ SetIdentity(void)
 template<class TScalarType, unsigned int NDimensions>
 void
 DisplacementFieldTransform<TScalarType, NDimensions>::
-PrintSelf(std::ostream &os, Indent indent) const
+PrintSelf(std::ostream &os, itk::Indent indent) const
 {
     Superclass::PrintSelf(os,indent);
 }

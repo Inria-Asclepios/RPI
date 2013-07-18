@@ -67,12 +67,6 @@ INCLUDE_DIRECTORIES( ${TCLAP_INCLUDE_DIR} )
 # Set used libraries
 SET(LIBRARIES
     RegistrationAddOn
-    ITKIO
-    ITKAlgorithms
-    ITKCommon
-    ITKBasicFilters
-    ITKStatistics
-    ITKNumerics
 )
 
 IF (PACKAGENAME STREQUAL "MIPS_REGISTRATIONPKG")

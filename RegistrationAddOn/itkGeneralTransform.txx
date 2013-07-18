@@ -32,7 +32,7 @@ namespace itk
 template <class TScalarType, unsigned int NDimensions>
 GeneralTransform<TScalarType, NDimensions>
 ::GeneralTransform():
-  Superclass( SpaceDimension, ParametersDimension )
+  Superclass( ParametersDimension )
 {
 }
 
@@ -47,7 +47,15 @@ GeneralTransform<TScalarType, NDimensions>
   m_RemovedTransformList.clear();
   m_TransformList.clear();
 }
-
+    
+// Set the parameters
+template <class TScalarType, unsigned int NDimensions>
+void
+GeneralTransform<TScalarType, NDimensions>
+::SetFixedParameters( const ParametersType & parameters )
+{
+    itkExceptionMacro("GeneralTransform<TScalarType, NDimensions> does not handle any parameter system yet");
+}
 
 // Set the parameters
 template <class TScalarType, unsigned int NDimensions>
@@ -56,7 +64,6 @@ GeneralTransform<TScalarType, NDimensions>
 ::SetParameters( const ParametersType & parameters )
 {
   itkExceptionMacro("GeneralTransform<TScalarType, NDimensions> does not handle any parameter system yet");
-  
 }
 
 

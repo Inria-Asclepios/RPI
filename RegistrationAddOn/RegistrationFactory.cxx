@@ -45,7 +45,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <itkAffineRegistrationMethod.h>
 #include <itkRigidRegistrationMethod.h>
 
-#include <itkOrientedImage.h>
+#include <itkImage.h>
 
 #ifndef WIN32
 #include <getopt.h>
@@ -389,7 +389,7 @@ void ImageRegistrationFactoryFunction( arguments args )
 
   // Declare the types of the images (float or double only)
   typedef TPixel PixelType;
-  typedef itk::OrientedImage< PixelType, Dimension >  ImageType;
+  typedef itk::Image< PixelType, Dimension >  ImageType;
 
   typedef itk::Vector< PixelType, Dimension >    VectorPixelType;
   typedef typename itk::Image < VectorPixelType, Dimension > DeformationFieldType;

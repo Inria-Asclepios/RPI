@@ -252,7 +252,7 @@ void
 TransformToVelocityFieldSource<TOutputImage,TTransformPrecisionType>
 ::ThreadedGenerateData(
   const OutputImageRegionType & outputRegionForThread,
-  int threadId )
+  ThreadIdType threadId )
 {
   // Check whether we can use a fast path for resampling. Fast path
   // can be used if the transformation is linear. Transform respond
@@ -272,7 +272,7 @@ void
 TransformToVelocityFieldSource<TOutputImage,TTransformPrecisionType>
 ::LinearThreadedGenerateData(
   const OutputImageRegionType & outputRegionForThread,
-  int threadId )
+  ThreadIdType threadId )
 {
   // Get the output pointer
   OutputImagePointer      outputPtr = this->GetOutput();

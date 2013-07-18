@@ -625,7 +625,7 @@ RegistrationFactory<TImage>
   warper->SetOutputSpacing( displacement->GetSpacing() );
   warper->SetOutputOrigin( displacement->GetOrigin() );
   warper->SetOutputDirection( displacement->GetDirection() );
-  warper->SetDeformationField( displacement );
+  warper->SetDisplacementField( displacement );
 
   // instanciate callback to follow the warper
   typename CallbackType::Pointer callback = CallbackType::New();
@@ -679,9 +679,6 @@ RegistrationFactory<TImage>
   {
     if (m_GeneralTransform->GetNumberOfTransformsInStack() == 1)
     {
-      //typedef typename itk::DisplacementFieldTransform<ParametersValueType, VectorFieldType::ImageDimension> DisplacementFieldTransformType;
-      //const DisplacementFieldTransformType* transform = dynamic_cast<const DisplacementFieldTransformType*>(m_GeneralTransform->GetInput().GetPointer());
-
       const DisplacementFieldTransformType* displacementfieldtransform = dynamic_cast< const DisplacementFieldTransformType* >(m_GeneralTransform->GetTransform(0).GetPointer());
 
       if (!displacementfieldtransform || !(displacementfieldtransform->GetParametersAsVectorField()))

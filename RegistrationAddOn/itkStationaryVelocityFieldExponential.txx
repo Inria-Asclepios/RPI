@@ -232,7 +232,7 @@ StationaryVelocityFieldExponential<TInputImage,TOutputImage>
       else
         m_ScalarWarper->SetInput(m_ScalarAdder->GetOutput());	
 
-      m_ScalarWarper->SetDeformationField(ActualVectorField);
+      m_ScalarWarper->SetDisplacementField(ActualVectorField);
       m_ScalarWarper->UpdateLargestPossibleRegion();
       
       m_ScalarAdder->SetInput1(m_ScalarWarper->GetOutput());
@@ -249,7 +249,7 @@ StationaryVelocityFieldExponential<TInputImage,TOutputImage>
     
     m_VectorWarper->SetInput(this->GetOutput());
     
-    m_VectorWarper->SetDeformationField(ActualVectorField);
+    m_VectorWarper->SetDisplacementField(ActualVectorField);
     
     m_VectorWarper->GetOutput()->SetRequestedRegion(this->GetOutput()->GetRequestedRegion() );
 
