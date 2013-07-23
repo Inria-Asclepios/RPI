@@ -38,7 +38,6 @@ PURPOSE.  See the above copyright notices for more information.
 #include "itkTranslationTransform.h"
 #include "itkTransformFactory.h"
 
-#include <itkAnalyzeImageIOFactory.h>
 #include <itkGDCMImageIOFactory.h>
 #include <itkImageRegistrationFactory.h>
 

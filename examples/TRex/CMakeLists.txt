@@ -62,8 +62,9 @@ INCLUDE_DIRECTORIES( ${TCLAP_INCLUDE_DIR} )
 
 # Set used libraries
 SET(LIBRARIES
-    ITKIO
-    ITKNumerics
+    ${ITKIO_LIBRARIES}
+    ${ITK_TRANSFORM_LIBRARIES}
+    ITKOptimizers
     ITKStatistics
 )
 

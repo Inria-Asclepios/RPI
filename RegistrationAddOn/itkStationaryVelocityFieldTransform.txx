@@ -8,10 +8,10 @@
 #include <vnl/vnl_det.h>
 #include <itkInverseDisplacementFieldImageFilter.h>
 #include <itkVectorLinearInterpolateNearestNeighborExtrapolateImageFunction.h>
-#include <itkMultiplyByConstantImageFilter.h>
+#include <itkMultiplyImageFilter.h>
 #include <itkWarpVectorImageFilter.h>
 #include <itkImageRegionIterator.h>
-#include <itkDivideByConstantImageFilter.h>
+#include <itkDivideImageFilter.h>
 
 namespace itk
 {
@@ -84,7 +84,7 @@ GetInverse( Self* inverse ) const
     VectorFieldConstPointerType initial_field = this->m_VectorField;
 
     // Initialize the field inverter
-    typedef itk::MultiplyByConstantImageFilter<VectorFieldType, int, VectorFieldType> FilterType;
+    typedef itk::MultiplyImageFilter<VectorFieldType, itk::Image<int, NDimensions>, VectorFieldType> FilterType;
     typename FilterType::Pointer filter = FilterType::New();
     filter->SetInput(    initial_field );
     filter->SetConstant( -1 );
@@ -152,7 +152,7 @@ TransformPoint(const InputPointType & point) const
 
     unsigned int constant = 1<<numiter;
 
-    typedef typename itk::DivideByConstantImageFilter<VectorFieldType,float,VectorFieldType> DividerType;
+    typedef typename itk::DivideImageFilter<VectorFieldType,itk::Image<float,NDimensions>,VectorFieldType> DividerType;
     typename DividerType::Pointer Divider=DividerType::New();
     Divider->SetInput(m_VectorField);
     Divider->SetConstant( constant );

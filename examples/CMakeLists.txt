@@ -32,7 +32,8 @@
 # USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ###############################################################################
 
-
 include_directories (${RPI_INCLUDE_DIRS})
+include(ITKLibs)
+
 add_subdirectory(DiffeomorphicDemons)
 add_subdirectory(TRex)
