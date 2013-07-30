@@ -137,9 +137,9 @@ RegistrationFactory<TImage>
 template < typename TImage >
 DataObject::Pointer
 RegistrationFactory<TImage>
-::MakeOutput(unsigned int output)
+::MakeOutput(DataObjectPointerArraySizeType idx)
 {
-  switch (output)
+  switch (idx)
   {
     case 0:
       return static_cast<DataObject*>(ImageType::New().GetPointer());

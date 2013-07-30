@@ -267,7 +267,7 @@ class CommandIterationUpdate : public itk::Command
 
     /** Make a DataObject of the correct type to be used as the specified
      * output. Internal use only*/
-    virtual DataObjectPointer MakeOutput(unsigned int idx);
+    virtual DataObjectPointer MakeOutput(DataObjectPointerArraySizeType idx);
 
     /** Set/Get the initial transform. This transform will be plugged into
 	the "general transform" as first transform of the pipeline.
