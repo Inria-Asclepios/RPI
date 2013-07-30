@@ -56,7 +56,23 @@ add_library (${PROJECT_NAME}
   )
 
 target_link_libraries(RegistrationAddOn
-    ${ITK_LIBRARIES}
+  ITKIOBMP
+  ITKIOBioRad
+  ITKIOHDF5
+  ITKIOGDCM
+  ITKIOGIPL
+  ITKIOJPEG
+  ITKIOLSM
+  ITKIOMeta
+  ITKIONIFTI
+  ITKIONRRD
+  ITKIOPNG
+  ITKIOStimulate
+  ITKIOVTK
+  ITKIOTransformBase
+  ITKIOTransformInsightLegacy
+  ITKIOTransformHDF5
+  ITKIOTransformMatlab
  )
 
 add_executable(RegistrationFactory
@@ -65,12 +81,14 @@ add_executable(RegistrationFactory
 
 if(WIN32 AND NOT CYGWIN AND NOT MINGW)
  target_link_libraries(RegistrationFactory 
-  RegistrationAddOn 
+  RegistrationAddOn
+  ITKOptimizers
   getoptcompatlib
   )
 else (WIN32 AND NOT CYGWIN AND NOT MINGW)
  target_link_libraries(RegistrationFactory
    RegistrationAddOn
+   ITKOptimizers
    )
 endif(WIN32 AND NOT CYGWIN AND NOT MINGW)
 
