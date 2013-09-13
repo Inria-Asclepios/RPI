@@ -512,7 +512,7 @@ void exportDFTransformation(itk::GeneralTransform<TScalarType,3> * list, struct 
     typedef  rpi::DisplacementFieldTransform< TScalarType, 3 >                       DFType;
     typedef  itk::StationaryVelocityFieldTransform< TScalarType, 3 >                 SVFType;
     typedef  typename DFType::VectorFieldType                                        VectorFieldType;
-    typedef  itk::TransformToDeformationFieldSource< VectorFieldType, TScalarType >  GeneratorType;
+    typedef  itk::TransformToDisplacementFieldSource< VectorFieldType, TScalarType >  GeneratorType;
 
     // Create a field generator
     typename GeneratorType::Pointer fieldGenerator = GeneratorType::New();
