@@ -1,7 +1,7 @@
 /*=========================================================================
 
  Program:   Insight Segmentation & Registration Toolkit
- Module:    $RCSfile: itkFixedPointInverseDeformationFieldImageFilter.h,v $
+ Module:    $RCSfile: itkFixedPointInverseDisplacementFieldImageFilter.h,v $
  Language:  C++
 
  Copyright: University of Basel, All rights reserved
@@ -12,8 +12,8 @@
 
  =========================================================================*/
 
-#ifndef __itkFixedPointInverseDeformationFieldImageFilter_h
-#define __itkFixedPointInverseDeformationFieldImageFilter_h
+#ifndef __itkFixedPointInverseDisplacementFieldImageFilter_h
+#define __itkFixedPointInverseDisplacementFieldImageFilter_h
 
 
 #include "itkImageToImageFilter.h"
@@ -26,10 +26,10 @@
 namespace itk
 {
 
-/** \class FixedPointInverseDeformationFieldImageFilter
+/** \class FixedPointInverseDisplacementFieldImageFilter
  * \brief Computes the inverse of a deformation field using a fixed point iteration scheme.
  *
- * FixedPointInverseDeformationFieldImageFilter takes a deformation field as input and
+ * FixedPointInverseDisplacementFieldImageFilter takes a deformation field as input and
  * computes the deformation field that is its inverse. If the input deformation
  * field was mapping coordinates from a space A into a space B, the output of
  * this filter will map coordinates from the space B into the space A.
@@ -41,16 +41,16 @@ namespace itk
  * Medical Physics, vol. 35, issue 1, p. 81,
  * is applied.
  *
- * \author Marcel Lüthi, Computer Science Department, University of Basel
+ * \author Marcel L. Thi, Computer Science Department, University of Basel
  */
 
 template < class TInputImage, class TOutputImage >
-class ITK_EXPORT FixedPointInverseDeformationFieldImageFilter :
+class ITK_EXPORT FixedPointInverseDisplacementFieldImageFilter :
     public ImageToImageFilter<TInputImage,TOutputImage>
 {
 public:
   /** Standard class typedefs. */
-  typedef FixedPointInverseDeformationFieldImageFilter   Self;
+  typedef FixedPointInverseDisplacementFieldImageFilter   Self;
   typedef ImageToImageFilter<TInputImage,TOutputImage>  Superclass;
   typedef SmartPointer<Self>                            Pointer;
   typedef SmartPointer<const Self>                      ConstPointer;
@@ -59,7 +59,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(FixedPointInverseDeformationFieldImageFilter, ImageToImageFilter);
+  itkTypeMacro(FixedPointInverseDisplacementFieldImageFilter, ImageToImageFilter);
 
 
   /** Some typedefs. */
@@ -136,8 +136,8 @@ public:
 
 
 protected:
-  FixedPointInverseDeformationFieldImageFilter();
-  ~FixedPointInverseDeformationFieldImageFilter() {}
+  FixedPointInverseDisplacementFieldImageFilter();
+  ~FixedPointInverseDisplacementFieldImageFilter() {}
 
   void PrintSelf(std::ostream& os, Indent indent) const;
 
@@ -147,7 +147,7 @@ protected:
 
 
 private:
-  FixedPointInverseDeformationFieldImageFilter(const Self&); //purposely not implemented
+  FixedPointInverseDisplacementFieldImageFilter(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
 
   OutputImageSizeType                      m_Size;              // Size of the output image
@@ -159,6 +159,6 @@ private:
 
 } // end namespace itk
 
-#include "itkFixedPointInverseDeformationFieldImageFilter.txx"
+#include "itkFixedPointInverseDisplacementFieldImageFilter.txx"
 
 #endif

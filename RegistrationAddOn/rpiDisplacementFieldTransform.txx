@@ -7,7 +7,7 @@
 #include "vnl/vnl_det.h"
 
 #include <itkInverseDisplacementFieldImageFilter.h>
-#include "itkFixedPointInverseDeformationFieldImageFilter.h"
+#include "itkFixedPointInverseDisplacementFieldImageFilter.h"
 
 
 namespace rpi
@@ -87,7 +87,7 @@ GetInverse( Self* inverse ) const
     VectorFieldConstPointerType initial_field = this->m_VectorField;//GetParametersAsVectorField();
 
     // Initialize the field inverter
-    typedef itk::FixedPointInverseDeformationFieldImageFilter<VectorFieldType, VectorFieldType> FPInverseType;
+    typedef itk::FixedPointInverseDisplacementFieldImageFilter<VectorFieldType, VectorFieldType> FPInverseType;
     typename FPInverseType::Pointer filter = FPInverseType::New();
     filter->SetInput(         initial_field );
     filter->SetOutputOrigin(  initial_field->GetOrigin() );
