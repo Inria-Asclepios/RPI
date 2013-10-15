@@ -83,7 +83,7 @@ add_library ( RegistrationAddOn SHARED
   )
 
 target_link_libraries(RegistrationAddOn
-  ITKReview
+  ${${PROJECT_NAME}_LIBRARIES}
  )
 
 add_executable(RegistrationFactory
