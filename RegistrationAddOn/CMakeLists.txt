@@ -51,11 +51,7 @@ set ( RegistrationAddOnSRCS
   itkRegistrationFactory-explicit-template.cxx
 )
 
-add_library (${PROJECT_NAME}
-  ${RegistrationAddOnSRCS} 
-  )
-
-target_link_libraries(RegistrationAddOn
+set(${PROJECT_NAME}_LIBRARIES
   ITKIOBMP
   ITKIOBioRad
   ITKIOHDF5
@@ -73,6 +69,20 @@ target_link_libraries(RegistrationAddOn
   ITKIOTransformInsightLegacy
   ITKIOTransformHDF5
   ITKIOTransformMatlab
+)
+
+if (ITK_USE_REVIEW)
+  set(${PROJECT_NAME}_LIBRARIES
+    ${${PROJECT_NAME}_LIBRARIES}
+    ITKReview
+  )
+endif()  
+
+add_library ( RegistrationAddOn SHARED
+  ${RegistrationAddOnSRCS} 
+  )
+
+target_link_libraries(RegistrationAddOn
   ITKReview
  )
 
