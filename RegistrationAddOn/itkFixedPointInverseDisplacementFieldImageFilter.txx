@@ -123,7 +123,7 @@ void FixedPointInverseDisplacementFieldImageFilter<TInputImage, TOutputImage>::G
 	InputImagePointType mappedPt;
 	OutputImagePointType pt;
 	OutputImageIndexType index;
-	OutputImagePixelType displacement;
+	OutputImagePixelType displacement, interpolatedValue;
 
 	for (unsigned int i = 0; i <= m_NumberOfIterations; i++) {
 
@@ -137,7 +137,8 @@ void FixedPointInverseDisplacementFieldImageFilter<TInputImage, TOutputImage>::G
 
 
 			if (vectorInterpolator->IsInsideBuffer(mappedPt)) {
-				outputIt.Set(vectorInterpolator->Evaluate(mappedPt));
+                interpolatedValue = vectorInterpolator->Evaluate(mappedPt);
+				outputIt.Set(interpolatedValue);
 			}
 		}
 	}

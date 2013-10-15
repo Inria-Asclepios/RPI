@@ -73,6 +73,7 @@ target_link_libraries(RegistrationAddOn
   ITKIOTransformInsightLegacy
   ITKIOTransformHDF5
   ITKIOTransformMatlab
+  ITKReview
  )
 
 add_executable(RegistrationFactory
