@@ -69,14 +69,8 @@ set(${PROJECT_NAME}_LIBRARIES
   ITKIOTransformInsightLegacy
   ITKIOTransformHDF5
   ITKIOTransformMatlab
+  ITKReview
 )
-
-if (ITK_USE_REVIEW)
-  set(${PROJECT_NAME}_LIBRARIES
-    ${${PROJECT_NAME}_LIBRARIES}
-    ITKReview
-  )
-endif()  
 
 add_library ( RegistrationAddOn SHARED
   ${RegistrationAddOnSRCS} 
