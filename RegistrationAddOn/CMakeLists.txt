@@ -72,7 +72,7 @@ set(${PROJECT_NAME}_LIBRARIES
   ITKReview
 )
 
-add_library ( RegistrationAddOn SHARED
+add_library (RegistrationAddOn
   ${RegistrationAddOnSRCS} 
   )
 
