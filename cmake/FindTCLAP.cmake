@@ -51,7 +51,7 @@ IF( EXISTS TCLAP_INCLUDE_DIR )  # already found
 
 ELSE()
 
-    FIND_PATH( TCLAP_INCLUDE_DIR MultiSwitchArg.h /usr/include /usr/include/tclap )
+    FIND_PATH( TCLAP_INCLUDE_DIR tclap/CmdLine.h /usr/include /opt/local/include )
 
     IF( TCLAP_INCLUDE_DIR )
         SET( TCLAP_FOUND TRUE )
