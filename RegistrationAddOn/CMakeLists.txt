@@ -69,7 +69,7 @@ set(${PROJECT_NAME}_LIBRARIES
   ITKIOTransformInsightLegacy
   ITKIOTransformHDF5
   ITKIOTransformMatlab
-  ITKReview
+  ${ITKReview_LIBRARIES}
 )
 
 add_library (RegistrationAddOn
