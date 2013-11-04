@@ -29,7 +29,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include "itkTransformFileReader.h"
 #include "itkTransformFileWriter.h"
 #include "itkTransformFactory.h"
-#include "itkDisplacementFieldTransform.h"
+#include "rpiDisplacementFieldTransform.h"
 
 /* #include "itkAffineRegistrationMethod.h" */
 /* #include "itkLandmarkRegistrationMethod.h" */
@@ -225,7 +225,7 @@ class CommandIterationUpdate : public itk::Command
 /*     typedef itk::Vector< ParametersValueType, ImageType::ImageDimension >    VectorPixelType; */
 /*     typedef itk::Image<  VectorPixelType, ImageType::ImageDimension > VectorFieldType; */
 /*     typedef typename VectorFieldType::Pointer VectorFieldPointerType; */
-    typedef itk::DisplacementFieldTransform<ParametersValueType, ImageType::ImageDimension> DisplacementFieldTransformType;
+    typedef rpi::DisplacementFieldTransform<ParametersValueType, ImageType::ImageDimension> DisplacementFieldTransformType;
     typedef typename DisplacementFieldTransformType::Pointer DisplacementFieldTransformPointerType;
     typedef typename DisplacementFieldTransformType::VectorFieldType VectorFieldType;
     typedef typename VectorFieldType::Pointer VectorFieldPointerType;
@@ -267,7 +267,7 @@ class CommandIterationUpdate : public itk::Command
 
     /** Make a DataObject of the correct type to be used as the specified
      * output. Internal use only*/
-    virtual DataObjectPointer MakeOutput(unsigned int idx);
+    virtual DataObjectPointer MakeOutput(DataObjectPointerArraySizeType idx);
 
     /** Set/Get the initial transform. This transform will be plugged into
 	the "general transform" as first transform of the pipeline.

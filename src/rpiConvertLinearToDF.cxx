@@ -106,7 +106,7 @@ int main(int argc, char** argv)
     typedef  double                                                 LinearScalarType;
     typedef  itk::Transform< LinearScalarType, 3, 3 >               LinearTransformType;
     typedef  float                                                  FieldScalarType;
-    typedef  itk::DisplacementFieldTransform< FieldScalarType, 3 >  FieldTransformType;
+    typedef  rpi::DisplacementFieldTransform< FieldScalarType, 3 >  FieldTransformType;
 
     try
     {

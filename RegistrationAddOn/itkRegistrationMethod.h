@@ -19,7 +19,7 @@ PURPOSE.  See the above copyright notices for more information.
 #define __itkRegistrationMethod_h
 
 #include "itkProcessObject.h"
-#include "itkOrientedImage.h"
+#include "itkImage.h"
 
 #include "itkTransform.h"
 #include "itkCommand.h"

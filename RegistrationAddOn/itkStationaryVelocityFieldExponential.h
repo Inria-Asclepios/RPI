@@ -2,13 +2,13 @@
 #define _itkStationaryVelocityFieldExponential_h_
 
 #include "itkImageToImageFilter.h"
-#include "itkDivideByConstantImageFilter.h"
+#include "itkDivideImageFilter.h"
 #include "itkCastImageFilter.h"
 #include "itkWarpVectorImageFilter.h"
 #include "itkWarpImageFilter.h"
 #include "itkVectorLinearInterpolateNearestNeighborExtrapolateImageFunction.h"
 #include "itkAddImageFilter.h"
-#include <itkMultiplyByConstantImageFilter.h>
+#include <itkMultiplyImageFilter.h>
 
 namespace itk
 {
@@ -118,8 +118,8 @@ protected:
   void GenerateData();
 
       
-  typedef DivideByConstantImageFilter<InputImageType, InputPixelRealValueType, InputImageType>		DivideByConstantType;
-  typedef MultiplyByConstantImageFilter<InputImageType, InputPixelRealValueType, InputImageType>	MultiplyByConstantType;
+  typedef DivideImageFilter<InputImageType, Image<InputPixelRealValueType, TInputImage::ImageDimension>, InputImageType>		DivideByConstantType;
+  typedef MultiplyImageFilter<InputImageType, Image<InputPixelRealValueType, TInputImage::ImageDimension>, InputImageType>	MultiplyByConstantType;
 
   typedef WarpVectorImageFilter< InputImageType, InputImageType, InputImageType>	                VectorWarperType;
   typedef VectorLinearInterpolateNearestNeighborExtrapolateImageFunction<InputImageType, double>	FieldInterpolatorType;

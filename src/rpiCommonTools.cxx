@@ -21,13 +21,15 @@
 #include <itkEuler3DTransform.h>
 #include <itkTransformFileReader.h>
 #include <itkTransformFileWriter.h>
-#include <itkTransformToDeformationFieldSource.h>
+#include <itkTransformToDisplacementFieldSource.h>
 #include <itkTransformToVelocityFieldSource.h>
 #include <itkResampleImageFilter.h>
 #include <itkNearestNeighborInterpolateImageFunction.h>
 #include <itkBSplineInterpolateImageFunction.h>
 #include <itkWindowedSincInterpolateImageFunction.h>
 #include <itkConstantBoundaryCondition.h>
+
+#include <rpiDisplacementFieldTransform.h>
 
 #include "rpiCommonTools.hxx"
 
@@ -517,11 +519,11 @@ readLinearTransformation( std::string fileName )
 
 
 template<class TTransformScalarType>
-typename itk::DisplacementFieldTransform<TTransformScalarType, 3>::Pointer
+typename rpi::DisplacementFieldTransform<TTransformScalarType, 3>::Pointer
 readDisplacementField( std::string fileName )
 {
 
-    typedef itk::DisplacementFieldTransform<TTransformScalarType, 3>
+    typedef rpi::DisplacementFieldTransform<TTransformScalarType, 3>
             FieldTransformType;
 
     typedef typename FieldTransformType::VectorFieldType
@@ -587,18 +589,18 @@ readStationaryVelocityField( std::string fileName )
 
 
 template<class TLinearScalarType, class TFieldScalarType, class TImage>
-typename itk::DisplacementFieldTransform<TFieldScalarType, TImage::ImageDimension>::Pointer
+typename rpi::DisplacementFieldTransform<TFieldScalarType, TImage::ImageDimension>::Pointer
 linearToDisplacementFieldTransformation(
         TImage * image,
         itk::Transform<TLinearScalarType, TImage::ImageDimension, TImage::ImageDimension> * transform )
 {
-    typedef  itk::DisplacementFieldTransform<TFieldScalarType, TImage::ImageDimension>
+    typedef  rpi::DisplacementFieldTransform<TFieldScalarType, TImage::ImageDimension>
             FieldTransformType;
 
     typedef  typename FieldTransformType::VectorFieldType
             VectorFieldType;
 
-    typedef  itk::TransformToDeformationFieldSource<VectorFieldType, TLinearScalarType>
+    typedef  itk::TransformToDisplacementFieldSource<VectorFieldType, TLinearScalarType>
             GeneratorType;
 
     // Create a field generator
@@ -692,7 +694,7 @@ writeDisplacementFieldTransformation(
         std::string fileName )
 {
     // Type definition
-    typedef itk::DisplacementFieldTransform<TTransformScalarType, TDimension>  FieldTransformType;
+    typedef rpi::DisplacementFieldTransform<TTransformScalarType, TDimension>  FieldTransformType;
     typedef typename FieldTransformType::VectorFieldType                       VectorFieldType;
     typedef itk::ImageFileWriter<VectorFieldType>                              FieldWriterType;
 

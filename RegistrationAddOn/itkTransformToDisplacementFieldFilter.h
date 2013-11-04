@@ -16,8 +16,8 @@ PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
 
-#ifndef __itkTransformToDeformationFieldFilter_h
-#define __itkTransformToDeformationFieldFilter_h
+#ifndef __itkTransformToDisplacementFieldFilter_h
+#define __itkTransformToDisplacementFieldFilter_h
 
 #include "itkImageSource.h"
 #include "itkKernelTransform.h"
@@ -26,10 +26,10 @@ PURPOSE.  See the above copyright notices for more information.
 namespace itk
 {
 
-/** \class TransformToDeformationFieldFilter
+/** \class TransformToDisplacementFieldFilter
  * \brief Computes a deformation field from an input spatial transformation.
  *
- * TransformToDeformationFieldFilter produces a deformation field from an input
+ * TransformToDisplacementFieldFilter produces a deformation field from an input
  * spatial transformation.
  * 
  * This source object expects the image to be of pixel type Vector.
@@ -39,12 +39,12 @@ namespace itk
  * \ingroup ImageSource
  */
 template <class TOutputImage, class TTransformScalarType=double>
-class ITK_EXPORT TransformToDeformationFieldFilter:
+class ITK_EXPORT TransformToDisplacementFieldFilter:
   public ImageSource<TOutputImage>
 {
 public:
   /** Standard class typedefs. */
-  typedef TransformToDeformationFieldFilter         Self;
+  typedef TransformToDisplacementFieldFilter         Self;
   typedef ImageSource<TOutputImage>      Superclass;
   typedef SmartPointer<Self>             Pointer;
   typedef SmartPointer<const Self>       ConstPointer;
@@ -57,7 +57,7 @@ public:
   itkNewMacro(Self);  
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(TransformToDeformationFieldFilter, ImageToImageFilter);
+  itkTypeMacro(TransformToDisplacementFieldFilter, ImageToImageFilter);
 
   /** Number of dimensions. */
   itkStaticConstMacro(ImageDimension, unsigned int,
@@ -121,7 +121,7 @@ public:
   itkGetConstReferenceMacro( OutputDirection, DirectionType );
 
   
-  /** TransformToDeformationFieldFilter produces an image which is a different size
+  /** TransformToDisplacementFieldFilter produces an image which is a different size
    * than its input.  As such, it needs to provide an implementation
    * for GenerateOutputInformation() in order to inform the pipeline
    * execution model.  The original documentation of this method is
@@ -135,14 +135,14 @@ public:
   /** Begin concept checking */
   itkConceptMacro(SameDimensionCheck,
     (Concept::SameDimension<ImageDimension,PixelDimension>));
-  itkConceptMacro(DeformationFieldHasNumericTraitsCheck,
+  itkConceptMacro(DisplacementFieldHasNumericTraitsCheck,
     (Concept::HasNumericTraits<typename TOutputImage::PixelType::ValueType>));
   /** End concept checking */
 #endif
 
 protected:
-  TransformToDeformationFieldFilter();
-  ~TransformToDeformationFieldFilter() {};
+  TransformToDisplacementFieldFilter();
+  ~TransformToDisplacementFieldFilter() {};
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   /** 
@@ -151,7 +151,7 @@ protected:
   void GenerateData();
 
 private:
-  TransformToDeformationFieldFilter(const Self&); //purposely not implemented
+  TransformToDisplacementFieldFilter(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
 
   TransformPointer              m_Transform;   // Coordinate transform to use
@@ -166,7 +166,7 @@ private:
 } // end namespace itk
   
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkTransformToDeformationFieldFilter.txx"
+#include "itkTransformToDisplacementFieldFilter.txx"
 #endif
   
 #endif

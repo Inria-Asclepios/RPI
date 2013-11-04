@@ -34,18 +34,17 @@ PURPOSE.  See the above copyright notices for more information.
 #include "itkImageFileWriter.h"
 #include "itkTransformFileReader.h"
 #include "itkTransformFileWriter.h"
-#include "itkTransformToDeformationFieldFilter.h"
+#include "itkTransformToDisplacementFieldFilter.h"
 #include "itkTranslationTransform.h"
 #include "itkTransformFactory.h"
 
-#include <itkAnalyzeImageIOFactory.h>
 #include <itkGDCMImageIOFactory.h>
 #include <itkImageRegistrationFactory.h>
 
 #include <itkAffineRegistrationMethod.h>
 #include <itkRigidRegistrationMethod.h>
 
-#include <itkOrientedImage.h>
+#include <itkImage.h>
 
 #ifndef WIN32
 #include <getopt.h>
@@ -389,10 +388,10 @@ void ImageRegistrationFactoryFunction( arguments args )
 
   // Declare the types of the images (float or double only)
   typedef TPixel PixelType;
-  typedef itk::OrientedImage< PixelType, Dimension >  ImageType;
+  typedef itk::Image< PixelType, Dimension >  ImageType;
 
   typedef itk::Vector< PixelType, Dimension >    VectorPixelType;
-  typedef typename itk::Image < VectorPixelType, Dimension > DeformationFieldType;
+  typedef typename itk::Image < VectorPixelType, Dimension > DisplacementFieldType;
 
   typedef itk::ImageRegistrationFactory<ImageType> ImageRegistrationFactoryType;
   
@@ -400,7 +399,7 @@ void ImageRegistrationFactoryFunction( arguments args )
   // Set up the file readers
   typedef itk::ImageFileReader< ImageType > FixedImageReaderType;
   typedef itk::ImageFileReader< ImageType > MovingImageReaderType;
-  typedef itk::ImageFileReader< DeformationFieldType > FieldReaderType;
+  typedef itk::ImageFileReader< DisplacementFieldType > FieldReaderType;
   typedef itk::TransformFileReader TransformReaderType;
   typedef typename ImageRegistrationFactoryType::TransformType InputTransformType;
   
@@ -413,7 +412,7 @@ void ImageRegistrationFactoryFunction( arguments args )
   // Images we use
   typename ImageType::Pointer fixedImage = 0;
   typename ImageType::Pointer movingImage = 0;
-  typename DeformationFieldType::Pointer inputDefField = 0;
+  typename DisplacementFieldType::Pointer inputDefField = 0;
   typename InputTransformType::Pointer  inputTransform = 0;
 
   
@@ -513,9 +512,9 @@ void ImageRegistrationFactoryFunction( arguments args )
     }
     
 
-    // Set up the TransformToDeformationFieldFilter
-    typedef itk::TransformToDeformationFieldFilter
-      <DeformationFieldType> FieldGeneratorType;
+    // Set up the TransformToDisplacementFieldFilter
+    typedef itk::TransformToDisplacementFieldFilter
+      <DisplacementFieldType> FieldGeneratorType;
     typedef typename FieldGeneratorType::TransformType TransformType;
 
     inputTransform = dynamic_cast<InputTransformType*>(baseTrsf);

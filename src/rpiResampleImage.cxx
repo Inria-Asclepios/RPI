@@ -205,7 +205,7 @@ void resample(Param param)
     typedef itk::ResampleImageFilter<ImageType, ImageType, double>    ResampleFilterType;
     typedef itk::IdentityTransform<double, NDimension>                IdentityTransformType;
     typedef itk::Transform<double, NDimension, NDimension>            LinearTransformType;
-    typedef itk::DisplacementFieldTransform<double, NDimension>       DFTransformType;
+    typedef rpi::DisplacementFieldTransform<double, NDimension>       DFTransformType;
     typedef itk::StationaryVelocityFieldTransform<double, NDimension> SVFTransformType;
     typedef typename DFTransformType::VectorFieldType                 VectorFieldType;
 

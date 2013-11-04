@@ -51,12 +51,33 @@ set ( RegistrationAddOnSRCS
   itkRegistrationFactory-explicit-template.cxx
 )
 
-add_library (${PROJECT_NAME}
+set(${PROJECT_NAME}_LIBRARIES
+  ITKIOBMP
+  ITKIOBioRad
+  ITKIOHDF5
+  ITKIOGDCM
+  ITKIOGIPL
+  ITKIOJPEG
+  ITKIOLSM
+  ITKIOMeta
+  ITKIONIFTI
+  ITKIONRRD
+  ITKIOPNG
+  ITKIOStimulate
+  ITKIOVTK
+  ITKIOTransformBase
+  ITKIOTransformInsightLegacy
+  ITKIOTransformHDF5
+  ITKIOTransformMatlab
+  ${ITKReview_LIBRARIES}
+)
+
+add_library (RegistrationAddOn
   ${RegistrationAddOnSRCS} 
   )
 
 target_link_libraries(RegistrationAddOn
-    ${ITK_LIBRARIES}
+  ${${PROJECT_NAME}_LIBRARIES}
  )
 
 add_executable(RegistrationFactory
@@ -65,12 +86,14 @@ add_executable(RegistrationFactory
 
 if(WIN32 AND NOT CYGWIN AND NOT MINGW)
  target_link_libraries(RegistrationFactory 
-  RegistrationAddOn 
+  RegistrationAddOn
+  ITKOptimizers
   getoptcompatlib
   )
 else (WIN32 AND NOT CYGWIN AND NOT MINGW)
  target_link_libraries(RegistrationFactory
    RegistrationAddOn
+   ITKOptimizers
    )
 endif(WIN32 AND NOT CYGWIN AND NOT MINGW)
 

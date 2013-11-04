@@ -24,7 +24,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkTranslationTransform.h"
-#include "itkTransformToDeformationFieldFilter.h"
+#include "itkTransformToDisplacementFieldFilter.h"
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkWarpImageFilter.h"
 #include "itkDisplacementFieldTransform.h"
@@ -137,9 +137,9 @@ RegistrationFactory<TImage>
 template < typename TImage >
 DataObject::Pointer
 RegistrationFactory<TImage>
-::MakeOutput(unsigned int output)
+::MakeOutput(DataObjectPointerArraySizeType idx)
 {
-  switch (output)
+  switch (idx)
   {
     case 0:
       return static_cast<DataObject*>(ImageType::New().GetPointer());
@@ -625,7 +625,7 @@ RegistrationFactory<TImage>
   warper->SetOutputSpacing( displacement->GetSpacing() );
   warper->SetOutputOrigin( displacement->GetOrigin() );
   warper->SetOutputDirection( displacement->GetDirection() );
-  warper->SetDeformationField( displacement );
+  warper->SetDisplacementField( displacement );
 
   // instanciate callback to follow the warper
   typename CallbackType::Pointer callback = CallbackType::New();
@@ -662,8 +662,8 @@ RegistrationFactory<TImage>
 ::ExportGlobalDisplacementField (void)
 {
 
-  // Set up the TransformToDeformationFieldFilter
-  typedef itk::TransformToDeformationFieldFilter <VectorFieldType, ParametersValueType> FieldGeneratorType;
+  // Set up the TransformToDisplacementFieldFilter
+  typedef itk::TransformToDisplacementFieldFilter <VectorFieldType, ParametersValueType> FieldGeneratorType;
   typename FieldGeneratorType::Pointer fieldGenerator = FieldGeneratorType::New();
 
   fieldGenerator->SetTransform( m_GeneralTransform );
@@ -679,9 +679,6 @@ RegistrationFactory<TImage>
   {
     if (m_GeneralTransform->GetNumberOfTransformsInStack() == 1)
     {
-      //typedef typename itk::DisplacementFieldTransform<ParametersValueType, VectorFieldType::ImageDimension> DisplacementFieldTransformType;
-      //const DisplacementFieldTransformType* transform = dynamic_cast<const DisplacementFieldTransformType*>(m_GeneralTransform->GetInput().GetPointer());
-
       const DisplacementFieldTransformType* displacementfieldtransform = dynamic_cast< const DisplacementFieldTransformType* >(m_GeneralTransform->GetTransform(0).GetPointer());
 
       if (!displacementfieldtransform || !(displacementfieldtransform->GetParametersAsVectorField()))

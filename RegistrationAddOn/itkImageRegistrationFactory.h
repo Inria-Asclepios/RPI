@@ -26,6 +26,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include "itkWindowedSincInterpolateImageFunction.h"
 #include "itkBSplineInterpolateImageFunction.h"
 #include "itkInterpolateImageFunction.h"
+#include <itkConstantBoundaryCondition.h>
 
 namespace itk
 {

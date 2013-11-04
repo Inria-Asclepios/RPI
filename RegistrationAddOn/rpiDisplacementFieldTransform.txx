@@ -1,23 +1,23 @@
-#ifndef _itkDisplacementFieldTransform_cxx_
-#define _itkDisplacementFieldTransform_cxx_
+#ifndef _rpiDisplacementFieldTransform_cxx_
+#define _rpiDisplacementFieldTransform_cxx_
 
 #include "itkDisplacementFieldTransform.h"
 #include "itkNeighborhoodAlgorithm.h"
 #include "itkImageRegionIterator.h"
 #include "vnl/vnl_det.h"
 
-#include <itkInverseDeformationFieldImageFilter.h>
-#include "itkFixedPointInverseDeformationFieldImageFilter.h"
+#include <itkInverseDisplacementFieldImageFilter.h>
+#include "itkFixedPointInverseDisplacementFieldImageFilter.h"
 
 
-namespace itk
+namespace rpi
 {
 
 
 
 template <class TScalarType, unsigned int NDimensions>
 DisplacementFieldTransform<TScalarType, NDimensions>::
-DisplacementFieldTransform() : Superclass( SpaceDimension, ParametersDimension )
+DisplacementFieldTransform() : Superclass( ParametersDimension )
 {
     this->m_InterpolateFunction = InterpolateFunctionType::New();
 }
@@ -42,7 +42,7 @@ SetIdentity(void)
 template<class TScalarType, unsigned int NDimensions>
 void
 DisplacementFieldTransform<TScalarType, NDimensions>::
-PrintSelf(std::ostream &os, Indent indent) const
+PrintSelf(std::ostream &os, itk::Indent indent) const
 {
     Superclass::PrintSelf(os,indent);
 }
@@ -87,7 +87,7 @@ GetInverse( Self* inverse ) const
     VectorFieldConstPointerType initial_field = this->m_VectorField;//GetParametersAsVectorField();
 
     // Initialize the field inverter
-    typedef itk::FixedPointInverseDeformationFieldImageFilter<VectorFieldType, VectorFieldType> FPInverseType;
+    typedef itk::FixedPointInverseDisplacementFieldImageFilter<VectorFieldType, VectorFieldType> FPInverseType;
     typename FPInverseType::Pointer filter = FPInverseType::New();
     filter->SetInput(         initial_field );
     filter->SetOutputOrigin(  initial_field->GetOrigin() );

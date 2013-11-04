@@ -219,7 +219,7 @@ int StartMainProgram(struct Param param)
     typedef itk::Transform<double, 3, 3>
             LinearTransformType;
 
-    typedef itk::DisplacementFieldTransform<TransformScalarType, 3>
+    typedef rpi::DisplacementFieldTransform<TransformScalarType, 3>
             FieldTransformType;
 
 

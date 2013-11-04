@@ -15,10 +15,10 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifndef _itkTransformToDeformationFieldFilter_txx
-#define _itkTransformToDeformationFieldFilter_txx
+#ifndef _itkTransformToDisplacementFieldFilter_txx
+#define _itkTransformToDisplacementFieldFilter_txx
 
-#include "itkTransformToDeformationFieldFilter.h"
+#include "itkTransformToDisplacementFieldFilter.h"
 #include "itkProgressReporter.h"
 #include "itkImageRegionIteratorWithIndex.h"
 
@@ -29,8 +29,8 @@ namespace itk
  * Initialize new instance
  */
 template <class TOutputImage, class TTransformScalarType>
-TransformToDeformationFieldFilter<TOutputImage,TTransformScalarType>
-::TransformToDeformationFieldFilter()
+TransformToDisplacementFieldFilter<TOutputImage,TTransformScalarType>
+::TransformToDisplacementFieldFilter()
 {
   m_OutputSpacing.Fill(1.0);
   m_OutputOrigin.Fill(0.0);
@@ -48,7 +48,7 @@ TransformToDeformationFieldFilter<TOutputImage,TTransformScalarType>
  */
 template <class TOutputImage, class TTransformScalarType>
 void 
-TransformToDeformationFieldFilter<TOutputImage,TTransformScalarType>
+TransformToDisplacementFieldFilter<TOutputImage,TTransformScalarType>
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf(os,indent);
@@ -69,7 +69,7 @@ TransformToDeformationFieldFilter<TOutputImage,TTransformScalarType>
  */
 template <class TOutputImage, class TTransformScalarType>
 void 
-TransformToDeformationFieldFilter<TOutputImage,TTransformScalarType>
+TransformToDisplacementFieldFilter<TOutputImage,TTransformScalarType>
 ::SetOutputSpacing(
   const double* spacing)
 {
@@ -83,7 +83,7 @@ TransformToDeformationFieldFilter<TOutputImage,TTransformScalarType>
  */
 template <class TOutputImage, class TTransformScalarType>
 void 
-TransformToDeformationFieldFilter<TOutputImage,TTransformScalarType>
+TransformToDisplacementFieldFilter<TOutputImage,TTransformScalarType>
 ::SetOutputOrigin(
   const double* origin)
 {
@@ -97,7 +97,7 @@ TransformToDeformationFieldFilter<TOutputImage,TTransformScalarType>
  */
 template <class TOutputImage, class TTransformScalarType>
 void 
-TransformToDeformationFieldFilter<TOutputImage,TTransformScalarType>
+TransformToDisplacementFieldFilter<TOutputImage,TTransformScalarType>
 ::GenerateData()
 {
   itkDebugMacro(<<"Actually executing");
@@ -167,7 +167,7 @@ TransformToDeformationFieldFilter<TOutputImage,TTransformScalarType>
  */
 template <class TOutputImage, class TTransformScalarType>
 void 
-TransformToDeformationFieldFilter<TOutputImage,TTransformScalarType>
+TransformToDisplacementFieldFilter<TOutputImage,TTransformScalarType>
 ::GenerateOutputInformation()
 {
   // call the superclass' implementation of this method
@@ -198,7 +198,7 @@ TransformToDeformationFieldFilter<TOutputImage,TTransformScalarType>
  */
 template <class TOutputImage, class TTransformScalarType>
 unsigned long 
-TransformToDeformationFieldFilter<TOutputImage,TTransformScalarType>
+TransformToDisplacementFieldFilter<TOutputImage,TTransformScalarType>
 ::GetMTime( void ) const
 {
   unsigned long latestTime = Object::GetMTime(); 

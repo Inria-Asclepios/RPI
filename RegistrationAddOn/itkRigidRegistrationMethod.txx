@@ -108,7 +108,7 @@ RigidRegistrationMethod<TImage>
   try 
   {
 	std::cout << "Launching registration ... " << std::endl;
-	m_registration->StartRegistration();  
+	m_registration->Update();  
   } 
   catch( itk::ExceptionObject & e ) 
   { 

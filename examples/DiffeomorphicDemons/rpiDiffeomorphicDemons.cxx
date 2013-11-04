@@ -370,11 +370,11 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
     // Set the standard deviation of the displacement field smoothing
     if ( this->m_displacementFieldStandardDeviation > 0.1 )
     {
-        filter->SmoothDeformationFieldOn();
+        filter->SmoothDisplacementFieldOn();
         filter->SetStandardDeviations( this->m_displacementFieldStandardDeviation );
     }
     else
-        filter->SmoothDeformationFieldOff();
+        filter->SmoothDisplacementFieldOff();
 
 
     // Set the standard deviation of the update field smoothing
@@ -411,7 +411,7 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
     {
         typename TransformType::Pointer        transform = this->m_initialTransform;
         typename VectorFieldType::ConstPointer field     = transform->GetParametersAsVectorField();
-        multires->SetArbitraryInitialDeformationField( const_cast<VectorFieldType *>(field.GetPointer()) );
+        multires->SetArbitraryInitialDisplacementField( const_cast<VectorFieldType *>(field.GetPointer()) );
     }
 
 

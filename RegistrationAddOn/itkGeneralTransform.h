@@ -117,19 +117,22 @@ namespace itk
     virtual OutputVnlVectorType TransformVector(const InputVnlVectorType &) const;
     /**  Method to transform a CovariantVector. */
     virtual OutputCovariantVectorType TransformCovariantVector(const InputCovariantVectorType &) const;
+        
+        virtual void SetFixedParameters( const ParametersType & );
+        
+        /**
+         Set the transformation parameters and update internal transformation.
+         * SetParameters gives the transform the option to set it's
+         * parameters by keeping a reference to the parameters, or by
+         * copying.  To force the transform to copy it's parameters call
+         * SetParametersByValue.
+         * \sa SetParametersByValue
+         *
+         * Not Supported
+         */
+        virtual void SetParameters( const ParametersType & );
 
-    /**
-       Set the transformation parameters and update internal transformation.
-       * SetParameters gives the transform the option to set it's
-       * parameters by keeping a reference to the parameters, or by
-       * copying.  To force the transform to copy it's parameters call
-       * SetParametersByValue.
-       * \sa SetParametersByValue
-       *
-       * Not Supported
-       */
-    virtual void SetParameters( const ParametersType & );
-    /**
+        /**
        Set the transformation parameters and update internal transformation.
        * This method forces the transform to copy the parameters.  The
        * default implementation is to call SetParameters.  This call must
@@ -149,45 +152,7 @@ namespace itk
      * Not Supported
      */
     virtual const ParametersType& GetParameters(void) const;
-    /**
-     * Compute the Jacobian of the transformation
-     *
-     * This method computes the Jacobian matrix of the transformation
-     * at a given input point. The rank of the Jacobian will also indicate
-     * if the transform is invertible at this point.
-     *
-     * The Jacobian is be expressed as a matrix of partial derivatives of the
-     * output point components with respect to the parameters that defined
-     * the transform:
-     *
-     * \f[
-     *
-     J=\left[ \begin{array}{cccc}
-     \frac{\partial x_{1}}{\partial p_{1}} &
-     \frac{\partial x_{1}}{\partial p_{2}} &
-     \cdots  & \frac{\partial x_{1}}{\partial p_{m}}\	\
-     \frac{\partial x_{2}}{\partial p_{1}} &
-     \frac{\partial x_{2}}{\partial p_{2}} &
-     \cdots  & \frac{\partial x_{2}}{\partial p_{m}}\	\
-     \vdots  & \vdots  & \ddots  & \vdots \		\
-     \frac{\partial x_{n}}{\partial p_{1}} &
-     \frac{\partial x_{n}}{\partial p_{2}} &
-     \cdots  & \frac{\partial x_{n}}{\partial p_{m}}
-     \end{array}\right]
-     *
-     * \f]
-     *
-     * In the current form of this tranform pipeline class,
-     * jacobian is not supported
-     *
-     */
-    virtual const JacobianType & GetJacobian(const InputPointType  &) const
-    {
-       itkExceptionMacro( << "no jacobian !!" );
-       // Next line is needed to avoid errors due to: 
-       // "function must return a value" .
-       return this->m_Jacobian;
-    }
+
     /**
        Get the inverse of this transform
 

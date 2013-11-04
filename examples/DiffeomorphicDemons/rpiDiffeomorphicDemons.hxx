@@ -5,7 +5,7 @@
 
 
 #include "rpiRegistrationMethod.hxx"
-#include <itkDisplacementFieldTransform.h>
+#include <rpiDisplacementFieldTransform.h>
 
 // Namespace RPI : Registration Programming Interface
 namespace rpi
@@ -56,7 +56,7 @@ public:
         GRADIENT_MAPPED_MOVING_IMAGE  /** mapped moving image */
     };
 
-    typedef itk::DisplacementFieldTransform< TTransformScalarType, TFixedImage::ImageDimension >
+    typedef rpi::DisplacementFieldTransform< TTransformScalarType, TFixedImage::ImageDimension >
             TransformType;
 
     typedef typename TransformType::Pointer

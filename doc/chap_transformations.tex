@@ -72,7 +72,7 @@ Similarly to DFs, SVFs are usually stored into \texttt{itk::Image} objects which
 The \texttt{itk::\-Stationary\-Velocity\-Field\-Transform} can be used to resample an image using the \texttt{itk::ResampleImageFilter} filter. However, one should never use an \texttt{itk::\-Stationary\-Velocity\-Field\-Transform} to do it because it will literally take days to complete the resampling. Instead, one should generate a DF directly from the considered SVF. Let \texttt{svf} be a \texttt{itk::\-Stationary\-Velocity\-Field\-Transform} (of dimension 3 and coded on \texttt{float}) that we want to convert into a \texttt{itk::\-Displacement\-Field\-Transform}:
 %
 \begin{lstlisting}
-typedef itk::DisplacementFieldTransform<float,3> DFType;
+typedef rpi::DisplacementFieldTransform<float,3> DFType;
 typename DFType::Pointer df = DFType::New();
 df->SetParametersAsVectorField(svf->GetDisplacementFieldAsVectorField());
 \end{lstlisting}
