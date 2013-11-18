@@ -271,8 +271,6 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
 
 
     // Type definition
-    typedef  typename  TransformType::ScalarType
-            ScalarType;
 
     typedef  typename  TransformType::VectorFieldType
             VectorFieldType;
