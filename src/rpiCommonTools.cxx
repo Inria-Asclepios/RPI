@@ -1,5 +1,4 @@
-#ifndef _RPI_COMMON_TOOLS_CXX_
-#define _RPI_COMMON_TOOLS_CXX_
+#pragma once
 
 #include <iostream>
 #include <cstdlib>
@@ -21,7 +20,7 @@
 #include <itkEuler3DTransform.h>
 #include <itkTransformFileReader.h>
 #include <itkTransformFileWriter.h>
-#include <itkTransformToDisplacementFieldSource.h>
+#include <rpiTransformToDisplacementFieldFilter.h>
 #include <itkTransformToVelocityFieldSource.h>
 #include <itkResampleImageFilter.h>
 #include <itkNearestNeighborInterpolateImageFunction.h>
@@ -600,13 +599,17 @@ linearToDisplacementFieldTransformation(
     typedef  typename FieldTransformType::VectorFieldType
             VectorFieldType;
 
-    typedef  itk::TransformToDisplacementFieldSource<VectorFieldType, TLinearScalarType>
+    typedef  rpi::TransformToDisplacementFieldFilter<VectorFieldType, TLinearScalarType>
             GeneratorType;
 
     // Create a field generator
     typename GeneratorType::Pointer fieldGenerator = GeneratorType::New();
-    fieldGenerator->SetTransform(                 transform );
-    fieldGenerator->SetOutputParametersFromImage( image );
+    fieldGenerator->SetTransform( transform );
+    
+    fieldGenerator->SetOutputRegion(image->GetLargestPossibleRegion());
+    fieldGenerator->SetOutputOrigin(image->GetOrigin());
+    fieldGenerator->SetOutputDirection(image->GetDirection());
+    fieldGenerator->SetOutputSpacing(image->GetSpacing());
 
     // Update the field generator
     try
@@ -1096,6 +1099,3 @@ BooleanToString( bool value )
 
 
 } // End of namespace
-
-
-#endif // _RPI_COMMON_TOOLS_CXX_

@@ -34,7 +34,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include "itkImageFileWriter.h"
 #include "itkTransformFileReader.h"
 #include "itkTransformFileWriter.h"
-#include "itkTransformToDisplacementFieldFilter.h"
+#include <rpiTransformToDisplacementFieldFilter.h>
 #include "itkTranslationTransform.h"
 #include "itkTransformFactory.h"
 
@@ -513,7 +513,7 @@ void ImageRegistrationFactoryFunction( arguments args )
     
 
     // Set up the TransformToDisplacementFieldFilter
-    typedef itk::TransformToDisplacementFieldFilter
+    typedef rpi::TransformToDisplacementFieldFilter
       <DisplacementFieldType> FieldGeneratorType;
     typedef typename FieldGeneratorType::TransformType TransformType;
 
@@ -539,8 +539,10 @@ void ImageRegistrationFactoryFunction( arguments args )
     fieldGenerator->SetTransform( trsf );
     fieldGenerator->SetOutputRegion(
 				    fixedImageReader->GetOutput()->GetRequestedRegion());
-    fieldGenerator->SetOutputSpacing(
-				     fixedImageReader->GetOutput()->GetSpacing());
+      fieldGenerator->SetOutputSpacing(
+                                       fixedImageReader->GetOutput()->GetSpacing());
+      fieldGenerator->SetOutputDirection(
+                                       fixedImageReader->GetOutput()->GetDirection());
     fieldGenerator->SetOutputOrigin(
 				    fixedImageReader->GetOutput()->GetOrigin());
     

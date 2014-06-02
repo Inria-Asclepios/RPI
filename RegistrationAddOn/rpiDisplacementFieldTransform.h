@@ -283,7 +283,9 @@ public:
      */
     virtual ScalarType                  GetSpatialJacobianDeterminant(const InputPointType  & point) const;
 
-
+    // Purposedly not implemented
+    void ComputeJacobianWithRespectToParameters(const InputPointType  & itkNotUsed(p), JacobianType & itkNotUsed(jacobian) ) const
+    {}
 
 protected:
 
