@@ -1,5 +1,4 @@
-#ifndef _itkStationaryVelocityFieldTransform_h_
-#define _itkStationaryVelocityFieldTransform_h_
+#pragma once
 
 #include <itkTransform.h>
 #include <itkProcessObject.h>
@@ -308,6 +307,9 @@ public:
         itkExceptionMacro("This type of transform does not handle Jacobian!");
     }
 
+    // Purposedly not implemented
+    void ComputeJacobianWithRespectToParameters(const InputPointType  & itkNotUsed(p), JacobianType & itkNotUsed(jacobian) ) const
+    {}
 
 protected:
 
@@ -348,6 +350,4 @@ private:
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkStationaryVelocityFieldTransform.txx"
-#endif
-
 #endif

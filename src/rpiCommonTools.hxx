@@ -1,6 +1,4 @@
-#ifndef _RPI_COMMON_TOOLS_HXX_
-#define _RPI_COMMON_TOOLS_HXX_
-
+#pragma once
 
 #include <iostream>
 #include <sstream>
@@ -373,6 +371,3 @@ BooleanToString( bool value );
 
 
 #include "rpiCommonTools.cxx"
-
-
-#endif // _RPI_COMMON_TOOLS_HXX_

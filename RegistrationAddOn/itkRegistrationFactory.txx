@@ -24,7 +24,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkTranslationTransform.h"
-#include "itkTransformToDisplacementFieldFilter.h"
+#include "rpiTransformToDisplacementFieldFilter.h"
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkWarpImageFilter.h"
 #include "itkDisplacementFieldTransform.h"
@@ -663,7 +663,7 @@ RegistrationFactory<TImage>
 {
 
   // Set up the TransformToDisplacementFieldFilter
-  typedef itk::TransformToDisplacementFieldFilter <VectorFieldType, ParametersValueType> FieldGeneratorType;
+  typedef rpi::TransformToDisplacementFieldFilter <VectorFieldType, ParametersValueType> FieldGeneratorType;
   typename FieldGeneratorType::Pointer fieldGenerator = FieldGeneratorType::New();
 
   fieldGenerator->SetTransform( m_GeneralTransform );
