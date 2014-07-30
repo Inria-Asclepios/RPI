@@ -20,7 +20,7 @@
 #include <itkEuler3DTransform.h>
 #include <itkTransformFileReader.h>
 #include <itkTransformFileWriter.h>
-#include <rpiTransformToDisplacementFieldFilter.h>
+#include <itkTransformToDisplacementFieldFilter.h>
 #include <itkTransformToVelocityFieldSource.h>
 #include <itkResampleImageFilter.h>
 #include <itkNearestNeighborInterpolateImageFunction.h>
@@ -599,14 +599,15 @@ linearToDisplacementFieldTransformation(
     typedef  typename FieldTransformType::VectorFieldType
             VectorFieldType;
 
-    typedef  rpi::TransformToDisplacementFieldFilter<VectorFieldType, TLinearScalarType>
+    typedef  itk::TransformToDisplacementFieldFilter<VectorFieldType, TLinearScalarType>
             GeneratorType;
 
     // Create a field generator
     typename GeneratorType::Pointer fieldGenerator = GeneratorType::New();
     fieldGenerator->SetTransform( transform );
     
-    fieldGenerator->SetOutputRegion(image->GetLargestPossibleRegion());
+    fieldGenerator->SetOutputStartIndex(image->GetLargestPossibleRegion().GetIndex());
+    fieldGenerator->SetSize(image->GetLargestPossibleRegion().GetSize());
     fieldGenerator->SetOutputOrigin(image->GetOrigin());
     fieldGenerator->SetOutputDirection(image->GetDirection());
     fieldGenerator->SetOutputSpacing(image->GetSpacing());
