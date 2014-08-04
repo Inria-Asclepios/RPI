@@ -15,7 +15,7 @@
 #include <itkImageIOFactory.h>
 #include <itkImageFileReader.h>
 
-#include <itkTransformToDisplacementFieldSource.h>
+#include <itkTransformToDisplacementFieldFilter.h>
 
 #ifdef MIPS_FOUND
 #include <mipsInrimageImageIOFactory.h>
@@ -512,7 +512,7 @@ void exportDFTransformation(itk::GeneralTransform<TScalarType,3> * list, struct 
     typedef  rpi::DisplacementFieldTransform< TScalarType, 3 >                       DFType;
     typedef  itk::StationaryVelocityFieldTransform< TScalarType, 3 >                 SVFType;
     typedef  typename DFType::VectorFieldType                                        VectorFieldType;
-    typedef  itk::TransformToDisplacementFieldSource< VectorFieldType, TScalarType >  GeneratorType;
+    typedef  itk::TransformToDisplacementFieldFilter< VectorFieldType, TScalarType >  GeneratorType;
 
     // Create a field generator
     typename GeneratorType::Pointer fieldGenerator = GeneratorType::New();
@@ -553,7 +553,8 @@ void exportDFTransformation(itk::GeneralTransform<TScalarType,3> * list, struct 
         fieldGenerator->SetOutputOrigin(    origin );
         fieldGenerator->SetOutputSpacing(   spacing );
         fieldGenerator->SetOutputDirection( direction );
-        fieldGenerator->SetOutputRegion(    region );
+        fieldGenerator->SetSize(    region.GetSize() );
+        fieldGenerator->SetOutputStartIndex(    region.GetIndex() );
     }
     else
     {
@@ -576,7 +577,8 @@ void exportDFTransformation(itk::GeneralTransform<TScalarType,3> * list, struct 
             fieldGenerator->SetOutputOrigin(    container->GetOrigin() );
             fieldGenerator->SetOutputSpacing(   container->GetSpacing() );
             fieldGenerator->SetOutputDirection( container->GetDirection() );
-            fieldGenerator->SetOutputRegion(    container->GetLargestPossibleRegion() );
+            fieldGenerator->SetSize(    container->GetLargestPossibleRegion().GetSize() );
+            fieldGenerator->SetOutputStartIndex(    container->GetLargestPossibleRegion().GetIndex() );
         }
         else if (svf!=0)
         {
@@ -584,7 +586,8 @@ void exportDFTransformation(itk::GeneralTransform<TScalarType,3> * list, struct 
             fieldGenerator->SetOutputOrigin(    container->GetOrigin() );
             fieldGenerator->SetOutputSpacing(   container->GetSpacing() );
             fieldGenerator->SetOutputDirection( container->GetDirection() );
-            fieldGenerator->SetOutputRegion(    container->GetLargestPossibleRegion() );
+            fieldGenerator->SetSize(    container->GetLargestPossibleRegion().GetSize() );
+            fieldGenerator->SetOutputStartIndex(    container->GetLargestPossibleRegion().GetIndex() );
         }
         else
             throw std::runtime_error("No geometry can be extracted from the transformation.");

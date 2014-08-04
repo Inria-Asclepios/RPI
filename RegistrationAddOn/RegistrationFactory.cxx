@@ -34,7 +34,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include "itkImageFileWriter.h"
 #include "itkTransformFileReader.h"
 #include "itkTransformFileWriter.h"
-#include <rpiTransformToDisplacementFieldFilter.h>
+#include <itkTransformToDisplacementFieldFilter.h>
 #include "itkTranslationTransform.h"
 #include "itkTransformFactory.h"
 
@@ -513,7 +513,7 @@ void ImageRegistrationFactoryFunction( arguments args )
     
 
     // Set up the TransformToDisplacementFieldFilter
-    typedef rpi::TransformToDisplacementFieldFilter
+    typedef itk::TransformToDisplacementFieldFilter
       <DisplacementFieldType> FieldGeneratorType;
     typedef typename FieldGeneratorType::TransformType TransformType;
 
@@ -537,14 +537,11 @@ void ImageRegistrationFactoryFunction( arguments args )
       = FieldGeneratorType::New();
     
     fieldGenerator->SetTransform( trsf );
-    fieldGenerator->SetOutputRegion(
-				    fixedImageReader->GetOutput()->GetRequestedRegion());
-      fieldGenerator->SetOutputSpacing(
-                                       fixedImageReader->GetOutput()->GetSpacing());
-      fieldGenerator->SetOutputDirection(
-                                       fixedImageReader->GetOutput()->GetDirection());
-    fieldGenerator->SetOutputOrigin(
-				    fixedImageReader->GetOutput()->GetOrigin());
+    fieldGenerator->SetOutputStartIndex(fixedImageReader->GetOutput()->GetRequestedRegion().GetIndex());
+    fieldGenerator->SetSize(fixedImageReader->GetOutput()->GetRequestedRegion().GetSize());
+      fieldGenerator->SetOutputSpacing(fixedImageReader->GetOutput()->GetSpacing());
+      fieldGenerator->SetOutputDirection(fixedImageReader->GetOutput()->GetDirection());
+    fieldGenerator->SetOutputOrigin(fixedImageReader->GetOutput()->GetOrigin());
     
     // Update the fieldGenerator
     try

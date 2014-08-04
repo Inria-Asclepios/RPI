@@ -1,30 +1,10 @@
-/*=========================================================================
-
-Program:   vtkINRIA3D
-Module:    $Id: itkRegistrationFactory.cxx 1 2008-01-22 19:01:33Z ntoussaint $
-Language:  C++
-Author:    $Author: ntoussaint $
-Date:      $Date: 2008-01-22 20:01:33 +0100 (Tue, 22 Jan 2008) $
-Version:   $Revision: 1 $
-
-Copyright (c) 2007 INRIA - Asclepios Project. All rights reserved.
-See Copyright.txt for details.
-
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
-
-=========================================================================*/
-#ifndef _itkRegistrationFactory_cxx
-#define _itkRegistrationFactory_cxx
-
 #include "itkRegistrationFactory.h"
 #include "itkTransformFileReader.h"
 #include "itkTransformFileWriter.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkTranslationTransform.h"
-#include "rpiTransformToDisplacementFieldFilter.h"
+#include "itkTransformToDisplacementFieldFilter.h"
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkWarpImageFilter.h"
 #include "itkDisplacementFieldTransform.h"
@@ -663,14 +643,15 @@ RegistrationFactory<TImage>
 {
 
   // Set up the TransformToDisplacementFieldFilter
-  typedef rpi::TransformToDisplacementFieldFilter <VectorFieldType, ParametersValueType> FieldGeneratorType;
+  typedef itk::TransformToDisplacementFieldFilter <VectorFieldType, ParametersValueType> FieldGeneratorType;
   typename FieldGeneratorType::Pointer fieldGenerator = FieldGeneratorType::New();
 
   fieldGenerator->SetTransform( m_GeneralTransform );
 
   if ( this->CheckInputs() )
   {
-    fieldGenerator->SetOutputRegion(m_FixedImage->GetRequestedRegion());
+      fieldGenerator->SetOutputStartIndex(m_FixedImage->GetRequestedRegion().GetIndex());
+      fieldGenerator->SetSize(m_FixedImage->GetRequestedRegion().GetSize());
     fieldGenerator->SetOutputSpacing(m_FixedImage->GetSpacing());
     fieldGenerator->SetOutputOrigin(m_FixedImage->GetOrigin());
     fieldGenerator->SetOutputDirection(m_FixedImage->GetDirection());
@@ -687,8 +668,9 @@ RegistrationFactory<TImage>
       }
       else
       {
-	fieldGenerator->SetOutputRegion(displacementfieldtransform->GetParametersAsVectorField()->GetRequestedRegion());
-	fieldGenerator->SetOutputSpacing(displacementfieldtransform->GetParametersAsVectorField()->GetSpacing());
+          fieldGenerator->SetOutputStartIndex(displacementfieldtransform->GetParametersAsVectorField()->GetRequestedRegion().GetIndex());
+          fieldGenerator->SetSize(displacementfieldtransform->GetParametersAsVectorField()->GetRequestedRegion().GetSize());
+    fieldGenerator->SetOutputSpacing(displacementfieldtransform->GetParametersAsVectorField()->GetSpacing());
 	fieldGenerator->SetOutputOrigin(displacementfieldtransform->GetParametersAsVectorField()->GetOrigin());
 	fieldGenerator->SetOutputDirection(displacementfieldtransform->GetParametersAsVectorField()->GetDirection());
       }
@@ -964,6 +946,3 @@ RegistrationFactory<TImage>
 
 
 } // end namespace itk
-
-
-#endif
