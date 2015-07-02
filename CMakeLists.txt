@@ -33,18 +33,13 @@
 ###############################################################################
 
 
-cmake_minimum_required(VERSION 2.6)
-project(RPI)
+cmake_minimum_required(VERSION 3.0)
+set(CMAKE_MACOSX_RPATH OFF)
 
-set(${PROJECT_NAME}_VERSION_MAJOR 1 CACHE STRING "RPI major version number.")
-set(${PROJECT_NAME}_VERSION_MINOR 2 CACHE STRING "RPI minor version number.")
-set(${PROJECT_NAME}_VERSION_BUILD 0 CACHE STRING "RPI build version number.")
-set(${PROJECT_NAME}_VERSION
-  "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_BUILD}")
+set(RPI_VERSION_NUMBER 1.2.0)
+mark_as_advanced(RPI_VERSION_NUMBER)
 
-mark_as_advanced(${PROJECT_NAME}_VERSION_MAJOR)
-mark_as_advanced(${PROJECT_NAME}_VERSION_MINOR)
-mark_as_advanced(${PROJECT_NAME}_VERSION_BUILD)
+project(RPI VERSION ${RPI_VERSION_NUMBER})
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
