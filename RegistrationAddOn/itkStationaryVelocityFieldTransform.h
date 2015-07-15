@@ -68,6 +68,7 @@ public:
      * Type of the input parameters
      */
     typedef typename Superclass::ParametersType               ParametersType;
+    typedef typename Superclass::FixedParametersType          FixedParametersType;
 
     /**
      * Type of the Jacobian matrix
@@ -159,7 +160,7 @@ public:
      * Method not implemented for stationary velocity fields.
      * @param param parameters
      */
-    virtual void                        SetFixedParameters( const ParametersType & param )
+    virtual void                        SetFixedParameters( const FixedParametersType & param )
     {
         itkExceptionMacro("This type of transform does not handle any parameters.");
     }
