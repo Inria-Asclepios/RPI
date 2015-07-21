@@ -96,6 +96,7 @@ public:
      * Type of the input parameters
      */
     typedef typename Superclass::ParametersType               ParametersType;
+    typedef typename Superclass::FixedParametersType          FixedParametersType;
 
     /**
      * Type of the Jacobian matrix
@@ -181,7 +182,7 @@ public:
     /**
      * Sets the fixed transformation parameters.
      */
-    virtual void                        SetFixedParameters( const ParametersType & )
+    virtual void                        SetFixedParameters( const FixedParametersType & )
     {
         itkExceptionMacro("This type of transform does not handle any parameters.");
     }
