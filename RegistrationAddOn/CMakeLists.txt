@@ -1,4 +1,4 @@
-project(RegistrationAddOn)
+project(RegistrationFactory)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -47,9 +47,9 @@ IF(WIN32 AND NOT CYGWIN AND NOT MINGW)
   )
 ENDIF(WIN32 AND NOT CYGWIN AND NOT MINGW)
 
-set ( RegistrationAddOnSRCS
-  itkRegistrationFactory-explicit-template.cxx
-)
+#set ( RegistrationAddOnSRCS
+#  itkRegistrationFactory-explicit-template.cxx
+#)
 
 set(${PROJECT_NAME}_LIBRARIES
   ITKIOBMP
@@ -73,27 +73,19 @@ set(${PROJECT_NAME}_LIBRARIES
   ITKIOMRC
 )
 
-add_library (RegistrationAddOn
-  ${RegistrationAddOnSRCS} 
-  )
-
-target_link_libraries(RegistrationAddOn
-  ${${PROJECT_NAME}_LIBRARIES}
- )
-
-add_executable(RegistrationFactory
+add_executable(${PROJECT_NAME}
   RegistrationFactory.cxx
 )
 
 if(WIN32 AND NOT CYGWIN AND NOT MINGW)
- target_link_libraries(RegistrationFactory 
-  RegistrationAddOn
+ target_link_libraries(${PROJECT_NAME}
+  ${${PROJECT_NAME}_LIBRARIES}
   ITKOptimizers
   getoptcompatlib
   )
 else (WIN32 AND NOT CYGWIN AND NOT MINGW)
- target_link_libraries(RegistrationFactory
-   RegistrationAddOn
+ target_link_libraries(${PROJECT_NAME}
+   ${${PROJECT_NAME}_LIBRARIES}
    ITKOptimizers
    )
 endif(WIN32 AND NOT CYGWIN AND NOT MINGW)
