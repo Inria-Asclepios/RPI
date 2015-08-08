@@ -38,7 +38,9 @@ if(NOT RPI_USE_FILE_INCLUDED)
 
    include_directories(${RPI_INCLUDE_DIRS})
 
-   link_directories(${RPI_LIBRARY_DIRS})
+   if (EXISTS ${RPI_LIBRARY_DIRS})
+     link_directories(${RPI_LIBRARY_DIRS})
+   endif()
 
    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${RPI_CMAKE_DIRS})
    
