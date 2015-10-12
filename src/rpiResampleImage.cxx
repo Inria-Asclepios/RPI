@@ -200,9 +200,6 @@ void resample(Param param)
 
     // Type definition
     typedef itk::Image<TPixelType, NDimension>                        ImageType;
-    typedef itk::ImageFileReader<ImageType>                           ReaderType;
-    typedef itk::ImageFileWriter<ImageType>                           WriterType;
-    typedef itk::ResampleImageFilter<ImageType, ImageType, double>    ResampleFilterType;
     typedef itk::IdentityTransform<double, NDimension>                IdentityTransformType;
     typedef itk::Transform<double, NDimension, NDimension>            LinearTransformType;
     typedef rpi::DisplacementFieldTransform<double, NDimension>       DFTransformType;
