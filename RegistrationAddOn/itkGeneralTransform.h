@@ -110,15 +110,15 @@ namespace itk
         
         
         /**  Method to transform a point. */
-        virtual OutputPointType TransformPoint(const InputPointType  & ) const;
+        virtual OutputPointType TransformPoint(const InputPointType  & ) const ITK_OVERRIDE;
         /**  Method to transform a vector. */
-        virtual OutputVectorType    TransformVector(const InputVectorType &) const;
+        virtual OutputVectorType    TransformVector(const InputVectorType &) const ITK_OVERRIDE;
         /**  Method to transform a vnl_vector. */
-        virtual OutputVnlVectorType TransformVector(const InputVnlVectorType &) const;
+        virtual OutputVnlVectorType TransformVector(const InputVnlVectorType &) const ITK_OVERRIDE;
         /**  Method to transform a CovariantVector. */
-        virtual OutputCovariantVectorType TransformCovariantVector(const InputCovariantVectorType &) const;
+        virtual OutputCovariantVectorType TransformCovariantVector(const InputCovariantVectorType &) const ITK_OVERRIDE;
         
-        virtual void SetFixedParameters( const ParametersType & );
+        virtual void SetFixedParameters(const ParametersType &) ITK_OVERRIDE;
         
         /**
          Set the transformation parameters and update internal transformation.
@@ -130,7 +130,7 @@ namespace itk
          *
          * Not Supported
          */
-        virtual void SetParameters( const ParametersType & );
+        virtual void SetParameters(const ParametersType &) ITK_OVERRIDE;
         
         /**
          Set the transformation parameters and update internal transformation.
@@ -143,15 +143,15 @@ namespace itk
          * Not Supported
          
          */
-        virtual void SetParametersByValue ( const ParametersType & p )
-        { (void) p; itkExceptionMacro("GeneralTransform<TScalarType, NDimensions> does not handle any parameter system yet"); };
+        virtual void SetParametersByValue (const ParametersType & p) ITK_OVERRIDE
+        { (void) p; itkExceptionMacro("GeneralTransform<TScalarType, NDimensions> does not handle any parameter system yet"); }
         
         /**
          * Get the Transformation Parameters.
          *
          * Not Supported
          */
-        virtual const ParametersType& GetParameters(void) const;
+        virtual const ParametersType& GetParameters() const ITK_OVERRIDE;
         
         /**
          Get the inverse of this transform
@@ -185,7 +185,7 @@ namespace itk
          
          Hence the return value can be different after or befor a call of Push().
          */
-        virtual bool IsLinear(void) const;
+        virtual bool IsLinear(void) const ITK_OVERRIDE;
         
         bool Undo(void);
         bool Redo(void);
@@ -195,13 +195,14 @@ namespace itk
         void RemoveAllTransforms(void);
         
         // Purposedly not implemented
-        void ComputeJacobianWithRespectToParameters(const InputPointType  & itkNotUsed(p), JacobianType & itkNotUsed(jacobian) ) const
+        void ComputeJacobianWithRespectToParameters(const InputPointType  & itkNotUsed(p),
+                                                    JacobianType & itkNotUsed(jacobian) ) const ITK_OVERRIDE
         {}
 
     protected:
         
         /** Print contents of an TranslationTransform. */
-        void PrintSelf(std::ostream &os, Indent indent) const;
+        void PrintSelf(std::ostream &os, Indent indent) const ITK_OVERRIDE;
         
         unsigned int RemoveTransform(TransformConstPointerType arg);
         
@@ -210,19 +211,12 @@ namespace itk
         
         TransformListType m_RemovedTransformList;
         TransformListType m_TransformList;
-        
-    private:
-        
-        
-    };
-    
-    
+    };  
 } // end of namespace itk
 
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkGeneralTransform.txx"
 #endif
-
 
 #endif

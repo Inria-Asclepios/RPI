@@ -58,7 +58,7 @@ class CommandIterationUpdate : public itk::Command
   typedef itk::ProcessObject      ProcessObjectType;
   typedef ProcessObjectType::Pointer  ProcessObjectPointer;
 
-  itkNewMacro( Self );
+  itkNewMacro( Self )
 
   void SetItkObjectToWatch (ProcessObjectPointer object)
   {
@@ -67,19 +67,19 @@ class CommandIterationUpdate : public itk::Command
 
 
  protected:
-  CommandIterationUpdate() {};
-  ~CommandIterationUpdate() {};
+  CommandIterationUpdate() {}
+  ~CommandIterationUpdate() {}
 
   ProcessObjectPointer m_ProcessObject;
 
  public:
 
-  void Execute(itk::Object *caller, const itk::EventObject & event)
+  void Execute(itk::Object *caller, const itk::EventObject & event) ITK_OVERRIDE
   {
     Execute( (const itk::Object *)caller, event);
   }
 
-  void Execute(const itk::Object * object, const itk::EventObject & event)
+  void Execute(const itk::Object * object, const itk::EventObject & event) ITK_OVERRIDE
   {
     if( !(itk::ProgressEvent().CheckEvent( &event )) )
      return;
@@ -267,7 +267,7 @@ class CommandIterationUpdate : public itk::Command
 
     /** Make a DataObject of the correct type to be used as the specified
      * output. Internal use only*/
-    virtual DataObjectPointer MakeOutput(DataObjectPointerArraySizeType idx);
+    virtual DataObjectPointer MakeOutput(DataObjectPointerArraySizeType idx) ITK_OVERRIDE;
 
     /** Set/Get the initial transform. This transform will be plugged into
 	the "general transform" as first transform of the pipeline.
@@ -370,11 +370,11 @@ class CommandIterationUpdate : public itk::Command
   protected:
     RegistrationFactory();
     virtual ~RegistrationFactory() {};
-    void PrintSelf(std::ostream& os, Indent indent) const;
+    void PrintSelf(std::ostream& os, Indent indent) const ITK_OVERRIDE;
 
     /** Method invoked by the pipeline in order to trigger the computation of
      * the registration. */
-    virtual void  GenerateData ();
+    virtual void  GenerateData () ITK_OVERRIDE;
 
     /**
        ResampleImageFilter produces an image which is a different size
@@ -383,11 +383,11 @@ class CommandIterationUpdate : public itk::Command
        * execution model.  The original documentation of this method is
        * below. \sa ProcessObject::GenerateOutputInformaton()
        */
-    virtual void GenerateOutputInformation();
+    virtual void GenerateOutputInformation() ITK_OVERRIDE;
     /** The current implementation of this class does not supprot
      * streaming. As such it produces the output for the largest
      * possible region. */
-    virtual void EnlargeOutputRequestedRegion( DataObject *ptr );
+    virtual void EnlargeOutputRequestedRegion( DataObject *ptr ) ITK_OVERRIDE;
 
     virtual bool CheckForceResampling (void);
     
@@ -403,18 +403,13 @@ class CommandIterationUpdate : public itk::Command
     bool m_UseFixedImage;
     bool m_SkipResampling;
     bool m_UseInnerTransformation;
-    
-
 
   private:
     RegistrationFactory(const Self&); //purposely not implemented
     void operator=(const Self&); //purposely not implemented
 
     MethodListType MethodList;
-
-
   };
-
 
 } // end of namespace itk
 

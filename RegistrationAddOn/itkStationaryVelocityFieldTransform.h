@@ -151,7 +151,7 @@ public:
      * Method not implemented for stationary velocity fields.
      * @retun parameters
      */
-    virtual const ParametersType&       GetParameters(void) const
+    virtual const ParametersType&       GetParameters(void) const ITK_OVERRIDE
     {
         itkExceptionMacro("This type of transform does not handle any parameters.");
     }
@@ -160,7 +160,7 @@ public:
      * Method not implemented for stationary velocity fields.
      * @param param parameters
      */
-    virtual void                        SetFixedParameters( const FixedParametersType & param )
+    virtual void                        SetFixedParameters( const FixedParametersType & param ) ITK_OVERRIDE
     {
         itkExceptionMacro("This type of transform does not handle any parameters.");
     }
@@ -169,7 +169,7 @@ public:
      * Method not implemented for stationary velocity fields.
      * @param param parameters
      */
-    virtual void                        SetParameters( const ParametersType & param )
+    virtual void                        SetParameters( const ParametersType & param ) ITK_OVERRIDE
     {
         itkExceptionMacro("This type of transform does not handle any parameters.");
     }
@@ -178,7 +178,7 @@ public:
      * Method not implemented for stationary velocity fields.
      * @param p value
      */
-    virtual void                        SetParametersByValue( const ParametersType & p )
+    virtual void                        SetParametersByValue( const ParametersType & p ) ITK_OVERRIDE
     {
         itkExceptionMacro("This type of transform does not handle any parameters.");
     }
@@ -218,7 +218,7 @@ public:
      * This will be fixed in the near future.
      * @return inverted transformation
      */
-    virtual InverseTransformBasePointer GetInverseTransform(void) const;
+    virtual InverseTransformBasePointer GetInverseTransform(void) const ITK_OVERRIDE;
 
     /**
      * Transforms a point. This method should be used to transform one or a few number of points.
@@ -228,21 +228,21 @@ public:
      * @param  point  point
      * @return transformed point
      */
-    virtual OutputPointType             TransformPoint(const InputPointType  & point) const;
+    virtual OutputPointType             TransformPoint(const InputPointType  & point) const ITK_OVERRIDE;
 
     /**
      * Transforms a vector. See TransformPoint method for more details.
      * @param  vector  vector
      * @return transformed vector
      */
-    virtual OutputVectorType            TransformVector(const InputVectorType & vector) const;
+    virtual OutputVectorType            TransformVector(const InputVectorType & vector) const ITK_OVERRIDE;
 
     /**
      * Transforms a vnl_vector. See TransformPoint method for more details.
      * @param  vector  vector
      * @return transformed vector
      */
-    virtual OutputVnlVectorType         TransformVector(const InputVnlVectorType & vector) const;
+    virtual OutputVnlVectorType         TransformVector(const InputVnlVectorType & vector) const ITK_OVERRIDE;
 
     /**
      * Method not implemented for stationary velocity fields.
@@ -251,7 +251,7 @@ public:
      */
 
 
-    virtual OutputCovariantVectorType   TransformCovariantVector(const InputCovariantVectorType & vector) const
+    virtual OutputCovariantVectorType   TransformCovariantVector(const InputCovariantVectorType & vector) const ITK_OVERRIDE
     {
         itkExceptionMacro("Cannot transform covariant vector!");
     }
@@ -309,7 +309,8 @@ public:
     }
 
     // Purposedly not implemented
-    void ComputeJacobianWithRespectToParameters(const InputPointType  & itkNotUsed(p), JacobianType & itkNotUsed(jacobian) ) const
+    void ComputeJacobianWithRespectToParameters(const InputPointType  & itkNotUsed(p),
+                                                JacobianType & itkNotUsed(jacobian) ) const ITK_OVERRIDE
     {}
 
 protected:
@@ -317,7 +318,7 @@ protected:
     /**
      * Prints contents.
      */
-    void PrintSelf(std::ostream &os, Indent indent) const;
+    void PrintSelf(std::ostream &os, Indent indent) const ITK_OVERRIDE;
 
     /**
      * Default constructor.

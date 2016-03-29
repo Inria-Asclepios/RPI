@@ -112,10 +112,10 @@ public:
 
 protected:
   StationaryVelocityFieldExponential();
-  virtual ~StationaryVelocityFieldExponential(){};
+  virtual ~StationaryVelocityFieldExponential(){}
 
-  void PrintSelf(std::ostream& os,Indent indent) const;
-  void GenerateData();
+  void PrintSelf(std::ostream& os,Indent indent) const ITK_OVERRIDE;
+  void GenerateData() ITK_OVERRIDE;
 
       
   typedef DivideImageFilter<InputImageType, Image<InputPixelRealValueType, TInputImage::ImageDimension>, InputImageType>		DivideByConstantType;

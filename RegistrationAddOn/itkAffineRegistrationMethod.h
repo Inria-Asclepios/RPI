@@ -87,7 +87,7 @@ class AffineRegistrationInterfaceCommand : public itk::Command
     m_ProcessObject = object;
   }
   
-  void Execute(itk::Object * object, const itk::EventObject & event)
+  void Execute(itk::Object * object, const itk::EventObject & event) ITK_OVERRIDE
   {
     if( !(itk::IterationEvent().CheckEvent( &event )) )
     {
@@ -136,7 +136,7 @@ class AffineRegistrationInterfaceCommand : public itk::Command
     
   }
   
-  void Execute(const itk::Object * caller, const itk::EventObject & event)
+  void Execute(const itk::Object * caller, const itk::EventObject & event) ITK_OVERRIDE
   {
     
     Execute( const_cast<itk::Object *>(caller), event);
@@ -296,7 +296,7 @@ public:
 
   
   /** Initialize by setting the interconnects between the components. */
-  virtual void Initialize(void);
+  virtual void Initialize(void) ITK_OVERRIDE;
 
     /**
      Default is false.
@@ -312,26 +312,22 @@ public:
 
 protected:
   AffineRegistrationMethod();
-  virtual ~AffineRegistrationMethod() {};
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  virtual ~AffineRegistrationMethod() {}
+  void PrintSelf(std::ostream& os, Indent indent) const ITK_OVERRIDE;
 
   /** Method invoked by the pipeline in order to trigger the computation of 
    * the registration. */
-  virtual void  GenerateData ();
+  virtual void  GenerateData () ITK_OVERRIDE;
 
   AffineParameters Parameters;
   bool m_AutoPyramidSchedule;
   
   ScheduleType m_Schedule;
-  
-  
+    
 private:
   AffineRegistrationMethod(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
-  
-
 };
-
 
 } // end namespace itk
 

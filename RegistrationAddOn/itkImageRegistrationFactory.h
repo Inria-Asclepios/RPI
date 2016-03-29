@@ -122,7 +122,7 @@ namespace itk
 
     /** Method invoked by the pipeline in order to trigger the computation of
      * the registration. */
-    virtual void  GenerateData ();
+    virtual void  GenerateData () ITK_OVERRIDE;
     
     unsigned int  m_InterpolationStyle;
     

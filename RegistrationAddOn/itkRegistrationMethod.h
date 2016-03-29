@@ -161,11 +161,11 @@ public:
 protected:
   RegistrationMethod();
   virtual ~RegistrationMethod() {};
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf(std::ostream& os, Indent indent) const ITK_OVERRIDE;
 
   /** Method invoked by the pipeline in order to trigger the computation of 
    * the registration. */
-  virtual void  GenerateData ()
+  virtual void  GenerateData () ITK_OVERRIDE
   {
     itkExceptionMacro("subclass should overwrite this method !");
   }
@@ -184,17 +184,13 @@ protected:
 
   const char* m_Name;
   
-  
 private:
   RegistrationMethod(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
-  
-
 };
 
 
 } // end namespace itk
-
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkRegistrationMethod.txx"

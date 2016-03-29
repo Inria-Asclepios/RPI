@@ -122,8 +122,6 @@ public:
   itkSetMacro(OutputOrigin, OutputImageOriginPointType);
   virtual void SetOutputOrigin( const double* values);
 
-
-
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
   itkConceptMacro(OutputHasNumericTraitsCheck,
@@ -131,20 +129,15 @@ public:
   /** End concept checking */
 #endif
 
-
-
-
-
 protected:
   FixedPointInverseDisplacementFieldImageFilter();
   ~FixedPointInverseDisplacementFieldImageFilter() {}
 
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf(std::ostream& os, Indent indent) const ITK_OVERRIDE;
 
-  void GenerateData( );
-  void GenerateOutputInformation();
+  void GenerateData() ITK_OVERRIDE;
+  void GenerateOutputInformation() ITK_OVERRIDE;
   unsigned int m_NumberOfIterations;
-
 
 private:
   FixedPointInverseDisplacementFieldImageFilter(const Self&); //purposely not implemented
@@ -153,8 +146,6 @@ private:
   OutputImageSizeType                      m_Size;              // Size of the output image
   OutputImageSpacingType                   m_OutputSpacing;     // output image spacing
   OutputImageOriginPointType               m_OutputOrigin;      // output image origin
-
-
 };
 
 } // end namespace itk

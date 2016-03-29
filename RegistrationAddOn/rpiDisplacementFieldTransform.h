@@ -166,7 +166,7 @@ public:
     /**
      * Gets the transformation parameters.
      */
-    virtual const ParametersType&       GetParameters(void) const
+    virtual const ParametersType&       GetParameters(void) const ITK_OVERRIDE
     {
         itkExceptionMacro("This type of transform does not handle any parameters.");
     }
@@ -174,7 +174,7 @@ public:
     /**
      * Sets the transformation parameters.
      */
-    virtual void                        SetParameters( const ParametersType & )
+    virtual void                        SetParameters( const ParametersType & ) ITK_OVERRIDE
     {
         itkExceptionMacro("This type of transform does not handle any parameters.");
     }
@@ -182,7 +182,7 @@ public:
     /**
      * Sets the fixed transformation parameters.
      */
-    virtual void                        SetFixedParameters( const FixedParametersType & )
+    virtual void                        SetFixedParameters( const FixedParametersType & ) ITK_OVERRIDE
     {
         itkExceptionMacro("This type of transform does not handle any parameters.");
     }
@@ -190,7 +190,7 @@ public:
     /**
      * Sets the transformation parameters.
      */
-    virtual void                        SetParametersByValue( const ParametersType & p )
+    virtual void                        SetParametersByValue( const ParametersType & p ) ITK_OVERRIDE
     {
         itkExceptionMacro("This type of transform does not handle any parameters.");
     }
@@ -218,27 +218,27 @@ public:
     /**
      * Gets an inverse of this transformation.
      */
-    virtual InverseTransformBasePointer GetInverseTransform(void) const;
+    virtual InverseTransformBasePointer GetInverseTransform(void) const ITK_OVERRIDE;
 
     /**
      * Transforms a point.
      */
-    virtual OutputPointType             TransformPoint(const InputPointType  & point) const;
+    virtual OutputPointType             TransformPoint(const InputPointType  & point) const ITK_OVERRIDE;
 
     /**
      * Transforms a vector.
      */
-    virtual OutputVectorType            TransformVector(const InputVectorType & vector) const;
+    virtual OutputVectorType            TransformVector(const InputVectorType & vector) const ITK_OVERRIDE;
 
     /**
      * Transforms a vnl_vector.
      */
-    virtual OutputVnlVectorType         TransformVector(const InputVnlVectorType & vector) const;
+    virtual OutputVnlVectorType         TransformVector(const InputVnlVectorType & vector) const ITK_OVERRIDE;
 
     /**
      * Transform a CovariantVector.
      */
-    virtual OutputCovariantVectorType   TransformCovariantVector(const InputCovariantVectorType &) const
+    virtual OutputCovariantVectorType   TransformCovariantVector(const InputCovariantVectorType &) const ITK_OVERRIDE
     {
         itkExceptionMacro("Cannot transform covariant vector!");
     }
@@ -285,7 +285,8 @@ public:
     virtual ScalarType                  GetSpatialJacobianDeterminant(const InputPointType  & point) const;
 
     // Purposedly not implemented
-    void ComputeJacobianWithRespectToParameters(const InputPointType  & itkNotUsed(p), JacobianType & itkNotUsed(jacobian) ) const
+    void ComputeJacobianWithRespectToParameters(const InputPointType  & itkNotUsed(p),
+                                                JacobianType & itkNotUsed(jacobian) ) const ITK_OVERRIDE
     {}
 
 protected:
@@ -293,7 +294,7 @@ protected:
     /**
      * Prints contents.
      */
-    void PrintSelf(std::ostream &os, itk::Indent indent) const;
+    void PrintSelf(std::ostream &os, itk::Indent indent) const ITK_OVERRIDE;
 
     /**
      * Default constructor.

@@ -64,14 +64,14 @@ public:
   typedef itk::LinearInterpolateImageFunction<ImageType,double>                InterpolatorType;
   typedef itk::ImageRegistrationMethod< ImageType, ImageType>                  RegistrationType;
   
-  virtual void Initialize(void);
+  virtual void Initialize(void) ITK_OVERRIDE;
 
 protected:
            RigidRegistrationMethod();
-  virtual ~RigidRegistrationMethod() {};
-  virtual void PrintSelf(std::ostream& os, Indent indent) const;
+  virtual ~RigidRegistrationMethod() {}
+  virtual void PrintSelf(std::ostream& os, Indent indent) const ITK_OVERRIDE;
 
-  virtual void  GenerateData ();
+  virtual void  GenerateData () ITK_OVERRIDE;
   
 private:
   RigidRegistrationMethod(const Self&); //purposely not implemented
