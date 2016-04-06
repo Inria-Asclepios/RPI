@@ -80,6 +80,7 @@ SET(LIBRARIES
   ITKIONRRD
   ITKIOPNG
   ITKIOStimulate
+  ${ITKIOPhilipsREC_LIBRARIES}
   ITKIOVTK
   ITKIOTransformBase
   ITKIOTransformInsightLegacy
