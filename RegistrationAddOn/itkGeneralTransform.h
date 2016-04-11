@@ -83,6 +83,7 @@ namespace itk
         typedef TScalarType ScalarType;
         /** Type of the input parameters. */
         typedef typename Superclass::ParametersType ParametersType;
+        typedef typename Superclass::FixedParametersType FixedParametersType;
         /** Type of the Jacobian matrix. */
         typedef typename Superclass::JacobianType JacobianType;
         /** Standard vector type for this class. */
@@ -118,7 +119,7 @@ namespace itk
         /**  Method to transform a CovariantVector. */
         virtual OutputCovariantVectorType TransformCovariantVector(const InputCovariantVectorType &) const ITK_OVERRIDE;
         
-        virtual void SetFixedParameters(const ParametersType &) ITK_OVERRIDE;
+        virtual void SetFixedParameters(const FixedParametersType &) ITK_OVERRIDE;
         
         /**
          Set the transformation parameters and update internal transformation.

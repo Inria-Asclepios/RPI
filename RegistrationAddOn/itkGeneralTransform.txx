@@ -52,7 +52,7 @@ GeneralTransform<TScalarType, NDimensions>
 template <class TScalarType, unsigned int NDimensions>
 void
 GeneralTransform<TScalarType, NDimensions>
-::SetFixedParameters( const ParametersType & parameters )
+::SetFixedParameters( const FixedParametersType & parameters )
 {
     itkExceptionMacro("GeneralTransform<TScalarType, NDimensions> does not handle any parameter system yet");
 }
