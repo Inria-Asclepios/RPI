@@ -1,7 +1,7 @@
 #ifndef _rpiDisplacementFieldTransform_cxx_
 #define _rpiDisplacementFieldTransform_cxx_
 
-#include "itkDisplacementFieldTransform.h"
+#include "rpiDisplacementFieldTransform.h"
 #include "itkNeighborhoodAlgorithm.h"
 #include "itkImageRegionIterator.h"
 #include "vnl/vnl_det.h"
