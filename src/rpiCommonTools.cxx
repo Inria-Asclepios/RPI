@@ -475,38 +475,38 @@ readLinearTransformation( std::string fileName )
     typedef  itk::MatrixOffsetTransformBase<double, 3, 3>  MatrixOffsetDouble;
 
     // Read the TransformBase object
-    TransformBaseType * transform = readTransformBase(fileName).GetPointer();
+    typename TransformBaseType::Pointer transform = readTransformBase(fileName).GetPointer();
 
     // Note : In the following, we return the pointer (using GetPointer) instead of the itk::Pointer
     // to allow the automatic cast of the returned transform into a itk::Transform object.
 
     // Try to cast as Euler3DFloat
-    Euler3DFloat *euler3DFloat = dynamic_cast<Euler3DFloat*>(transform);
+    Euler3DFloat *euler3DFloat = dynamic_cast<Euler3DFloat*>(transform.GetPointer());
     if(euler3DFloat != 0)
         return castEuler3DTransform<float,TTransformScalarType>(euler3DFloat).GetPointer();
 
     // Try to cast as Euler3DDouble
-    Euler3DDouble *euler3DDouble = dynamic_cast<Euler3DDouble*>(transform);
+    Euler3DDouble *euler3DDouble = dynamic_cast<Euler3DDouble*>(transform.GetPointer());
     if(euler3DDouble != 0)
         return castEuler3DTransform<double,TTransformScalarType>(euler3DDouble).GetPointer();
 
     // Try to cast as AffineFloat
-    AffineFloat *affineFloat = dynamic_cast<AffineFloat*>(transform);
+    AffineFloat *affineFloat = dynamic_cast<AffineFloat*>(transform.GetPointer());
     if(affineFloat != 0)
         return castAffineTransform<float,TTransformScalarType>(affineFloat).GetPointer();
 
     // Try to cast as AffineDouble
-    AffineDouble *affineDouble = dynamic_cast<AffineDouble*>(transform);
+    AffineDouble *affineDouble = dynamic_cast<AffineDouble*>(transform.GetPointer());
     if(affineDouble != 0)
         return castAffineTransform<double,TTransformScalarType>(affineDouble).GetPointer();
 
     // Try to cast as MatrixOffsetFloat
-    MatrixOffsetFloat *matrixOffsetFloat = dynamic_cast<MatrixOffsetFloat*>(transform);
+    MatrixOffsetFloat *matrixOffsetFloat = dynamic_cast<MatrixOffsetFloat*>(transform.GetPointer());
     if(matrixOffsetFloat != 0)
         return castMatrixOffsetTransform<float,TTransformScalarType>(matrixOffsetFloat).GetPointer();
 
     // Try to cast as MatrixOffsetDouble
-    MatrixOffsetDouble *matrixOffsetDouble = dynamic_cast<MatrixOffsetDouble*>(transform);
+    MatrixOffsetDouble *matrixOffsetDouble = dynamic_cast<MatrixOffsetDouble*>(transform.GetPointer());
     if(matrixOffsetDouble != 0)
         return castMatrixOffsetTransform<double,TTransformScalarType>(matrixOffsetDouble).GetPointer();
 
