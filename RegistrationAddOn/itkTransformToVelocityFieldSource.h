@@ -138,13 +138,13 @@ public:
   void SetOutputParametersFromImage( const ImageBaseType * image );
   
   /** TransformToVelocityFieldSource produces a vector image. */
-  virtual void GenerateOutputInformation( void );
+  virtual void GenerateOutputInformation( void ) ITK_OVERRIDE;
 
   /** Just checking if transform is set. */
-  virtual void BeforeThreadedGenerateData( void );
+  virtual void BeforeThreadedGenerateData( void ) ITK_OVERRIDE;
 
   /** Compute the Modified Time based on changes to the components. */
-  unsigned long GetMTime( void ) const;
+  unsigned long GetMTime( void ) const ITK_OVERRIDE;
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
@@ -159,13 +159,13 @@ protected:
   TransformToVelocityFieldSource( void );
   ~TransformToVelocityFieldSource( void ) {};
 
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const ITK_OVERRIDE;
 
   /** TransformToVelocityFieldSource can be implemented as a multithreaded
    * filter. */
   void ThreadedGenerateData(
     const OutputImageRegionType & outputRegionForThread,
-    ThreadIdType threadId );
+    ThreadIdType threadId ) ITK_OVERRIDE;
 
   /** Faster implementation for resampling that works for with linear
    *  incremental transformation types. */
