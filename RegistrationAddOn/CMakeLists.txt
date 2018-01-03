@@ -3,7 +3,7 @@ project(RegistrationFactory)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(${PROJECT_NAME}_HEADERS
-    itkAffineRegistrationMethod.h    
+    itkAffineRegistrationMethod.h
     itkAffineRegistrationMethod.txx
     itkCenterImageRegistrationMethod.h
     itkDisplacementFieldTransform.h
@@ -55,6 +55,7 @@ set(${PROJECT_NAME}_LIBRARIES
   ITKIOImageBase
   ITKIOBMP
   ITKIOBioRad
+  ITKIOBruker
   ITKIOHDF5
   ITKIOGDCM
   ITKIOGE
@@ -62,6 +63,7 @@ set(${PROJECT_NAME}_LIBRARIES
   ITKIOJPEG
   ITKIOLSM
   ITKIOMeta
+  ITKIOMINC
   ITKIONIFTI
   ITKIONRRD
   ${ITKIOPhilipsREC_LIBRARIES}
