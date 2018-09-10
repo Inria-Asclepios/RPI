@@ -104,7 +104,7 @@ RegistrationFactory<TImage>
 ::Reset()
 {
   m_GeneralTransform->RemoveAllTransforms();
-  this->SetInitialTransform (NULL);
+  this->SetInitialTransform (ITK_NULLPTR);
   this->Modified();
   /*
   if (this->GetUseInnerTransformation() && this->CheckInputs() && !this->CheckImagesConsistency (this->GetFixedImage(), this->GetMovingImage() ) )
@@ -126,7 +126,7 @@ RegistrationFactory<TImage>
       break;
     default:
       itkExceptionMacro("MakeOutput request for an output number larger than the expected number of outputs");
-      return 0;
+      return ITK_NULLPTR;
   }
 }
 
@@ -181,7 +181,7 @@ RegistrationFactory<TImage>
 
   if (iterator != this->MethodList.end())
     return this->MethodList[id];
-  return NULL;
+  return ITK_NULLPTR;
 }
 
 
@@ -201,7 +201,7 @@ RegistrationFactory<TImage>
         return method;
     }
   }
-  return NULL;
+  return ITK_NULLPTR;
 }
 
 
@@ -490,7 +490,7 @@ RegistrationFactory<TImage>
   if (!this->CheckInputs())
     itkExceptionMacro(<<"inputs not set correctly !");
 
-  typename VectorFieldType::Pointer displacement = NULL;
+  typename VectorFieldType::Pointer displacement = ITK_NULLPTR;
 
   try
   {
@@ -518,7 +518,7 @@ RegistrationFactory<TImage>
   if (!this->CheckInputs())
     itkExceptionMacro(<<"inputs not set correctly !");
 
-  typename WarpedImageType::Pointer warpedimage = NULL;
+  typename WarpedImageType::Pointer warpedimage = ITK_NULLPTR;
 
   try
   {
@@ -548,7 +548,7 @@ RegistrationFactory<TImage>
 //   if (!this->CheckInputs())
 //     itkExceptionMacro(<<"inputs not set correctly !");
 
-  typename VectorFieldType::Pointer displacement = NULL;
+  typename VectorFieldType::Pointer displacement = ITK_NULLPTR;
 
   try
   {
@@ -624,7 +624,7 @@ RegistrationFactory<TImage>
     this->UpdateProgress (1);
     this->SetProgress (0);
     std::cerr << err << std::endl;
-    return NULL;
+    return ITK_NULLPTR;
   }
 
   this->UpdateProgress (1);
@@ -719,7 +719,7 @@ RegistrationFactory<TImage>
   if (!this->CheckInputs())
     itkExceptionMacro(<<"inputs not set correctly !");
 
-  typename LinearTransformType::Pointer transform = NULL;
+  typename LinearTransformType::Pointer transform = ITK_NULLPTR;
 
   try
   {
