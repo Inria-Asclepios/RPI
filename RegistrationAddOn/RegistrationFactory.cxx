@@ -410,11 +410,10 @@ void ImageRegistrationFactoryFunction( arguments args )
 //   typedef typename itk::DiffeomorphicDemonsRegistrationMethod<ImageType> DiffeomorphicDemonsMethodType;
   
   // Images we use
-  typename ImageType::Pointer fixedImage = 0;
-  typename ImageType::Pointer movingImage = 0;
-  typename DisplacementFieldType::Pointer inputDefField = 0;
-  typename InputTransformType::Pointer  inputTransform = 0;
-
+  typename ImageType::Pointer fixedImage = ITK_NULLPTR;
+  typename ImageType::Pointer movingImage = ITK_NULLPTR;
+  typename DisplacementFieldType::Pointer inputDefField = ITK_NULLPTR;
+  typename InputTransformType::Pointer  inputTransform = ITK_NULLPTR;
   
   typename FixedImageReaderType::Pointer fixedImageReader
     = FixedImageReaderType::New();
@@ -567,7 +566,7 @@ void ImageRegistrationFactoryFunction( arguments args )
   factory->UseFixedImageOff();
   factory->UseInnerTransformationOff ();
 
-  typename MethodType::Pointer method = NULL;
+  typename MethodType::Pointer method = ITK_NULLPTR;
   switch( args.registrationType )
   {
   default:
@@ -629,13 +628,13 @@ int main( int argc, char *argv[] )
    struct arguments args;
    parseOpts (argc, argv, args);
 
-   itk::MultiThreader::SetGlobalDefaultNumberOfThreads(2);
+   itk::MultiThreaderBase::SetGlobalDefaultNumberOfThreads(2);
    
    std::cout<<"Starting registration with the following arguments:"<<std::endl;
    std::cout<<args<<std::endl<<std::endl;
  
    // Get the image dimension
-   itk::ImageIOBase::Pointer imageIO = 0;
+   itk::ImageIOBase::Pointer imageIO = ITK_NULLPTR;
    
    try
    {
