@@ -512,7 +512,7 @@ readLinearTransformation( std::string fileName )
 
     // Otherwise, throw an exception
     throw std::runtime_error( "Transformation type not supported." );
-    return 0;
+    return nullptr;
 }
 
 

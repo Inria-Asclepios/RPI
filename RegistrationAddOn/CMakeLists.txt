@@ -51,31 +51,12 @@ ENDIF(WIN32 AND NOT CYGWIN AND NOT MINGW)
 #  itkRegistrationFactory-explicit-template.cxx
 #)
 
+include(ITKLibs)
+
 set(${PROJECT_NAME}_LIBRARIES
-  ITKIOImageBase
-  ITKIOBMP
-  ITKIOBioRad
-  ITKIOBruker
-  ITKIOHDF5
-  ITKIOGDCM
-  ITKIOGE
-  ITKIOGIPL
-  ITKIOJPEG
-  ITKIOLSM
-  ITKIOMeta
-  ITKIOMINC
-  ITKIONIFTI
-  ITKIONRRD
-  ${ITKIOPhilipsREC_LIBRARIES}
-  ITKIOPNG
-  ITKIOStimulate
-  ITKIOVTK
-  ITKIOTransformBase
-  ITKIOTransformInsightLegacy
-  ITKIOTransformHDF5
-  ITKIOTransformMatlab
-  ITKIOMRC
-  ITKIOTIFF
+    ${ITKIO_LIBRARIES}
+    ${ITKIOPhilipsREC_LIBRARIES}
+    ${ITK_TRANSFORM_LIBRARIES}
 )
 
 add_executable(${PROJECT_NAME}

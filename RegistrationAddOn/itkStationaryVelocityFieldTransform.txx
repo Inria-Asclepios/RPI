@@ -13,6 +13,8 @@
 #include <itkImageRegionIterator.h>
 #include <itkDivideImageFilter.h>
 
+#include <cmath>
+
 namespace itk
 {
 
@@ -141,10 +143,10 @@ TransformPoint(const InputPointType & point) const
         if (maxnorm2<norm2) maxnorm2=norm2;
     }
 
-    maxnorm2 /= vnl_math_sqr(minpixelspacing);
+    maxnorm2 /= std::sqrt(minpixelspacing);
 
     float numiterfloat = 2.0 +
-            0.5 * vcl_log(maxnorm2)/vnl_math::ln2;
+            0.5 * std::log(maxnorm2)/vnl_math::ln2;
 
     unsigned int numiter = 0;
     if (numiterfloat + 1 > 0)
