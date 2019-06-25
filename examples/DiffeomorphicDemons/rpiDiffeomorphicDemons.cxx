@@ -304,7 +304,7 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
         {
             matcher->Update();
         }
-        catch( itk::ExceptionObject& err )
+        catch( itk::ExceptionObject& )
         {
             throw std::runtime_error( "Could not match the histogram of input images." );
         }
@@ -399,7 +399,7 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
 
 
     // Set the field interpolator
-    typedef  itk::VectorLinearInterpolateNearestNeighborExtrapolateImageFunction< VectorFieldType, double >  FieldInterpolatorType;
+    typedef  itk::NearestNeighborInterpolateImageFunction< VectorFieldType, double >  FieldInterpolatorType;
     typename FieldInterpolatorType::Pointer interpolator = FieldInterpolatorType::New();
     multires->GetFieldExpander()->SetInterpolator( interpolator );
 

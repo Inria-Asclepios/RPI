@@ -74,8 +74,8 @@ readTransformBase( std::string fileName )
         throw std::runtime_error( "Could not read the input transformation." );
     }
 
-    // Get the list of transformations
-    TransformListType * list = reader->GetTransformList();
+    // Get the list of transformations 
+    const TransformListType * list = reader->GetTransformList();
     if ( list->empty() )
         throw std::runtime_error( "The input file does not contain any transformation." );
     else if ( list->size()>1 )
