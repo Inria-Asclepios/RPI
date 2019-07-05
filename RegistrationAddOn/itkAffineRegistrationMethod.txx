@@ -170,11 +170,14 @@ AffineRegistrationMethod<TImage>
   catch( itk::ExceptionObject & e ) 
   { 
     this->UpdateProgress(1.0);
+    this->SetProgress(0.0);
     std::cerr << e << std::endl; 
     throw itk::ExceptionObject(__FILE__,__LINE__,"Error in AffineRegistrationMethod<TImage>::GenerateData()");
   }
 
   this->UpdateProgress(1.0);
+  this->SetProgress(0.0);
+
   this->SetTransform (transform);
   
 }

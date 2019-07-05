@@ -158,9 +158,9 @@ StationaryVelocityFieldExponential<TInputImage,TOutputImage>
     }
 
     // Divide the norm by the minimum pixel spacing
-    maxnorm2 /= vnl_math_sqr(minpixelspacing);
+    maxnorm2 /= (minpixelspacing * minpixelspacing);
 
-    InputPixelRealValueType numiterfloat = 2.0 +  0.5 * vcl_log(maxnorm2)/vnl_math::ln2;
+    InputPixelRealValueType numiterfloat = 2.0 +  0.5 * std::log(maxnorm2)/std::log(2.0);
 
     // take the ceil and threshold
     numiter = 0;

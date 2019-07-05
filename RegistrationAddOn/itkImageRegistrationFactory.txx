@@ -107,12 +107,14 @@ ImageRegistrationFactory<TImage>
     std::cerr<<e<<std::endl;
 
     this->UpdateProgress (1);
+    this->SetProgress (0);
     itkExceptionMacro(<<"Error in  ImageRegistrationFactory<TImage>::GenerateData()");
     return;
 
   }
 
   this->UpdateProgress (1);
+  this->SetProgress (0);
 
   // graft the output to keep the pipeline set
   // instead of a bad deepcopy

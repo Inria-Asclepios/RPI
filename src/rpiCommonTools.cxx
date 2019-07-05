@@ -75,7 +75,7 @@ readTransformBase( std::string fileName )
     }
 
     // Get the list of transformations
-    TransformListType * list = reader->GetTransformList();
+    const TransformListType * list = reader->GetTransformList();
     if ( list->empty() )
         throw std::runtime_error( "The input file does not contain any transformation." );
     else if ( list->size()>1 )
@@ -512,7 +512,7 @@ readLinearTransformation( std::string fileName )
 
     // Otherwise, throw an exception
     throw std::runtime_error( "Transformation type not supported." );
-    return 0;
+    return nullptr;
 }
 
 

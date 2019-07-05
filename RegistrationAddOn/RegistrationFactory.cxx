@@ -627,6 +627,8 @@ int main( int argc, char *argv[] )
 {
    struct arguments args;
    parseOpts (argc, argv, args);
+
+   itk::MultiThreaderBase::SetGlobalDefaultNumberOfThreads(2);
    
    std::cout<<"Starting registration with the following arguments:"<<std::endl;
    std::cout<<args<<std::endl<<std::endl;
