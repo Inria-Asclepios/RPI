@@ -144,7 +144,7 @@ public:
   virtual void BeforeThreadedGenerateData( void ) ITK_OVERRIDE;
 
   /** Compute the Modified Time based on changes to the components. */
-  unsigned long GetMTime( void ) const ITK_OVERRIDE;
+  ModifiedTimeType GetMTime( void ) const ITK_OVERRIDE;
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */

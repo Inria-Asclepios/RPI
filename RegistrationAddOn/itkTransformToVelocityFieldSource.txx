@@ -367,7 +367,7 @@ TransformToVelocityFieldSource<TOutputImage,TTransformPrecisionType>
 
 // Verify if any of the components has been modified.
 template <class TOutputImage, class TTransformPrecisionType>
-unsigned long 
+ModifiedTimeType
 TransformToVelocityFieldSource<TOutputImage,TTransformPrecisionType>
 ::GetMTime( void ) const
 {

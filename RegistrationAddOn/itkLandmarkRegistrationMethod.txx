@@ -108,7 +108,6 @@ LandmarkRegistrationMethod<TImage>
   {
       case TRANSFORM_AFFINE:
 	this->UpdateProgress (1);
-	this->SetProgress(0.0);
 	itkExceptionMacro ("AFFINE TRANSFORMATION NOT SUPPORTED ! !");
 	break;
 
@@ -122,7 +121,6 @@ LandmarkRegistrationMethod<TImage>
 	      if (!m_FixedLandmarks.size())
 	      {
 		this->UpdateProgress (1);
-		this->SetProgress(0.0);
 		itkWarningMacro ("No landmark to initialize transform.");
 	      }
 	      else
@@ -142,7 +140,6 @@ LandmarkRegistrationMethod<TImage>
 	      if (!m_FixedLandmarks.size())
 	      {
 		this->UpdateProgress (1);
-		this->SetProgress(0.0);
 		itkWarningMacro ("No landmark to initialize transform.");
 	      }
 	      else
@@ -159,7 +156,6 @@ LandmarkRegistrationMethod<TImage>
 	      
 	    default:
 	      this->UpdateProgress (1);
-	      this->SetProgress(0.0);
 	      itkExceptionMacro ("Dimension not supported by LandmarkRegistrationMethod !");
 	      break;
 	      
@@ -171,7 +167,6 @@ LandmarkRegistrationMethod<TImage>
 	if (!m_FixedLandmarks.size())
 	{
 	  this->UpdateProgress (1);
-	  this->SetProgress(0.0);
 	  itkWarningMacro ("No landmark to initialize transform.");
 	}
 	else
@@ -188,7 +183,6 @@ LandmarkRegistrationMethod<TImage>
 	
       default:
 	this->UpdateProgress (1);
-	this->SetProgress(0.0);
 	itkExceptionMacro ("Transformation type not supported by the LandmarkRegistrationMethod !");
 	break;
   }

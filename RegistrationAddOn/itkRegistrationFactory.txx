@@ -404,13 +404,11 @@ RegistrationFactory<TImage>
   catch (itk::ExceptionObject& err )
   {
     this->UpdateProgress (1);
-    this->SetProgress (0);
     std::cerr << err << std::endl;
     itkExceptionMacro ("Error in RegistrationFactory<TImage>::ApplyRegistrationMethod ()");
   }
 
   this->UpdateProgress (1);
-  this->SetProgress (0);
 
   this->Modified();
 
@@ -622,13 +620,11 @@ RegistrationFactory<TImage>
   catch( itk::ExceptionObject& err )
   {
     this->UpdateProgress (1);
-    this->SetProgress (0);
     std::cerr << err << std::endl;
     return ITK_NULLPTR;
   }
 
   this->UpdateProgress (1);
-  this->SetProgress (0);
 
   return warper->GetOutput();
 }
@@ -698,13 +694,11 @@ RegistrationFactory<TImage>
   catch( itk::ExceptionObject& err )
   {
     this->UpdateProgress (1);
-    this->SetProgress (0);
     std::cerr << err << std::endl;
     itkExceptionMacro("Error during displacement field export");
   }
 
   this->UpdateProgress (1);
-  this->SetProgress (0);
 
   return fieldGenerator->GetOutput();
 
