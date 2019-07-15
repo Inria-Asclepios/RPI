@@ -7,6 +7,7 @@
 #include <itkHistogramMatchingImageFilter.h>
 #include <itkDiffeomorphicDemonsRegistrationFilter.h>
 #include <itkFastSymmetricForcesDemonsRegistrationFilter.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
 #include "rpiDiffeomorphicDemons.hxx"
 
 
