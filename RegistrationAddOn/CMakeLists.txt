@@ -67,12 +67,14 @@ if(WIN32 AND NOT CYGWIN AND NOT MINGW)
  target_link_libraries(${PROJECT_NAME}
   ${${PROJECT_NAME}_LIBRARIES}
   ITKOptimizers
+  ITKSmoothing
   getoptcompatlib
   )
 else (WIN32 AND NOT CYGWIN AND NOT MINGW)
  target_link_libraries(${PROJECT_NAME}
    ${${PROJECT_NAME}_LIBRARIES}
    ITKOptimizers
+   ITKSmoothing
    )
 endif(WIN32 AND NOT CYGWIN AND NOT MINGW)
 
