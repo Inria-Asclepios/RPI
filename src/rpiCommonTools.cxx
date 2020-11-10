@@ -313,7 +313,7 @@ readImageInformation( std::string fileName )
 {
 
     // Define image IO
-    itk::ImageIOBase::Pointer imageIO  = itk::ImageIOFactory::CreateImageIO( fileName.c_str(), itk::ImageIOFactory::ReadMode );
+    itk::ImageIOBase::Pointer imageIO  = itk::ImageIOFactory::CreateImageIO( fileName.c_str(), itk::IOFileModeEnum::ReadMode );
 
     // Test if image exists
     if ( !imageIO )
