@@ -641,7 +641,7 @@ int main( int argc, char *argv[] )
      
      imageIO =
        itk::ImageIOFactory::CreateImageIO(
-					  args.fixedImageFile.c_str(), itk::ImageIOFactory::ReadMode);
+					  args.fixedImageFile.c_str(), itk::IOFileModeEnum::ReadMode);
      imageIO->SetFileName(args.fixedImageFile.c_str());
      
      imageIO->ReadImageInformation();
