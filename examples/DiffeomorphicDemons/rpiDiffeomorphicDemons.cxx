@@ -7,6 +7,7 @@
 #include <itkHistogramMatchingImageFilter.h>
 #include <itkDiffeomorphicDemonsRegistrationFilter.h>
 #include <itkFastSymmetricForcesDemonsRegistrationFilter.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
 #include "rpiDiffeomorphicDemons.hxx"
 
 
@@ -399,7 +400,7 @@ DiffeomorphicDemons< TFixedImage, TMovingImage, TTransformScalarType >
 
 
     // Set the field interpolator
-    typedef  itk::VectorLinearInterpolateNearestNeighborExtrapolateImageFunction< VectorFieldType, double >  FieldInterpolatorType;
+    typedef  itk::NearestNeighborInterpolateImageFunction< VectorFieldType, double >  FieldInterpolatorType;
     typename FieldInterpolatorType::Pointer interpolator = FieldInterpolatorType::New();
     multires->GetFieldExpander()->SetInterpolator( interpolator );
 

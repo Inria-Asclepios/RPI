@@ -409,6 +409,7 @@ RegistrationFactory<TImage>
   }
 
   this->UpdateProgress (1);
+
   this->Modified();
 
 }

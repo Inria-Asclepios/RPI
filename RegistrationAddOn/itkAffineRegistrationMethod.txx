@@ -175,6 +175,7 @@ AffineRegistrationMethod<TImage>
   }
 
   this->UpdateProgress(1.0);
+
   this->SetTransform (transform);
   
 }
