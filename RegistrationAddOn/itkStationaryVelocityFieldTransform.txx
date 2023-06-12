@@ -34,7 +34,8 @@ void
 StationaryVelocityFieldTransform<TScalarType, NDimensions>::
 SetIdentity(void)
 {
-    TScalarType            value = 0;
+    itk::Vector<double, 3> value;
+    value.Fill(0);
     VectorFieldPointerType field = VectorFieldType::New();
     field->Allocate();
     field->FillBuffer(value);
