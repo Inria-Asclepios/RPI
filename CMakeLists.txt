@@ -33,7 +33,7 @@
 ###############################################################################
 
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.24)
 set(CMAKE_MACOSX_RPATH OFF)
 
 set(RPI_VERSION_NUMBER 1.2.0)
@@ -41,97 +41,32 @@ mark_as_advanced(RPI_VERSION_NUMBER)
 
 project(RPI VERSION ${RPI_VERSION_NUMBER})
 
+###############################################################################
+# INCLUDES SOME CMAKE HELPERS
+###############################################################################
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+include(export_and_install_libs)
+include(ITKLibs)
+include(FetchTCLAP)
 
-option(BUILD_SHARED_LIBS   "Build shared libraries" true)
-
-set(${PROJECT_NAME}_ARCHIVE_OUTPUT_DIRECTORY lib)
-set(${PROJECT_NAME}_RUNTIME_OUTPUT_DIRECTORY bin)
-set(${PROJECT_NAME}_LIBRARY_OUTPUT_DIRECTORY lib)
-
-
-# Set runtime, library, and archive output directories
-set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${PROJECT_BINARY_DIR}/${${PROJECT_NAME}_RUNTIME_OUTPUT_DIRECTORY}  CACHE PATH "Single Directory for all executables"       )
-set ( CMAKE_LIBRARY_OUTPUT_DIRECTORY  ${PROJECT_BINARY_DIR}/${${PROJECT_NAME}_LIBRARY_OUTPUT_DIRECTORY}  CACHE PATH "Single Directory for all dynamic libraries" )
-set ( CMAKE_ARCHIVE_OUTPUT_DIRECTORY  ${PROJECT_BINARY_DIR}/${${PROJECT_NAME}_ARCHIVE_OUTPUT_DIRECTORY}  CACHE PATH "Single Directory for all static libraries"  )
-
-set(${PROJECT_NAME}_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/src" "${CMAKE_SOURCE_DIR}/RegistrationAddOn" "${CMAKE_SOURCE_DIR}/examples")
-
-# Set runtime, library, and archive install output directories
-set ( RUNTIME_INSTALL_OUTPUT_DIRECTORY  ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_RUNTIME_OUTPUT_DIRECTORY}  CACHE PATH "Single Install Directory for all executables"       )
-set ( LIBRARY_INSTALL_OUTPUT_DIRECTORY  ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_LIBRARY_OUTPUT_DIRECTORY}  CACHE PATH "Single Install Directory for all dynamic libraries" )
-set ( ARCHIVE_INSTALL_OUTPUT_DIRECTORY  ${CMAKE_INSTALL_PREFIX}/${${PROJECT_NAME}_ARCHIVE_OUTPUT_DIRECTORY}  CACHE PATH "Single Install Directory for all static libraries"  )
+###############################################################################
+# FETCH TCLAP
+###############################################################################
+#FetchContent_Declare(
+#  tclap
+#  URL https://netix.dl.sourceforge.net/project/tclap/tclap-1.2.1.tar.gz
+#  URL_HASH MD5=eb0521d029bf3b1cc0dcaa7e42abf82a
+#)
+#FetchContent_MakeAvailable(tclap)
+#set(TCLAP_INCLUDEDIR ${CMAKE_BINARY_DIR}/_deps/tclap-src/include)
+#set(TCLAP_DIR ${CMAKE_BINARY_DIR}/_deps/tclap-src/include)
+#include_directories(${CMAKE_BINARY_DIR}/_deps/tclap-src/include)
 
 
-set(${PROJECT_NAME}_LIBRARY_DIRS "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
-set(${PROJECT_NAME}_CMAKE_DIRS "${CMAKE_SOURCE_DIR}/cmake")
-set(${PROJECT_NAME}_USE_FILE "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Use.cmake")
-
-
-set(${PROJECT_NAME}_INSTALL_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include) 
-set(${PROJECT_NAME}_INSTALL_LIBRARY_DIRS ${LIBRARY_INSTALL_OUTPUT_DIRECTORY})
-set(${PROJECT_NAME}_INSTALL_RUNTIME_DIRS ${RUNTIME_INSTALL_OUTPUT_DIRECTORY})
-set(${PROJECT_NAME}_INSTALL_CMAKE_DIRS ${CMAKE_INSTALL_PREFIX}/cmake)
-set(${PROJECT_NAME}_INSTALL_USE_FILE ${CMAKE_INSTALL_PREFIX}/cmake/${PROJECT_NAME}Use.cmake)
-
-#Sub projects:
-option(RPI_BUILD_EXAMPLES  "Build Examples" "OFF")
-
-if (RPI_BUILD_EXAMPLES)
-       add_subdirectory(examples)
-endif(RPI_BUILD_EXAMPLES)
-
+###############################################################################
+# Compilation
+###############################################################################
 add_subdirectory(src)
-add_subdirectory(RegistrationAddOn)
-
-##################################################################
-# Setup use file
-##################################################################
-
-if(EXISTS ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Use.cmake.in)
-configure_file( ## Common use file
-  ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Use.cmake.in
-  ${${PROJECT_NAME}_BINARY_DIR}/${PROJECT_NAME}Use.cmake
-  @ONLY IMMEDIATE)
-endif(EXISTS ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Use.cmake.in)
-
-
-
-###############################################################################
-# Setup Configuration files
-###############################################################################
-
-if(EXISTS ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in)
-configure_file( ## Build tree configure file
-  ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in
-  ${${PROJECT_NAME}_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-  @ONLY IMMEDIATE)
-endif(EXISTS ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in)
-
-if(EXISTS ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.install.cmake.in)
-configure_file( ## Install tree configure file
-  ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.install.cmake.in
-  ${${PROJECT_NAME}_BINARY_DIR}/install/${PROJECT_NAME}Config.cmake
-  @ONLY IMMEDIATE)
-endif(EXISTS ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.install.cmake.in)
-
-
-## #################################################################
-## Install cmake files
-## #################################################################
-
-if( EXISTS ${${PROJECT_NAME}_BINARY_DIR}/install/${PROJECT_NAME}Config.cmake
-AND EXISTS ${${PROJECT_NAME}_BINARY_DIR}/${PROJECT_NAME}Use.cmake)
-#AND EXISTS ${${PROJECT_NAME}_BINARY_DIR}/${PROJECT_NAME}Uninstall.cmake)
-
-install(FILES
-  ${PROJECT_BINARY_DIR}/install/${PROJECT_NAME}Config.cmake
-  ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Use.cmake
-# ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Uninstall.cmake
-  DESTINATION
-  cmake)
-
-endif()
 
 
 ###############################################################################
@@ -149,4 +84,4 @@ endif()
 ###############################################################################
 # Package
 ###############################################################################
-include(RPIPack)
+#include(RPIPack)

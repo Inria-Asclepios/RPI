@@ -165,7 +165,7 @@ public :
 
 
 /** Add the source code file (template) */
-#include "rpiRegistrationMethod.cxx"
+#include "rpiRegistrationMethod.hxx"
 
 
 #endif // _RPI_REGISTRATION_METHOD_HXX_

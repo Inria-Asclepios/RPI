@@ -9,13 +9,13 @@
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
-#
-# - Redistributions of source code must retain the above copyright notice, 
+
+# Redistributions of source code must retain the above copyright notice, 
 # this list of conditions and the following disclaimer.
-# - Redistributions in binary form must reproduce the above copyright notice,
+# Redistributions in binary form must reproduce the above copyright notice,
 # this list of conditions and the following disclaimer in the documentation
 # and/or other materials provided with the distribution.
-# - Neither the name of INRIA nor the names of its contributors may be used 
+# Neither the name of INRIA nor the names of its contributors may be used 
 # to endorse or promote products derived from this software without
 # specific prior written permission.
 #
@@ -32,15 +32,9 @@
 # USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ###############################################################################
 
+option(RPI_BUILD_EXAMPLES  "Build Examples" "OFF")
 
-
-set(RPI_VERSION_MAJOR  "@RPI_VERSION_MAJOR@")
-set(RPI_VERSION_MINOR  "@RPI_VERSION_MINOR@")
-set(RPI_VERSION_BUILD  "@RPI_VERSION_BUILD@")
-set(RPI_VERSION        "@RPI_VERSION@")
-
-set(RPI_INCLUDE_DIRS "@RPI_INSTALL_INCLUDE_DIRS@")
-set(RPI_LIBRARY_DIRS "@RPI_INSTALL_LIBRARY_DIRS@")
-set(RPI_CMAKE_DIRS   "@RPI_INSTALL_CMAKE_DIRS@")
-
-set(RPI_USE_FILE "@RPI_INSTALL_USE_FILE@")
+if (RPI_BUILD_EXAMPLES)
+    add_subdirectory(DiffeomorphicDemons)
+    add_subdirectory(TRex)
+endif(RPI_BUILD_EXAMPLES)

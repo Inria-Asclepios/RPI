@@ -11,7 +11,7 @@
 #include <mipsInrimageImageIOFactory.h>
 #endif
 
-#include "rpiCommonTools.hxx"
+#include <rpiCommonTools.hxx>
 
 
 

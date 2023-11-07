@@ -370,4 +370,4 @@ BooleanToString( bool value );
 } // End of namespace
 
 
-#include "rpiCommonTools.cxx"
+#include "rpiCommonTools.txx"

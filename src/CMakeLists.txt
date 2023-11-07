@@ -32,21 +32,6 @@
 # USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ###############################################################################
 
-PROJECT( RPI-Internal )
-
-# Define the minimum CMake version needed
-CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
-
-include_directories(${RPI_INCLUDE_DIRS})
-
-set(${PROJECT_NAME}_HEADERS
-    rpiCommonTools.hxx
-    rpiCommonTools.cxx
-    rpiRegistrationMethod.hxx
-    rpiRegistrationMethod.cxx
-    )
-
-install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION include)
 
 # Check if ITK is found and include useful files
 FIND_PACKAGE( ITK )
@@ -56,54 +41,44 @@ IF( NOT ITK_FOUND )
 ENDIF()
 INCLUDE( ${ITK_USE_FILE} )
 
-FIND_PACKAGE( TCLAP )
-# Check if TCLAP is found and include directory
-IF( NOT TCLAP_FOUND )
-    MESSAGE( "The RPI utilities require TCLAP which was not found. They will not be built." )
-    RETURN()
+
+option(BUILD_ConvertLinearToDF   "Build command line ConvertLinearToDF executables"                       ON)
+option(BUILD_ConvertLinearToSVF  "Build command line ConvertLinearToSVF executables"                      ON)
+option(BUILD_FuseTransformations "Build command line FuseTransformations (need tinyXML2 lib) executables" ON)
+option(BUILD_ResampleImage       "Build command line ResampleImage executables"                           ON)
+option(BUILD_RegistrationAddOn   "Build command line RegistrationAddOn executables"                       ON)
+option(BUILD_examples            "Build command line examples"                                            ON)
+
+# TinyXML2
+if (BUILD_FuseTransformations)
+	find_package(TinyXML2 REQUIRED)
+    IF( NOT ITK_FOUND )
+        MESSAGE( "Project ${PROJECT_NAME} requires ITK which was not found. ${PROJECT_NAME} will not be built." )
+        return()
+    ENDIF()
+endif()
+
+
+set(${PROJECT_NAME}_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/src/common" "${CMAKE_SOURCE_DIR}/src/RegistrationAddOn" "${CMAKE_SOURCE_DIR}/src/examples")
+
+
+add_subdirectory(common)
+
+IF(${BUILD_ConvertLinearToDF})
+    add_subdirectory(exeConvertLinearToDF)
+ENDIF() 
+IF(${BUILD_ConvertLinearToSVF})
+    add_subdirectory(exeConvertLinearToSVF)
 ENDIF()
-INCLUDE_DIRECTORIES( ${TCLAP_INCLUDE_DIR} )
-
-include(ITKLibs)
-
-# Set used libraries
-SET(LIBRARIES
-    ${ITKIO_LIBRARIES}
-    ${ITKIOPhilipsREC_LIBRARIES}
-    ${ITK_TRANSFORM_LIBRARIES}
-)
-
-IF (PACKAGENAME STREQUAL "MIPS_REGISTRATIONPKG")
-	# Add MIPS include directory
-	INCLUDE_DIRECTORIES( ${MIPS_IMAGEPKG_INCLUDE_DIRS} )
-	# Set used libraries
-	SET(LIBRARIES ${LIBRARIES} mipsItkImageIO)
-	ADD_DEFINITIONS(-DMIPS_FOUND)
+IF(${BUILD_FuseTransformations})
+    add_subdirectory(exeFuseTransformations)
 ENDIF()
-
-# Create ConvertLinearToDF executable
-ADD_EXECUTABLE(        exeConvertLinearToDF rpiConvertLinearToDF.cxx )
-TARGET_LINK_LIBRARIES( exeConvertLinearToDF ${LIBRARIES} )
-SET_TARGET_PROPERTIES( exeConvertLinearToDF PROPERTIES OUTPUT_NAME "rpiConvertLinearToDF" )
-
-# Create ConvertLinearToSVF executable
-ADD_EXECUTABLE(        exeConvertLinearToSVF rpiConvertLinearToSVF.cxx )
-TARGET_LINK_LIBRARIES( exeConvertLinearToSVF ${LIBRARIES} )
-SET_TARGET_PROPERTIES( exeConvertLinearToSVF PROPERTIES OUTPUT_NAME "rpiConvertLinearToSVF" )
-
-# Create rpiResampleImage executable
-ADD_EXECUTABLE(        exeResampleImage rpiResampleImage.cxx )
-TARGET_LINK_LIBRARIES( exeResampleImage ${LIBRARIES} )
-SET_TARGET_PROPERTIES( exeResampleImage PROPERTIES OUTPUT_NAME "rpiResampleImage" )
-
-# Check if TinyXML is found and include directory
-IF( NOT TinyXML_FOUND AND NOT TARGET TinyXML )
-    MESSAGE( "The rpiFuseTransformations utility requires TinyXML and TinyXML was not found. It will not be built." )
-    RETURN()
+IF(${BUILD_ResampleImage})
+    add_subdirectory(exeResampleImage)
 ENDIF()
-
-INCLUDE_DIRECTORIES( ${TinyXML_INCLUDE_DIR} )
-# Create rpiFuseTransformations executable
-ADD_EXECUTABLE(        exeFuseTransformations rpiFuseTransformations.cxx )
-TARGET_LINK_LIBRARIES( exeFuseTransformations ${LIBRARIES} TinyXML )
-SET_TARGET_PROPERTIES( exeFuseTransformations PROPERTIES OUTPUT_NAME "rpiFuseTransformations" )
+IF(${BUILD_RegistrationAddOn})
+    add_subdirectory(RegistrationAddOn)
+ENDIF() 
+IF(${BUILD_examples})
+    add_subdirectory(examples)
+ENDIF()

@@ -78,6 +78,6 @@ protected:
 
 
 /** Add the source code file (template) */
-#include "rpiObserver.cxx"
+#include "rpiObserver.txx"
 
 #endif // _RPI_OBSERVER_HXX_
