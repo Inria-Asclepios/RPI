@@ -63,7 +63,6 @@ set(${PROJECT_NAME}_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/src/common" "${CMAKE_SOURC
 
 
 add_subdirectory(common)
-
 IF(${BUILD_ConvertLinearToDF})
     add_subdirectory(exeConvertLinearToDF)
 ENDIF() 
@@ -71,6 +70,7 @@ IF(${BUILD_ConvertLinearToSVF})
     add_subdirectory(exeConvertLinearToSVF)
 ENDIF()
 IF(${BUILD_FuseTransformations})
+    message(XY)
     add_subdirectory(exeFuseTransformations)
 ENDIF()
 IF(${BUILD_ResampleImage})

@@ -1,0 +1,55 @@
+@PACKAGE_INIT@
+
+
+if (CMAKE_VERSION VERSION_LESS @CMAKE_VERSION@)
+    message(FATAL_ERROR "RPI requires at least CMake version @CMAKE_VERSION@")
+endif()
+
+if (NOT RPI_FIND_COMPONENTS)
+    set(RPI_NOT_FOUND_MESSAGE "The RPI package requires at least one component")
+    set(RPI_FOUND False)
+    return()
+endif()
+
+
+
+set(_RPI_FIND_PARTS_REQUIRED)
+if (RPI_FIND_REQUIRED)
+    set(_RPI_FIND_PARTS_REQUIRED REQUIRED)
+endif()
+
+set(_RPI_FIND_PARTS_QUIET)
+if (RPI_FIND_QUIETLY)
+    set(_RPI_FIND_PARTS_QUIET QUIET)
+endif()
+
+get_filename_component(_rpi_install_prefix "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
+
+set(_RPI_NOTFOUND_MESSAGE)
+
+include(${CMAKE_CURRENT_LIST_DIR}/RPIModuleLocation.cmake)
+
+foreach(module ${RPI_FIND_COMPONENTS})
+    find_package(${module}
+        ${_RPI_FIND_PARTS_QUIET}
+        ${_RPI_FIND_PARTS_REQUIRED}
+        PATHS ${_rpi_module_paths} NO_DEFAULT_PATH
+    )
+    if (NOT ${module}_FOUND)
+        string(CONFIGURE ${_rpi_module_location_template} _expected_module_location @ONLY)
+
+        if (RPI_FIND_REQUIRED_${module})
+            set(_RPI_NOTFOUND_MESSAGE "${_RPI_NOTFOUND_MESSAGE}Failed to find RPI component \"${module}\" config file at \"${_expected_module_location}\"\n")
+        elseif(NOT RPI_FIND_QUIETLY)
+            message(WARNING "Failed to find RPI component \"${module}\" config file at \"${_expected_module_location}\"")
+        endif()
+
+        unset(_expected_module_location)
+    endif()
+endforeach()
+
+if (_RPI_NOTFOUND_MESSAGE)
+    set(RPI_NOTFOUND_MESSAGE "${_RPI_NOTFOUND_MESSAGE}")
+    set(RPI_FOUND False)
+endif()
+

@@ -329,36 +329,36 @@ int main(int argc, char** argv)
         printParameters( param );
 
         // Read ImageIO
-        itk::ImageIOBase::Pointer         imageIO        = rpi::readImageInformation(param.inputPath);
-        unsigned int                      dim            = imageIO->GetNumberOfDimensions();
-        itk::ImageIOBase::IOPixelType     pixel_type     = imageIO->GetPixelType();
-        itk::ImageIOBase::IOComponentType component_type = imageIO->GetComponentType();
+        itk::ImageIOBase::Pointer imageIO        = rpi::readImageInformation(param.inputPath);
+        unsigned int              dim            = imageIO->GetNumberOfDimensions();
+        itk::IOPixelEnum          pixel_type     = imageIO->GetPixelType();
+        itk::IOComponentEnum      component_type = imageIO->GetComponentType();
 
         // Switch on pixel type
-        if ( pixel_type==itk::ImageIOBase::SCALAR )
+        if ( pixel_type== itk::IOPixelEnum::SCALAR)
         {
             // Switch on pixel type and dimension
             if ( dim==3 )
             {
-                if      ( component_type == itk::ImageIOBase::UCHAR  )
+                if      ( component_type == itk::IOComponentEnum::UCHAR  )
                     resample<unsigned char,  3>(param);
-                else if ( component_type == itk::ImageIOBase::CHAR   )
+                else if ( component_type == itk::IOComponentEnum::CHAR   )
                     resample<char,           3>(param);
-                else if ( component_type == itk::ImageIOBase::USHORT )
+                else if ( component_type == itk::IOComponentEnum::USHORT )
                     resample<unsigned short, 3>(param);
-                else if ( component_type == itk::ImageIOBase::SHORT  )
+                else if ( component_type == itk::IOComponentEnum::SHORT  )
                     resample<short,          3>(param);
-                else if ( component_type == itk::ImageIOBase::UINT   )
+                else if ( component_type == itk::IOComponentEnum::UINT   )
                     resample<unsigned int,   3>(param);
-                else if ( component_type == itk::ImageIOBase::INT    )
+                else if ( component_type == itk::IOComponentEnum::INT    )
                     resample<int,            3>(param);
-                else if ( component_type == itk::ImageIOBase::ULONG  )
+                else if ( component_type == itk::IOComponentEnum::ULONG  )
                     resample<unsigned long,  3>(param);
-                else if ( component_type == itk::ImageIOBase::LONG   )
+                else if ( component_type == itk::IOComponentEnum::LONG   )
                     resample<long,           3>(param);
-                else if ( component_type == itk::ImageIOBase::FLOAT  )
+                else if ( component_type == itk::IOComponentEnum::FLOAT  )
                     resample<float,          3>(param);
-                else if ( component_type == itk::ImageIOBase::DOUBLE )
+                else if ( component_type == itk::IOComponentEnum::DOUBLE )
                     resample<double,         3>(param);
                 else
                     throw std::runtime_error( "Component type not supported supported." );

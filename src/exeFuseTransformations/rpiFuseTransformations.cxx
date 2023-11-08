@@ -5,7 +5,7 @@
 #include <string>
 
 #include <tclap/CmdLine.h>
-#include <tinyxml.h>
+#include <tinyxml2.h>
 
 #include <itkTransform.h>
 #include <rpiDisplacementFieldTransform.h>

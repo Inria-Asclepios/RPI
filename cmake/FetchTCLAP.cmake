@@ -62,5 +62,6 @@ ELSE()
     ENDIF()   
 ENDIF()
 
-
-
+IF( TCLAP_FOUND )
+    include_directories(${TCLAP_INCLUDE_DIR})
+ENDIF()

@@ -49,25 +49,19 @@ include(export_and_install_libs)
 include(ITKLibs)
 include(FetchTCLAP)
 
-###############################################################################
-# FETCH TCLAP
-###############################################################################
-#FetchContent_Declare(
-#  tclap
-#  URL https://netix.dl.sourceforge.net/project/tclap/tclap-1.2.1.tar.gz
-#  URL_HASH MD5=eb0521d029bf3b1cc0dcaa7e42abf82a
-#)
-#FetchContent_MakeAvailable(tclap)
-#set(TCLAP_INCLUDEDIR ${CMAKE_BINARY_DIR}/_deps/tclap-src/include)
-#set(TCLAP_DIR ${CMAKE_BINARY_DIR}/_deps/tclap-src/include)
-#include_directories(${CMAKE_BINARY_DIR}/_deps/tclap-src/include)
-
 
 ###############################################################################
 # Compilation
 ###############################################################################
 add_subdirectory(src)
 
+set(PACKAGE_INIT "@PACKAGE_INIT@")
+if(EXISTS ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in)
+	
+    configure_package_config_file(${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in "${CMAKE_BINARY_DIR}/lib/cmake/${PROJECT_NAME}/${PROJECT_NAME}Config.cmake" INSTALL_DESTINATION lib/cmake/${PROJECT_NAME})
+    INSTALL(FILES "${CMAKE_BINARY_DIR}/lib/cmake/${PROJECT_NAME}/${PROJECT_NAME}Config.cmake" DESTINATION lib/cmake/${PROJECT_NAME})
+
+endif()
 
 ###############################################################################
 # Documentation
