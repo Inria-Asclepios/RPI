@@ -65,8 +65,6 @@ TARGET_INCLUDE_DIRECTORIES( ${TARGET_NAME} INTERFACE
 SET (FILESET_INSTALL_DIR_publicHeadersCommon Common)
 SET (FILESET_INSTALL_DIR_publicHeadersRegistrationAddOn RegistrationAddOn)
 
-install(TARGETS ${TARGET_NAME}
-        FILE_SET "publicHeaders"
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${TARGET_NAME})                
+export_and_install_libs(${TARGET_NAME})             
 
 

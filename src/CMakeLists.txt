@@ -44,10 +44,10 @@ INCLUDE( ${ITK_USE_FILE} )
 
 option(BUILD_ConvertLinearToDF   "Build command line ConvertLinearToDF executables"                       ON)
 option(BUILD_ConvertLinearToSVF  "Build command line ConvertLinearToSVF executables"                      ON)
-option(BUILD_FuseTransformations "Build command line FuseTransformations (need tinyXML2 lib) executables" ON)
+option(BUILD_FuseTransformations "Build command line FuseTransformations (need tinyXML2 lib) executables" OFF)
 option(BUILD_ResampleImage       "Build command line ResampleImage executables"                           ON)
 option(BUILD_RegistrationAddOn   "Build command line RegistrationAddOn executables"                       ON)
-option(BUILD_examples            "Build command line examples"                                            ON)
+option(BUILD_examples            "Build command line examples"                                            OFF)
 
 # TinyXML2
 if (BUILD_FuseTransformations)
@@ -59,7 +59,7 @@ if (BUILD_FuseTransformations)
 endif()
 
 
-set(${PROJECT_NAME}_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/src/common" "${CMAKE_SOURCE_DIR}/src/RegistrationAddOn" "${CMAKE_SOURCE_DIR}/src/examples")
+#set(${PROJECT_NAME}_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/src/common" "${CMAKE_SOURCE_DIR}/src/RegistrationAddOn" "${CMAKE_SOURCE_DIR}/src/examples")
 
 
 add_subdirectory(common)
@@ -70,7 +70,6 @@ IF(${BUILD_ConvertLinearToSVF})
     add_subdirectory(exeConvertLinearToSVF)
 ENDIF()
 IF(${BUILD_FuseTransformations})
-    message(XY)
     add_subdirectory(exeFuseTransformations)
 ENDIF()
 IF(${BUILD_ResampleImage})
