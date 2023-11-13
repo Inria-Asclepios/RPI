@@ -100,7 +100,7 @@ TARGET_SOURCES(             ${TARGET_NAME} PUBLIC
                               FILES ${${TARGET_NAME}_HEADERS_REGISTRATIONADDON})                         
 TARGET_INCLUDE_DIRECTORIES( ${TARGET_NAME} PUBLIC
                               "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src/common;${CMAKE_SOURCE_DIR}/src/RegistrationAddOn>"
-                              "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>include/common;$<INSTALL_PREFIX>include/RegistrationAddOn>")
+                              "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include/common;$<INSTALL_PREFIX>/include/RegistrationAddOn>")
 
 SET (FILESET_INSTALL_DIR_publicHeadersCommon common)
 SET (FILESET_INSTALL_DIR_publicHeadersRegistrationAddOn RegistrationAddOn)

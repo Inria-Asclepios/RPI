@@ -101,7 +101,7 @@ TARGET_SOURCES(             ${TARGET_NAME} INTERFACE
                               FILES ${${TARGET_NAME}_HEADERS_EXAMPLES})       
 TARGET_INCLUDE_DIRECTORIES( ${TARGET_NAME} INTERFACE
                               "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src/common;${CMAKE_SOURCE_DIR}/src/RegistrationAddOn;${CMAKE_SOURCE_DIR}/src/examples>"
-                              "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>include/common;$<INSTALL_PREFIX>include/RegistrationAddOn;$<INSTALL_PREFIX>include/examples>")
+                              "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include/common;$<INSTALL_PREFIX>/include/RegistrationAddOn;$<INSTALL_PREFIX>/include/examples>")
                 
 
 SET (FILESET_INSTALL_DIR_publicHeadersCommon common)
