@@ -271,7 +271,7 @@ public:
 
 
 /** Add the source code file (template) */
-#include "rpiDiffeomorphicDemons.cxx"
+#include "rpiDiffeomorphicDemons.txx"
 
 
 #endif // _RPI_DIFFEOMORPHIC_DEMONS_HXX_

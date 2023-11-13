@@ -32,7 +32,7 @@
 # USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ###############################################################################
 
-set(TARGET_NAME resampleImage)
+SET(TARGET_NAME resampleImage)
 
 include(${ITK_USE_FILE})
 
@@ -76,7 +76,6 @@ SET(${TARGET_NAME}_HEADERS_COMMON
     ${CMAKE_SOURCE_DIR}/src/common/vnl_sd_matrix_tools.txx
     )
 
-
 # Set used libraries
 SET(LIBRARIES
     ${ITKIO_LIBRARIES}
@@ -98,7 +97,7 @@ TARGET_SOURCES(             ${TARGET_NAME} PUBLIC
                               FILE_SET "publicHeadersRegistrationAddOn" 
                               TYPE HEADERS 
                               BASE_DIRS ${CMAKE_SOURCE_DIR}/src/RegistrationAddOn
-                              FILES ${${TARGET_NAME}_HEADERS_REGISTRATIONADDON})                              
+                              FILES ${${TARGET_NAME}_HEADERS_REGISTRATIONADDON})                         
 TARGET_INCLUDE_DIRECTORIES( ${TARGET_NAME} PUBLIC
                               "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src/common;${CMAKE_SOURCE_DIR}/src/RegistrationAddOn>"
                               "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>include/common;$<INSTALL_PREFIX>include/RegistrationAddOn>")
