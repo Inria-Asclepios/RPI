@@ -104,7 +104,7 @@ TARGET_INCLUDE_DIRECTORIES( ${TARGET_NAME} INTERFACE
                               "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>include/common;$<INSTALL_PREFIX>include/RegistrationAddOn;$<INSTALL_PREFIX>include/examples>")
                 
 
-SET (FILESET_INSTALL_DIR_publicHeadersCommon Common)
+SET (FILESET_INSTALL_DIR_publicHeadersCommon common)
 SET (FILESET_INSTALL_DIR_publicHeadersRegistrationAddOn RegistrationAddOn)
 SET (FILESET_INSTALL_DIR_publicHeadersExamples examples)
 

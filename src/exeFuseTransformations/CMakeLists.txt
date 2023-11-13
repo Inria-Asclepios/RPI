@@ -105,7 +105,7 @@ TARGET_INCLUDE_DIRECTORIES( ${TARGET_NAME} PUBLIC
                               "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src/common;${CMAKE_SOURCE_DIR}/src/RegistrationAddOn;${TinyXML2_INCLUDE_DIR}>"
                               "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>include/common;$<INSTALL_PREFIX>include/RegistrationAddOn>")
 
-SET (FILESET_INSTALL_DIR_publicHeadersCommon Common)
+SET (FILESET_INSTALL_DIR_publicHeadersCommon common)
 SET (FILESET_INSTALL_DIR_publicHeadersRegistrationAddOn RegistrationAddOn)
                               
 export_and_install_libs(${TARGET_NAME})
