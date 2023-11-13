@@ -61,7 +61,7 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in)
     configure_package_config_file(${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in "${CMAKE_BINARY_DIR}/lib/cmake/${PROJECT_NAME}/${PROJECT_NAME}Config.cmake" INSTALL_DESTINATION lib/cmake/${PROJECT_NAME})
     CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmake/RPIModuleLocation.cmake ${CMAKE_BINARY_DIR}/lib/cmake/${PROJECT_NAME} COPYONLY)
     INSTALL(FILES "${CMAKE_BINARY_DIR}/lib/cmake/${PROJECT_NAME}/${PROJECT_NAME}Config.cmake" DESTINATION lib/cmake/${PROJECT_NAME})
-    INSTALL(FILES ${CMAKE_SOURCE_DIR}/cmake/RPIModuleLocation.cmake DESTINATION  ${CMAKE_BINARY_DIR}/lib/cmake/${PROJECT_NAME})
+    INSTALL(FILES ${CMAKE_SOURCE_DIR}/cmake/RPIModuleLocation.cmake DESTINATION  lib/cmake/${PROJECT_NAME})
 
 endif()
 
