@@ -75,10 +75,11 @@ SET(${TARGET_NAME}_HEADERS_COMMON
     ${CMAKE_SOURCE_DIR}/src/common/vnl_sd_matrix_tools.txx
     )
     
-SET(${TARGET_NAME}_HEADERS_EXAMPLES  
-    ${CMAKE_SOURCE_DIR}/src/examples/DemonsRegistration.cxx
-    ${CMAKE_SOURCE_DIR}/src/examples/rpiDiffeomorphicDemons.txx
-    ${CMAKE_SOURCE_DIR}/src/examples/rpiDiffeomorphicDemons.hxx
+SET(${TARGET_NAME}_HEADERS_EXAMPLES
+    ${CMAKE_SOURCE_DIR}/src/examples/DiffeomorphicDemons/rpiDiffeomorphicDemons.hxx
+    ${CMAKE_SOURCE_DIR}/src/examples/DiffeomorphicDemons/rpiDiffeomorphicDemons.txx
+    ${CMAKE_SOURCE_DIR}/src/examples/TRex/rpiTRex.hxx
+    ${CMAKE_SOURCE_DIR}/src/examples/TRex/rpiTRex.txx
     )
 
 # Create RPI_INTERFACE interface

@@ -91,7 +91,7 @@ public:
 
 
 /** Add the source code file (template) */
-#include "rpiTRex.cxx"
+#include "rpiTRex.txx"
 
 
 #endif // _RPI_TREX_HXX_

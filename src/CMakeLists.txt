@@ -58,6 +58,11 @@ if (BUILD_FuseTransformations)
     ENDIF()
 endif()
 
+if (BUILD_ConvertLinearToDF OR BUILD_ConvertLinearToSVF OR BUILD_FuseTransformations OR BUILD_ResampleImage OR BUILD_RegistrationAddOn OR BUILD_examples)
+    include(FetchTCLAP)
+endif()
+
+
 
 #set(${PROJECT_NAME}_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/src/common" "${CMAKE_SOURCE_DIR}/src/RegistrationAddOn" "${CMAKE_SOURCE_DIR}/src/examples")
 
