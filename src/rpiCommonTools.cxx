@@ -114,10 +114,14 @@ castEuler3DTransform(itk::Euler3DTransform<TInputScalarType> * input)
     // Create output parameters and center
     OutputParameterType oP(InputTransformType::ParametersDimension);
     OutputCenterType    oC;
-    for (int i=0; i<OutputTransformType::ParametersDimension; i++)
+    for (int i=0; i<static_cast<int>(OutputTransformType::ParametersDimension); i++)
+    {
         oP[i] = iP[i];
-    for (int i=0; i<OutputTransformType::OutputSpaceDimension; i++)
+    }
+    for (int i=0; i<static_cast<int>(OutputTransformType::OutputSpaceDimension); i++)
+    {
         oC[i] = iC[i];
+    }
 
     // Create the output transformation
     typename OutputTransformType::Pointer output = OutputTransformType::New();
@@ -156,9 +160,9 @@ castAffineTransform(itk::AffineTransform<TInputScalarType,3> * input)
     // Create output parameters and center
     OutputParameterType oP(InputTransformType::ParametersDimension);
     OutputCenterType    oC;
-    for (int i=0; i<OutputTransformType::ParametersDimension; i++)
+    for (int i=0; i<static_cast<int>(OutputTransformType::ParametersDimension); i++)
         oP[i] = iP[i];
-    for (int i=0; i<OutputTransformType::OutputSpaceDimension; i++)
+    for (int i=0; i<static_cast<int>(OutputTransformType::OutputSpaceDimension); i++)
         oC[i] = iC[i];
 
     // Create the output transformation
@@ -197,10 +201,14 @@ castMatrixOffsetTransform(itk::MatrixOffsetTransformBase<TInputScalarType,3,3> *
     // Create output parameters and center
     OutputParameterType oP(InputTransformType::ParametersDimension);
     OutputCenterType    oC;
-    for (int i=0; i<OutputTransformType::ParametersDimension; i++)
+    for (int i=0; i<static_cast<int>(OutputTransformType::ParametersDimension); i++)
+    {
         oP[i] = iP[i];
-    for (int i=0; i<OutputTransformType::OutputSpaceDimension; i++)
+    }
+    for (int i=0; i<static_cast<int>(OutputTransformType::OutputSpaceDimension); i++)
+    {
         oC[i] = iC[i];
+    }
 
     // Create the output transformation
     typename OutputTransformType::Pointer output = OutputTransformType::New();
