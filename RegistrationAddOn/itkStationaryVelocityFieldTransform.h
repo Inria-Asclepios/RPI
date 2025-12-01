@@ -144,8 +144,8 @@ public:
     /**
      * Generic constructors.
      */
-    itkNewMacro( Self )
-    itkTypeMacro( StationaryVelocityFieldTransform, Transform )
+    itkNewMacro(Self);
+    itkTypeMacro(StationaryVelocityFieldTransform, Transform);
 
     /**
      * Method not implemented for stationary velocity fields.
