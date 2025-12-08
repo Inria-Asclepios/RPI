@@ -32,11 +32,10 @@
 # USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ###############################################################################
 
-
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.19)
 set(CMAKE_MACOSX_RPATH OFF)
 
-set(RPI_VERSION_NUMBER 1.2.0)
+set(RPI_VERSION_NUMBER 2.0.0)
 mark_as_advanced(RPI_VERSION_NUMBER)
 
 project(RPI VERSION ${RPI_VERSION_NUMBER})
@@ -48,7 +47,6 @@ option(BUILD_SHARED_LIBS   "Build shared libraries" true)
 set(${PROJECT_NAME}_ARCHIVE_OUTPUT_DIRECTORY lib)
 set(${PROJECT_NAME}_RUNTIME_OUTPUT_DIRECTORY bin)
 set(${PROJECT_NAME}_LIBRARY_OUTPUT_DIRECTORY lib)
-
 
 # Set runtime, library, and archive output directories
 set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${PROJECT_BINARY_DIR}/${${PROJECT_NAME}_RUNTIME_OUTPUT_DIRECTORY}  CACHE PATH "Single Directory for all executables"       )

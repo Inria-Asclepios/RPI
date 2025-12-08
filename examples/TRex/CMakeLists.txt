@@ -36,18 +36,11 @@
 # Project name
 PROJECT( TREX )
 
-# Define the minimum CMake version needed
-CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
-
+cmake_minimum_required(VERSION 3.19)
 
 # Check if ITK is found and include useful files
-FIND_PACKAGE( ITK )
-IF( NOT ITK_FOUND )
-    MESSAGE( "Project ${PROJECT_NAME} requires ITK and ITK was not found. ${PROJECT_NAME} will not be built." )
-    RETURN()
-ENDIF()
+find_package(ITK REQUIRED COMPONENTS)
 INCLUDE( ${ITK_USE_FILE} )
-
 
 # Check if TCLAP is found and include directory
 find_package (TCLAP REQUIRED)

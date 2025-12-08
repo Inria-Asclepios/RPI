@@ -58,7 +58,7 @@ class CommandIterationUpdate : public itk::Command
   typedef itk::ProcessObject      ProcessObjectType;
   typedef ProcessObjectType::Pointer  ProcessObjectPointer;
 
-  itkNewMacro( Self )
+  itkNewMacro(Self);
 
   void SetItkObjectToWatch (ProcessObjectPointer object)
   {

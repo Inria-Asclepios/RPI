@@ -33,12 +33,8 @@ set(${PROJECT_NAME}_HEADERS
     itkTransformaToDeformationFieldFilter.txx
     )
 
-FIND_PACKAGE( ITK )
-IF( NOT ITK_FOUND )
-    MESSAGE( "Project ${PROJECT_NAME} requires ITK and ITK was not found. ${#} will not be built." )
-    RETURN()
-ENDIF()
-INCLUDE( ${ITK_USE_FILE} )
+find_package(ITK REQUIRED COMPONENTS)
+include(${ITK_USE_FILE})
 
 IF(WIN32 AND NOT CYGWIN AND NOT MINGW)
   ADD_LIBRARY(getoptcompatlib STATIC

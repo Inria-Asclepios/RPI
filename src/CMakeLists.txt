@@ -35,7 +35,7 @@
 PROJECT( RPI-Internal )
 
 # Define the minimum CMake version needed
-CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
+cmake_minimum_required(VERSION 3.19)
 
 include_directories(${RPI_INCLUDE_DIRS})
 
@@ -49,11 +49,7 @@ set(${PROJECT_NAME}_HEADERS
 install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION include)
 
 # Check if ITK is found and include useful files
-FIND_PACKAGE( ITK )
-IF( NOT ITK_FOUND )
-    MESSAGE( "Project ${PROJECT_NAME} requires ITK which was not found. ${PROJECT_NAME} will not be built." )
-    RETURN()
-ENDIF()
+find_package(ITK REQUIRED COMPONENTS)
 INCLUDE( ${ITK_USE_FILE} )
 
 FIND_PACKAGE( TCLAP )
